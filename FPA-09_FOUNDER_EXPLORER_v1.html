@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation_OS Founder Explorer — FPA-09</title>
+<style>
+  :root{
+    --paper:#F6F4EE; --card:#FFFFFF; --ink:#23272E; --muted:#6E7077; --line:#E2DED3;
+    --verify:#1F7A53; --verify-bg:#EAF4EE;
+    --second:#A9742B; --second-bg:#F7F0E2;
+    --arch:#8A8C92; --arch-bg:#EEEEEC;
+    --kill:#B3402E; --kill-bg:#F9ECE9;
+    --accent:#0E5A8A; --accent-bg:#EAF1F6;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important;animation:none !important} }
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+  h1,h2,h3{font-family:var(--serif);line-height:1.25;font-weight:600}
+  p{margin-bottom:0.9em}
+  button{font-family:var(--sans);cursor:pointer}
+  a{color:var(--accent)}
+
+  /* eyebrow / utility labels — echo of ERP screens and PO documents */
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+  .eyebrow.accent{color:var(--accent)}
+
+  /* the signature: verdict stamps, like a QA seal pressed onto the page */
+  .stamp{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+    padding:5px 12px;border:2px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--card), inset 0 0 0 3px currentColor;
+    transform:rotate(-2deg);background:var(--card)}
+  .stamp.build{color:var(--verify)} .stamp.second{color:var(--second)} .stamp.arch{color:var(--arch)} .stamp.kill{color:var(--kill)}
+
+  /* ============ HOME ============ */
+  header.masthead{padding:54px 0 28px;border-bottom:1px solid var(--line)}
+  .masthead .eyebrow{margin-bottom:14px}
+  .masthead h1{font-size:clamp(30px,6vw,42px);margin-bottom:10px}
+  .masthead .sub{color:var(--muted);font-size:17px;max-width:560px}
+  .masthead .fpa-line{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.06em}
+
+  .lockednote{margin:22px 0 0;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink);font-size:14px;color:var(--muted)}
+  .lockednote b{color:var(--ink)}
+
+  .cards{margin-top:30px;display:grid;gap:16px}
+  .opp-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 22px 18px;position:relative;transition:box-shadow .15s ease, transform .15s ease}
+  .opp-card:hover{box-shadow:0 4px 18px rgba(35,39,46,.07);transform:translateY(-1px)}
+  .opp-card .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .opp-card h2{font-size:24px}
+  .opp-card .oneline{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .opp-card .cardfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-block;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:9px 18px;font-size:14px;font-weight:600;letter-spacing:.02em}
+  .btn:hover{background:#000}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:#fff}
+  .btn:focus-visible,.toggle:focus-visible,details summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .progress-pill{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:var(--paper)}
+  .progress-pill.done{color:var(--verify);border-color:var(--verify)}
+
+  details.archived-group{margin-top:8px;border:1px dashed var(--line);border-radius:10px;background:transparent}
+  details.archived-group>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px}
+  details.archived-group>summary::-webkit-details-marker{display:none}
+  details.archived-group>summary .chev{margin-left:auto;transition:transform .15s}
+  details.archived-group[open]>summary .chev{transform:rotate(90deg)}
+  .arch-list{padding:0 20px 18px;display:grid;gap:10px}
+  .arch-item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+  .arch-item b{font-family:var(--serif);font-size:15px}
+  .arch-item span{color:var(--muted);display:block;margin-top:2px}
+
+  .export-block{margin-top:36px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .export-block h3{font-size:18px;margin-bottom:6px}
+  .export-block p{font-size:14px;color:var(--muted)}
+  .export-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  /* ============ OPPORTUNITY VIEW ============ */
+  .view{display:none}
+  .view.active{display:block}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(246,244,238,.94);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:6px}
+  .topbar-inner{max-width:760px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px}
+  .backbtn{background:none;border:none;color:var(--ink);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;padding:6px 4px}
+  .backbtn:hover{color:var(--accent)}
+  .sectdots{margin-left:auto;display:flex;gap:5px}
+  .sectdots span{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .sectdots span.seen{background:var(--verify)}
+
+  .opp-hero{padding:34px 0 8px}
+  .opp-hero h1{font-size:clamp(28px,6vw,38px);margin:12px 0 8px}
+  .opp-hero .oneline{font-size:18px;color:var(--muted);font-family:var(--serif);font-style:italic;max-width:600px}
+
+  section.s{padding:34px 0 8px;border-top:1px solid var(--line);margin-top:30px}
+  section.s:first-of-type{border-top:none;margin-top:0}
+  .s-label{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .s-label .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .s-label h2{font-size:24px}
+  .s-intro{color:var(--muted);font-size:15px;margin-bottom:18px;max-width:600px}
+
+  /* survived box */
+  .why-survived{background:var(--verify-bg);border:1px solid #CDE4D7;border-radius:10px;padding:18px 20px;margin-top:14px}
+  .why-survived .eyebrow{color:var(--verify);margin-bottom:8px}
+  .why-survived p{font-size:15px;margin-bottom:8px}
+  .why-survived p:last-child{margin-bottom:0}
+
+  /* story steps (Section 2) */
+  .story{display:flex;flex-direction:column}
+  .story-step{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .story-step+.story-connector{align-self:center;color:var(--muted);font-size:18px;padding:4px 0;line-height:1}
+  .toggle{width:100%;text-align:left;background:none;border:none;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  .toggle .step-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;white-space:nowrap}
+  .toggle .step-q{font-family:var(--serif);font-size:18px;font-weight:600;flex:1}
+  .toggle .chev{color:var(--muted);transition:transform .15s;flex-shrink:0}
+  .story-step.open .toggle .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:0 18px 18px;font-size:15.5px}
+  .story-step.open .step-body{display:block}
+  .step-body .callout{background:var(--paper);border-left:3px solid var(--accent);padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .step-body ul{margin:0 0 .9em 1.2em}
+  .step-body li{margin-bottom:6px}
+
+  .bridge{margin-top:22px;background:var(--ink);color:#F3F1EA;border-radius:10px;padding:22px 24px}
+  .bridge .eyebrow{color:#B9C4CE;margin-bottom:8px}
+  .bridge p{font-size:16px;font-family:var(--serif)}
+  .bridge p:last-child{margin-bottom:0}
+
+  /* flow (Section 3) */
+  .flow{display:flex;flex-direction:column;margin-top:6px}
+  .flow-node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .flow-node .eyebrow{margin-bottom:6px}
+  .flow-node p{font-size:15px;margin-bottom:6px}
+  .flow-node p:last-child{margin-bottom:0}
+  .flow-node.ai{border-left:3px solid var(--accent)}
+  .flow-node.human{border-left:3px solid var(--second)}
+  .flow-arrow{align-self:center;color:var(--muted);padding:4px 0;font-size:18px;line-height:1}
+  .guarantee{margin-top:18px;background:var(--verify-bg);border:1.5px solid var(--verify);border-radius:10px;padding:18px 20px}
+  .guarantee .eyebrow{color:var(--verify)}
+  .guarantee p{font-size:15.5px;margin:6px 0 0}
+
+  /* evidence rows (Section 4) */
+  .ev-grid{display:grid;gap:12px}
+  .ev-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ev-row .eyebrow{margin-bottom:6px}
+  .ev-row p{font-size:15px;margin-bottom:6px}
+  .ev-row p:last-child{margin-bottom:0}
+
+  /* concern cards (Section 5) */
+  .concerns{display:grid;gap:12px}
+  details.concern{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  details.concern.locked-kill{border:1.5px solid var(--kill)}
+  details.concern>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  details.concern>summary::-webkit-details-marker{display:none}
+  details.concern>summary .c-title{font-family:var(--serif);font-size:17px;font-weight:600;flex:1}
+  details.concern>summary .chev{color:var(--muted);transition:transform .15s}
+  details.concern[open]>summary .chev{transform:rotate(90deg)}
+  .c-body{padding:0 18px 18px;display:grid;gap:10px}
+  .c-part{font-size:14.5px}
+  .c-part .eyebrow{display:block;margin-bottom:3px}
+  .c-part.killline{background:var(--kill-bg);border-left:3px solid var(--kill);padding:10px 12px;border-radius:0 6px 6px 0}
+  .c-part.killline .eyebrow{color:var(--kill)}
+
+  /* reality checks (Section 6) */
+  .rc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
+  .rc h3{font-size:19px;margin-bottom:10px}
+  .rc .rc-block{margin-bottom:12px;font-size:14.5px}
+  .rc .rc-block .eyebrow{display:block;margin-bottom:4px}
+  .rc ul{margin:4px 0 0 1.2em}
+  .rc li{margin-bottom:5px}
+  .rc .up{border-left:3px solid var(--verify);background:var(--verify-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .down{border-left:3px solid var(--kill);background:var(--kill-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .up .eyebrow{color:var(--verify)} .rc .down .eyebrow{color:var(--kill)}
+  .implication{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .implication .eyebrow{display:block;margin-bottom:8px}
+  .imp-opts{display:flex;gap:8px;flex-wrap:wrap}
+  .imp-opts label{border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--paper);user-select:none}
+  .imp-opts input{position:absolute;opacity:0;pointer-events:none}
+  .imp-opts label.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+
+  /* reflection (Section 7) */
+  .reflect{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
+  .q{margin-bottom:20px}
+  .q .qt{font-weight:600;font-size:15.5px;margin-bottom:8px;display:block}
+  .radio-row{display:flex;gap:8px;flex-wrap:wrap}
+  .radio-row label{border:1.5px solid var(--line);border-radius:99px;padding:7px 18px;font-size:14px;cursor:pointer;background:var(--paper);user-select:none}
+  .radio-row input{position:absolute;opacity:0;pointer-events:none}
+  .radio-row label.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+  textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14.5px;background:var(--paper);color:var(--ink);resize:vertical}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:80px}
+  .savemsg{font-size:13px;color:var(--verify);font-weight:600;margin-left:12px;opacity:0;transition:opacity .3s}
+  .savemsg.show{opacity:1}
+
+  /* discussion starters (Section 8) */
+  .starters{counter-reset:dq;display:grid;gap:10px}
+  .starters .dq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;font-size:15.5px;font-family:var(--serif)}
+  .starters .dq::before{counter-increment:dq;content:counter(dq,decimal-leading-zero);position:absolute;left:16px;top:15px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+
+  /* board summary (Section 9) */
+  .board{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+  .board-row{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line)}
+  .board-row:last-child{border-bottom:none}
+  .board-row .bk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:var(--paper)}
+  .board-row .bv{padding:14px 16px;font-size:14.5px}
+  @media(max-width:540px){.board-row{grid-template-columns:1fr}.board-row .bk{padding-bottom:2px}.board-row .bv{padding-top:4px}}
+
+  .endnav{margin-top:40px;display:flex;gap:10px;flex-wrap:wrap}
+  footer.colophon{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<!-- ===================================================== HOME -->
+<div id="view-home" class="view active">
+  <div class="wrap">
+    <header class="masthead">
+      <div class="eyebrow">Innovation_OS · 2026</div>
+      <h1>Founder Explorer</h1>
+      <p class="sub">One world. Three opportunities that survived. Your job here is not to agree — it is to understand, to question, and to arrive at the founder discussion prepared.</p>
+      <div class="fpa-line">FPA-09 · B2B ORDER RESOLUTION GAP · RESEARCH STATUS: COMPLETE · VERDICTS: LOCKED</div>
+    </header>
+
+    <div class="lockednote">
+      <b>How to read this.</b> The investment committee (Claude + Gemini + Perplexity) has already locked its verdicts. Nothing here re-ranks, re-validates, or persuades. This Explorer exists so each founder can independently understand the world, poke at the assumptions, and record their own honest reaction before we talk.
+    </div>
+
+    <div class="cards">
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>ShipRight</h2>
+          <span class="stamp build">Build-First</span>
+        </div>
+        <p class="oneline">A checkpoint with a financial guarantee. It verifies every order before it ships — and if it clears an order that turns out wrong, it pays.</p>
+        <div class="cardfoot">
+          <button class="btn" onclick="openOpp('shipright')">Explore ShipRight</button>
+          <span class="progress-pill" id="pill-shipright">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>ResolveAI</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">Replaces the order operations department: orders arrive in any format, ERP-ready records come out, billed per order processed correctly.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('resolveai')">Explore ResolveAI</button>
+          <span class="progress-pill" id="pill-resolveai">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>TradeLogic</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">The system of record for the unwritten business rules in every buyer–seller relationship — knowledge that today lives only in people's heads.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('tradelogic')">Explore TradeLogic</button>
+          <span class="progress-pill" id="pill-tradelogic">Not started</span>
+        </div>
+      </div>
+
+      <details class="archived-group">
+        <summary>
+          <span class="stamp arch">Archived</span>
+          <span>Seven companies were considered and archived. Tap to see why.</span>
+          <span class="chev">›</span>
+        </summary>
+        <div class="arch-list">
+          <div class="arch-item"><b>OrderNet</b><span>Network value only materializes at ~50 deployments. Not a Day 1 company.</span></div>
+          <div class="arch-item"><b>OrderStack</b><span>On-premise multi-agent enterprise sales cycles incompatible with part-time founders.</span></div>
+          <div class="arch-item"><b>OrderBridge</b><span>Buyer-facing AI carries brand and relationship risk; held at monitor, not selected.</span></div>
+          <div class="arch-item"><b>OrderEasy</b><span>Not selected in the locked consensus despite a Gemini GO; buyer-adoption risk of AI bots vs. texting a familiar rep.</span></div>
+          <div class="arch-item"><b>OrderCash</b><span>Multi-system integration scope exceeds the 6-week build constraint.</span></div>
+          <div class="arch-item"><b>CatalogForge</b><span>One-time painkiller with high churn risk; behaves like a data-cleaning feature.</span></div>
+          <div class="arch-item"><b>CommitTrack</b><span>Too niche — blanket POs are a sub-problem of a sub-problem; venture ceiling too low.</span></div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="export-block">
+      <h3>Your reflections</h3>
+      <p>Everything you answer inside the Explorer is saved on this device only. When you're ready to share before the founder discussion, export it.</p>
+      <div class="export-btns">
+        <button class="btn ghost" onclick="exportReflections('txt')">Export as text</button>
+        <button class="btn ghost" onclick="exportReflections('json')">Export as JSON</button>
+      </div>
+    </div>
+
+    <footer class="colophon">
+      INNOVATION_OS FOUNDER EXPLORER · FPA-09 v1 · JUNE 2026<br>
+      SOURCES: FPA-09 FOUNDER UNDERSTANDING v1 · FOUNDER COMPANY GENERATION v2 · GEMINI IC VERDICT · PERPLEXITY IC VERDICT · LOCKED FOUNDER REVIEW SUMMARY<br>
+      VERDICTS LOCKED. NO NEW COMPANIES. NO RANKING CHANGES. UNDERSTANDING, NOT PERSUASION.
+    </footer>
+  </div>
+</div>
+
+<!-- ===================================================== SHIPRIGHT -->
+<div id="view-shipright" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-shipright"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp build">Build-First · Locked</span>
+      <h1>ShipRight</h1>
+      <p class="oneline">A checkpoint with a financial guarantee. It verifies every order before it ships — and if it clears an order that turns out wrong, it pays.</p>
+    </div>
+
+    <!-- S1 SNAPSHOT -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Pre-Fulfillment Order Assurance. <b>Pattern:</b> AI-Native Service Company — the customer pays for an outcome (zero mis-shipments), not for software.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived previous stages</span>
+        <p>Three AI committees looked at ten companies. Claude originally favored ResolveAI's upside. Gemini elevated ShipRight for founder fit and the lowest adoption friction in the whole set — read-only ERP access, zero workflow disruption, shadow-mode proof. Perplexity confirmed the verification problem is commercially real and that ShipRight has the fastest validation loop of all candidates.</p>
+        <p>The consensus judged ShipRight the <b>strongest allocation of founder time</b> as a first move: a trust-building wedge that can later open the door to the bigger automation plays.</p>
+      </div>
+    </section>
+
+    <!-- S2 UNDERSTAND THE WORLD -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Forget startups for ten minutes. Tap through the story below — one step at a time. The company doesn't appear until the pain is obvious.</p>
+
+      <div class="story">
+
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Who?</span><span class="step-q">Meet Meena, at the order desk</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Picture one person. Call her Meena — the name doesn't matter, the work does. She sits at the order desk of a mid-sized manufacturing company. Not a giant like Tata, not a tiny shop — a company doing $50M to $500M in revenue, making things like auto parts or industrial components, selling to other businesses.</p>
+            <p>Her job sounds simple: when a customer sends an order, make sure the company's computer system has it recorded correctly, so the warehouse ships exactly the right goods.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The work</span><span class="step-q">What does she actually do all day?</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Customers don't order through some neat standard form. They send a <b>PO</b> — a purchase order. It's just a document saying "we want to buy these items, this many, deliver here." Usually a PDF attached to an email. In India, sometimes just a WhatsApp message.</p>
+            <p>Every customer's PO looks different. Different layout, different product names, different shorthand.</p>
+            <p>Meena reads the PO, figures out what the customer actually wants, and types it into the <b>ERP</b> — the central software where the company records orders, stock, and billing. In Indian mid-market companies, that's usually Tally or SAP Business One.</p>
+            <div class="callout">Once the order is in the ERP, the warehouse takes over. The warehouse never reads the original PO. The warehouse trusts whatever is in the ERP.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Concrete example</span><span class="step-q">"5 boxes of BW-1"</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>A PO arrives saying: <b>"5 boxes of BW-1."</b></p>
+            <p>Open the company's product catalog — there is no "BW-1." That's the <i>customer's</i> internal code, not the seller's. Meena knows from past orders that BW-1 means "Blue Widget Mark I."</p>
+            <p>Now, "5 boxes." A box of what? For this particular customer, Meena knows "box" means a case of 12 — because that's how this customer has ordered for their last 40 orders. So she enters <b>60 units</b> into the ERP.</p>
+            <div class="callout">None of this was written on the PO. She filled the gaps from memory and experience. It takes about <b>12 minutes per order</b>. A team handling 1,500 orders a month spends roughly <b>300 hours a month</b> doing exactly this.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">What goes wrong?</span><span class="step-q">Meena is human</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Somewhere between <b>1 and 3 out of every 100 orders</b> gets entered wrong. A wrong quantity. A wrong product. A "box" read as 1 unit instead of 12.</p>
+            <p>And here's the dangerous part: <b>nothing checks her work.</b> The ERP only checks basics — quantity is not zero, the product code exists. It cannot ask, "is this right for <i>this</i> customer?" The warehouse picks exactly what the system says. The wrong goods get packed, loaded, and shipped.</p>
+            <div class="callout">The error is discovered by the <b>customer</b> — when the wrong shipment lands at their door.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">How people cope</span><span class="step-q">Experience, Excel, and free time</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Companies cope with experience. The senior person "just knows" each customer's quirks. Some keep personal Excel files and notes. When time allows, someone double-checks the entry against the PO.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Why coping fails</span><span class="step-q">Three cracks in the system</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <ul>
+              <li><b>The knowledge lives in heads, not systems.</b> It's written nowhere — not in the ERP, not in any official document. This role sees 25–40% annual turnover. When the experienced person quits, the knowledge walks out the door, and the replacement makes errors for months.</li>
+              <li><b>Double-checking depends on free time.</b> Busy season is exactly when errors spike — and exactly when nobody has time to verify.</li>
+              <li><b>There is no checkpoint in the process itself.</b> Between "order entered in the ERP" and "warehouse starts picking," no systematic verification step exists. Not in the ERP. Not in the warehouse system. Nowhere.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Consequences</span><span class="step-q">What a wrong shipment really costs</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>When the wrong shipment arrives, the seller pays: return freight, replacement shipping, credit notes, angry phone calls. A single wrong shipment costs <b>$200 to $2,000</b> to fix. Across a month, companies lose <b>$10,000 to $50,000</b> to these errors.</p>
+            <p>For key accounts, it's worse. Large buyers often have an <b>SLA</b> — a written promise of accuracy and timeliness, with money penalties if you break it. Repeated wrong shipments don't just cost money — they put the entire account at risk of leaving.</p>
+            <p>And disputes are ugly: the buyer says "I never ordered that," the seller says "but that's what you wrote," and nobody can prove who was right.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <span class="eyebrow">The opening</span>
+        <p>Notice the gap. The error happens at the order desk. The error becomes expensive at the customer's door. Between those two points — after the entry, before the warehouse picks — sits a window where the error exists but hasn't cost anything yet.</p>
+        <p><b>Nobody in this world owns that window.</b> Ab samajh aaya? Good — now we can talk about what we'd build.</p>
+      </div>
+    </section>
+
+    <!-- S3 WHAT WOULD WE BUILD -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <p class="s-intro">ShipRight is a checkpoint with a financial guarantee. It sits in that exact window — between "order entered" and "warehouse picks" — and verifies every order before it ships. Here's the flow, no technology jargon.</p>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="eyebrow">Inputs</span>
+          <p>Three things, all read-only: the order as entered in the ERP, the original PO the buyer sent, and that buyer's order history.</p>
+          <p><b>Nothing in the customer's workflow changes.</b> CSRs keep their jobs. ShipRight watches and verifies — it doesn't replace anyone and never writes into the ERP.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">What happens</span>
+          <p>For every order, before the warehouse touches it, ShipRight compares the ERP entry against the original PO and the customer's history. Does "5 boxes" entered as 60 units match how this buyer always orders? Does the product match what the PO actually named?</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai">
+          <span class="eyebrow accent">Where AI helps</span>
+          <p>The cross-reading. AI can read the ERP entry, the original PO, and the order history together in one pass, and learn each customer's patterns — like "this buyer's box means a case of 12." Older rule-based checks could only catch basics (quantity not zero, valid product code); they could never catch business-logic errors.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human">
+          <span class="eyebrow" style="color:var(--second)">Where humans stay involved</span>
+          <p>When ShipRight flags an order as suspicious, a human looks at it — the customer's people stay in the loop, and our team handles exception escalation. And before any guarantee is switched on, the team runs <b>shadow mode</b>: verifying real orders in parallel with the existing process and counting the errors caught, with human comparison of every result. That's our QA discipline applied to the product.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">Outputs</span>
+          <p>Cleared orders flow to the warehouse. Suspicious orders are flagged <i>before</i> shipping — while the error is still free to fix.</p>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <span class="eyebrow">The guarantee — what makes this a company, not a feature</span>
+        <p>If ShipRight clears an order and it ships wrong anyway, <b>ShipRight pays</b> the re-shipping and credit costs. The customer is not buying software. They are buying <i>zero mis-shipments</i>, with financial backing. Detection alone is a feature; paying when you're wrong is a business.</p>
+      </div>
+    </section>
+
+    <!-- S4 WHY CUSTOMERS CARE -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row">
+          <span class="eyebrow">The pain today</span>
+          <p>1–3 of every 100 orders is entered wrong, and nothing in the process checks the work. The error is discovered by the customer, after delivery.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">What it costs</span>
+          <p>$200–$2,000 per incident to fix. $10,000–$50,000 lost per month. SLA penalties on key accounts. Repeated errors put whole accounts at risk of leaving — and disputes nobody can prove either way.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why today's coping fails</span>
+          <p>The knowledge lives in heads (and this role turns over 25–40% a year). Double-checking depends on free time, which vanishes exactly when errors spike. And no checkpoint exists anywhere in the stack between ERP entry and warehouse picking.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why they might pay</span>
+          <p>Risk transfer. Mis-shipments cost $10,000–$50,000 a month; ShipRight charges ₹75,000–1,50,000/month (or ₹50–150 per order) and takes on the risk. The pitch isn't "better software" — it's "your error cost becomes our problem."</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5 WHAT SCARES US -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <p class="s-intro">Seven honest concerns from the locked verdicts. Tap each one. The first is the locked kill assumption — mundane, but fatal if wrong.</p>
+      <div class="concerns">
+
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Can we even find the original PO?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Customers archive the original PO somewhere ShipRight can access, alongside the ERP entry.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>ShipRight needs BOTH the ERP entry AND the original PO to verify. No PO, no cross-reference, no product.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Do Indian mid-market manufacturers actually store the original buyer PO digitally, in a way that allows automated cross-referencing?</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>POs living in scattered personal inboxes and WhatsApp chats with no accessible archive at most companies.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">The guarantee could ruin us</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Our catch rate will be high enough that payouts stay small relative to fees.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini flagged that a single large mis-shipment cleared in error — say a ₹50 lakh shipment — could financially ruin the startup immediately.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What one systemic miss costs, and what payout cap or conditions we'd need before offering the guarantee at all.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Guarantee payouts that exceed what early revenue can absorb.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">A crowded neighborhood</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The guarantee model differentiates ShipRight from existing order-automation and PO-matching vendors.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity rated this space crowded and held ShipRight at MONITOR for exactly this reason. The product could drift into a generic "verify orders" feature.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Will buyers see ShipRight as a distinct outcome purchase, or as a minor QA layer their ERP already covers?</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Buyers treating verification as already-covered or not worth a separate line item.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">To catch a wrong order, you must first know the rules</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>ShipRight can verify orders from the PO and order history alone.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's portfolio observation: to know an entry is <i>wrong</i>, ShipRight must first know the customer-specific rules — that this buyer's "box" means 12. Verification quietly depends on rule knowledge.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How much rule knowledge must be inferred per customer before verification is reliable.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Verification accuracy too low without months of rule-learning per customer — eroding the fast time-to-value that justified picking ShipRight first.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">The ERP vendors are coming</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>ERP vendors will not ship native AI order verification within the 18–36 month window identified in prior stages.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini called ERP commoditization the biggest portfolio risk: if Tally or SAP B1 ships native verification, much of the portfolio's moat collapses.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How far along Tally/SAP B1 native AI actually is.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>An incumbent ERP shipping native resolution or verification.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Will anyone pay per outcome?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Indian mid-market budgets can accommodate ₹50–150/order or ₹75K–1.5L/month outcome pricing.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Both committee verdicts flagged this as the single most important near-term validation. Budgets may be siloed into headcount and fixed SaaS subscriptions instead.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How real buyers respond to per-outcome pricing when asked directly.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Consistent refusal to pay per-outcome despite acknowledging the error cost.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Is the pain even real at our targets?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Mis-shipment pain at Indian targets matches the evidence base — 1–3% error rate, ₹3L+/year cost.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The whole pitch rests on errors being expensive enough to insure against.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Will real interviews surface specific, named-cost mis-shipment stories — or vague "we call and fix it" tolerance?</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Mis-shipments rare (under 0.5%) and cheap to fix; quality gates already in place.</div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- S6 REALITY CHECKS -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">06</span><h2>Reality checks before commitment</h2></div>
+      <p class="s-intro">Roughly ten calls with operations and order-management people at Indian mid-market manufacturers — people who live the order queue, not managers who delegate. No product needed. Three checks decide everything. For each one, mark where you'd land.</p>
+
+      <div class="rc">
+        <h3>Check 1 — Can the original PO actually be found?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>Operations directors and order-desk people at ~10 Indian mid-market manufacturers.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Where is the original buyer PO stored? Could you open it next to the ERP entry right now?"</li>
+            <li>"What happens between when an order is entered in your ERP and when the warehouse starts picking? Is there any verification step?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>7 of 10 confirm the original PO is digitally accessible alongside the ERP entry, and 7 of 10 confirm no systematic pre-fulfillment verification exists.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>POs are unarchived or inaccessible at most companies — scattered in personal inboxes and WhatsApp chats.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="shipright_rc1">
+            <label><input type="radio" name="sr_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="sr_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="sr_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="sr_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 2 — Is the mis-shipment pain real, recent, and priced in rupees?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>The same ~10 calls — the people who handled the last wrong shipment personally.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"When was the last wrong shipment? Walk me through exactly what happened."</li>
+            <li>"What did it cost in rupees? Who got involved in fixing it?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>5 of 10 describe mis-shipment costs exceeding ₹3L/year with specific stories and amounts — not estimates — and at least 2 describe key-account churn risk from repeated errors.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Mis-shipments are described as rare and trivially cheap to fix, or customers already operate quality gates (QC teams, warehouse verification).</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="shipright_rc2">
+            <label><input type="radio" name="sr_rc2" value="Proceed">Proceed</label>
+            <label><input type="radio" name="sr_rc2" value="Pause">Pause</label>
+            <label><input type="radio" name="sr_rc2" value="Pivot">Pivot</label>
+            <label><input type="radio" name="sr_rc2" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 3 — Will they pay for an outcome, not a subscription?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>Within the same ~10 calls, whoever owns the budget for this pain.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"If a service guaranteed zero mis-shipments, would you pay per order verified, or a monthly fee tied to that outcome?"</li>
+            <li>"Or would this only ever come out of a fixed software subscription budget?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Willingness to pay per-order or monthly outcome fees is expressed by multiple companies.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Buyers uniformly steer toward "we'd only pay a small fixed subscription" or "our ERP will do this."</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="shipright_rc3">
+            <label><input type="radio" name="sr_rc3" value="Proceed">Proceed</label>
+            <label><input type="radio" name="sr_rc3" value="Pause">Pause</label>
+            <label><input type="radio" name="sr_rc3" value="Pivot">Pivot</label>
+            <label><input type="radio" name="sr_rc3" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:14px;color:var(--muted)">After conversations: a shadow-mode pilot — verifying real orders in parallel with the existing process and counting errors caught. Production with the guarantee follows only after shadow mode proves the catch rate.</p>
+    </section>
+
+    <!-- S7 REFLECTION -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <p class="s-intro">Answer honestly and independently — before the founder discussion, not during it. Saved on this device only.</p>
+      <div class="reflect" data-opp="shipright">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="sr_q1" value="Yes">Yes</label><label><input type="radio" name="sr_q1" value="Unsure">Unsure</label><label><input type="radio" name="sr_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="sr_q2" value="Yes">Yes</label><label><input type="radio" name="sr_q2" value="Unsure">Unsure</label><label><input type="radio" name="sr_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="sr_q5" value="Yes">Yes</label><label><input type="radio" name="sr_q5" value="Unsure">Unsure</label><label><input type="radio" name="sr_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('shipright', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 DISCUSSION STARTERS -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <p class="s-intro">Bring these to the table. They're designed to surface disagreement, not to settle it.</p>
+      <div class="starters">
+        <div class="dq">Are we comfortable putting our own money behind a guarantee — and what payout cap would we need before we'd dare offer it?</div>
+        <div class="dq">The kill assumption is mundane but fatal: do we honestly believe Indian mid-market companies keep the original PO somewhere findable? What have we personally seen in our own networks?</div>
+        <div class="dq">ShipRight verifies; it doesn't eliminate the work. Are we satisfied building the safety net first, knowing the bigger automation play (ResolveAI) sits behind it — or does that sequencing frustrate anyone?</div>
+        <div class="dq">Perplexity called this space crowded. What would we need to hear in the first ten calls to believe the guarantee genuinely makes us different from existing PO-automation vendors?</div>
+        <div class="dq">To call an order "wrong," we must first learn each customer's unwritten rules. How much per-customer learning time are we willing to accept before the guarantee can be switched on?</div>
+        <div class="dq">If this fails, what do we each think the most likely reason will be — document availability, the pricing model, or the guarantee economics?</div>
+        <div class="dq">Would we enjoy living inside order desks, warehouses, and ERP screens for the next two years?</div>
+      </div>
+    </section>
+
+    <!-- S9 BOARD SUMMARY -->
+    <section class="s" data-sect="shipright">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>ShipRight</b> — Pre-Fulfillment Order Assurance</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp build">Build-First · Locked</span></div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Original buyer POs are digitally archived and accessible alongside the ERP entry, so automated cross-referencing is possible.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">~10 calls with order-desk and operations people at Indian mid-market manufacturers, testing PO availability, real mis-shipment costs in rupees, and willingness to pay per-outcome fees.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">POs live in scattered personal inboxes and WhatsApp chats with no accessible archive — making the cross-reference, and therefore the product, impossible.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('resolveai')">Next: ResolveAI →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== RESOLVEAI -->
+<div id="view-resolveai" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-resolveai"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>ResolveAI</h1>
+      <p class="oneline">Replaces the order operations department: orders arrive in any format, ERP-ready records come out, billed per order processed correctly.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Order Resolution Operations. <b>Pattern:</b> AI-Native Service Company — the customer pays for completed work, not a tool.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Claude originally rated this the highest-upside opportunity in the set: the keystone. Once ResolveAI operates, it accumulates the customer rules, deployment patterns, and resolution data that every other company in the portfolio is built from.</p>
+        <p>But the consensus placed it second in sequence. Gemini judged the trust barrier heavier — it asks a manufacturer to replace headcount and let an AI write into their ERP. Perplexity rated the surrounding market crowded and held it at MONITOR. The locked sequence: ShipRight earns trust first; ResolveAI is the natural upsell behind it.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world as ShipRight — Meena at the order desk. (If you haven't read her story yet, start with ShipRight's "Understand the world.") The difference is which part of her day this company attacks.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">ShipRight checks her work. ResolveAI does her work.</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Remember the numbers: about <b>12 minutes per order</b> of reading, interpreting, looking things up, and re-keying. <b>300 hours a month</b> for a team handling 1,500 orders. 40–60% of non-EDI POs fail straight-through processing — not because the text is hard to read, but because of business logic: customer product codes, unit conversions, unwritten rules.</p>
+            <p>That entire interpretation job — "BW-1 means Blue Widget Mark I, and this buyer's box means 12" — is exactly what ResolveAI's agents would do. Orders in any format go in; ERP-ready records come out; a human reviews only the roughly 5% the agents cannot resolve.</p>
+            <div class="callout">The customer stops employing people for this function. That's the promise — and also the problem, as we'll see.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>The buyer's PO in any format — PDF email, WhatsApp message — plus the customer's history and product catalog.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>The full resolution chain: identify the customer, map their product codes to ours, convert units ("box" → case of 12), apply their shipping preferences and unwritten rules, and assemble an ERP-ready record.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>A human reviews only the ~5% of orders the agents cannot resolve, plus exception escalation. And every first deployment runs in shadow mode — AI working in parallel with the CSRs while the team compares accuracy for at least two weeks.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>Resolved, ERP-ready order records — billed per order processed correctly (₹100–250/order in India). The customer buys completed work, not software.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>300 hours/month of resolution work per 1,500-order team. 20–40% of a sales rep's workweek consumed. 1–3% error rates feeding mis-shipments and SLA penalties.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why coping fails</span><p>The work depends on tribal knowledge in CSR heads, with 25–40% annual turnover. When the experienced person quits, the knowledge evaporates and errors spike for months.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>Headcount economics. 1,000 orders/month at ₹200/order is ₹2L/month — versus 3 CSRs at ₹1.5–2.4L/month plus training, benefits, turnover cost, and knowledge-loss risk. ResolveAI's cost is variable, scales with volume, and carries zero turnover risk.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">The trust threshold</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Customers will eventually allow straight-through processing — AI-resolved orders entering the ERP without a human checking each one.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If mid-market companies require 100% human review of every AI-resolved order, the labor savings collapse. ResolveAI becomes an expensive pre-filling tool, not a headcount replacement. This single question determines whether it's a ₹100Cr company or a ₹5Cr feature.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>The accuracy level at which customers actually let go — Gemini's proposed test: would 6/10 allow straight-through processing if shadow-mode accuracy exceeds 98%?</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Buyers insisting on 100% human review regardless of demonstrated AI accuracy.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">The people we'd be replacing run the pilot</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Shadow-mode pilots will produce honest accuracy comparisons.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini flagged a risk the artifact missed: the CSRs who act as gatekeepers for the shadow mode are the same people whose jobs the product threatens. They could sabotage the accuracy data out of job-security fear.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How to structure pilots so the comparison stays honest.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Many vendors are already here</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Our wedge — business-logic resolution, not extraction — is genuinely different from what's already sold.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity found direct and adjacent competitors already selling PO automation, ERP-integrated order entry, and autonomous order processing, plus ERP copilots from the major suites. The market is real but not blue ocean — it held ResolveAI at MONITOR for this reason.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether buyers feel existing tools already satisfy the need, or whether customer-specific business logic remains genuinely unsolved for them.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Buyers saying existing PO automation or ERP copilots already cover it, or shadow mode still leaving too much human review for meaningful labor savings.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — would they let go?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>10 Order Management Leads at Indian mid-market manufacturers, via LinkedIn and warm intros. Plus 5 ERP consultants serving the Indian mid-market.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Walk me through what happens when a purchase order arrives. What percentage needs someone to look up customer-specific information before it can be entered?"</li>
+            <li>"Would you pay ₹200/order for an autonomous system — or would you insist on 100% human review no matter how accurate it proved?"</li>
+            <li>To consultants: "How far along is Tally/SAP B1 native AI for PO resolution?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Strong buyer pull from 3+ target firms with explicit willingness to pay; 6/10 agree they'd allow straight-through processing at &gt;98% shadow accuracy; consultants confirm no native ERP resolution within 12 months.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Buyers insist on full human review regardless of accuracy, say existing tools already cover it, or Tally/SAP B1 is shipping resolution AI.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="resolveai_rc1">
+            <label><input type="radio" name="ra_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ra_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="ra_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ra_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="resolveai">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="ra_q1" value="Yes">Yes</label><label><input type="radio" name="ra_q1" value="Unsure">Unsure</label><label><input type="radio" name="ra_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="ra_q2" value="Yes">Yes</label><label><input type="radio" name="ra_q2" value="Unsure">Unsure</label><label><input type="radio" name="ra_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="ra_q5" value="Yes">Yes</label><label><input type="radio" name="ra_q5" value="Unsure">Unsure</label><label><input type="radio" name="ra_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('resolveai', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">Would a mid-market company really let an AI push orders into their ERP without a human checking each one? What would it take for <i>us</i> to allow that, if it were our company?</div>
+        <div class="dq">Are we ready to sell "you need fewer people" — and to sit across from the CSRs whose work we're replacing during the pilot?</div>
+        <div class="dq">Perplexity says many vendors already sell PO automation. Why would a customer pick four part-time founders over them?</div>
+        <div class="dq">Is "ShipRight first, earn trust, then upsell ResolveAI" a real plan — or a comfortable way to delay the harder company?</div>
+        <div class="dq">What evidence in the first ten calls would make us argue for breaking the locked sequence and going straight at ResolveAI?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="resolveai">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>ResolveAI</b> — Order Resolution Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Highest upside in the set; sequenced behind ShipRight.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">The trust threshold — customers will allow straight-through processing once accuracy is proven, instead of demanding 100% human review forever.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">10 order-management leads: judgment fraction per order, willingness to pay ₹200/order, and acceptance of straight-through processing at &gt;98% shadow accuracy. Plus 5 ERP consultants on the native-AI timeline.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Buyers insist on 100% human review regardless of accuracy — labor savings collapse and the company becomes an expensive pre-filling tool.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('tradelogic')">Next: TradeLogic →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== TRADELOGIC -->
+<div id="view-tradelogic" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-tradelogic"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>TradeLogic</h1>
+      <p class="oneline">The system of record for the unwritten business rules in every buyer–seller relationship — knowledge that today lives only in people's heads.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Buyer-Seller Business Logic Infrastructure. <b>Pattern:</b> Company Brain — capturing the knowledge trapped in heads, files, and email history.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>TradeLogic has the highest defensibility in the whole set: accumulated rules across hundreds of buyer–seller relationships cannot be replicated without equivalent deployment history. Both committees see it as a credible long-term asset.</p>
+        <p>But it's the wrong cold-start. Gemini judged the trust barrier of asking companies to hand over years of historical PO and ERP data too high for an unknown part-time team. The locked view: TradeLogic becomes natural once a core system (ShipRight, then ResolveAI) is operating and generating that data as a side effect.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world again — but this time, look at what happens when Meena <i>leaves</i>.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">Five years of knowledge, written nowhere</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Everything Meena knows — that BW-1 means Blue Widget Mark I, that this buyer's "box" means 12, who likes which courier, which substitute part is acceptable — exists in exactly one place: her head. Maybe a personal Excel file. Maybe sticky notes.</p>
+            <p>No enterprise system stores it. The CRM stores contacts. The ERP stores product masters. Nothing stores "how Customer X orders from us and what they mean."</p>
+            <div class="callout">This role sees 25–40% annual turnover. When Meena quits, five years of accumulated knowledge evaporates, and her replacement makes elevated errors for 3–6 months while re-learning it all. Then the cycle repeats.</div>
+            <p>TradeLogic's bet: an AI can read 500 past orders side-by-side with what was entered in the ERP, and infer the rules — "when this customer says box, the CSR entered case of 12" — then store them permanently and serve them to any new person or AI system that needs them.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>Historical pairs: the original POs a buyer sent, next to what was actually entered in the ERP for each one.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>Inferring the rules from those pairs — product code mappings, unit conventions, shipping preferences, substitution paths — without anyone having to write them down.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>Validating the inferred rules against historical data with QA rigor before anything trusts them, and managing the data ingestion with each customer.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>A permanent, validated rulebook per buyer relationship — served to whoever needs it next: a new hire, or an AI agent. When the experienced person quits, nothing is lost. Subscription: ₹25,000–75,000/month based on buyer relationships managed.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>Customer-specific rules live in CSR heads, personal Excel files, sticky notes, and informal conversations — recorded in no enterprise system.</p></div>
+        <div class="ev-row"><span class="eyebrow">The consequence</span><p>A CSR quits → 3–6 months of elevated errors while the replacement re-learns → the cycle repeats. The trigger moment: "Our best CSR quit. Her replacement makes 3x the errors. We need her knowledge in a system."</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>Institutional memory insurance. The person who "just knows" is a single point of failure — and PE ownership of mid-market companies makes undocumented business rules a diligence red flag.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Can rules really be inferred from history?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Business rules can be reliably extracted from historical PO + ERP data, reaching at least 80% accuracy without extensive manual curation.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Below that, TradeLogic is a curation tool — smaller market, higher delivery cost, harder to scale. Gemini's archive trigger: extraction requiring more than 30% manual curation by the team.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Actual extraction accuracy on a real customer's data — testable with one willing manufacturer's historical data.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Accuracy below 70–80% without heavy manual curation, or rules turning out to be mostly documented already (in the ERP, in SOPs).</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">"Hand us five years of your data" — said by strangers</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Companies will voluntarily share years of historical PO and ERP data with a new startup.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini called this trust barrier too high for a cold-start part-time team. Perplexity adds that the buyer shifts from one operations manager to a data-ownership decision requiring broader internal consensus — slower than the artifact implies.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether a design partner exists who'd share data quickly because the pain (a recent key departure, a planned ERP migration) is acute right now.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Data access repeatedly failing across early conversations.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Privacy sits inside that history</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Historical order data can be ingested cleanly.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini flagged a missed risk: data privacy and compliance issues with ingesting years of raw, un-anonymized B2B email and pricing history.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What permissioning and handling customers would require before sharing.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — undocumented knowledge, and one willing data partner</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>10 Indian manufacturers — ideally ones who recently lost an experienced CSR or are planning an ERP migration. Then one willing manufacturer who'll share historical PO + ERP data for an extraction test.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Walk me through what you know about your top 5 customers that a new person wouldn't know. Where is that written down?"</li>
+            <li>"Has anyone ever documented your customer-specific rules?"</li>
+            <li>"What happened the last time an experienced person left?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>7 of 10 confirm rules are undocumented and person-dependent; 3+ tell the same "my best person quit and we suffered for months" story; rule extraction hits &gt;80% accuracy on a real test set; a buyer champions it as a knowledge-retention project.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Rules are mostly documented already, extraction accuracy falls below 70% without heavy curation, or data access repeatedly fails.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="tradelogic_rc1">
+            <label><input type="radio" name="tl_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="tl_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="tl_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="tl_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="tradelogic">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="tl_q1" value="Yes">Yes</label><label><input type="radio" name="tl_q1" value="Unsure">Unsure</label><label><input type="radio" name="tl_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="tl_q2" value="Yes">Yes</label><label><input type="radio" name="tl_q2" value="Unsure">Unsure</label><label><input type="radio" name="tl_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="tl_q5" value="Yes">Yes</label><label><input type="radio" name="tl_q5" value="Unsure">Unsure</label><label><input type="radio" name="tl_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('tradelogic', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">Would any company hand years of order and pricing data to a startup with no track record? Would <i>we</i>, if the roles were reversed?</div>
+        <div class="dq">If rule extraction needs heavy manual cleanup, are we okay quietly becoming a consultancy — or is that the moment we stop?</div>
+        <div class="dq">Whose problem is this really — the operations team's, or the owner's fear of people quitting? Who actually signs?</div>
+        <div class="dq">What does "accurate enough" mean before a customer would trust extracted rules with real orders?</div>
+        <div class="dq">Should TradeLogic stay parked until ShipRight and ResolveAI create the data pipeline — or is there a design partner in our network whose pain is acute right now?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="tradelogic">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>TradeLogic</b> — Buyer-Seller Business Logic Infrastructure</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Highest defensibility; wrong cold-start.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Business rules can be reliably inferred from historical PO + ERP data — at 80%+ accuracy without extensive manual curation.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">10 manufacturer calls on undocumented knowledge and departure stories, then a real extraction test on one willing partner's historical data.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Extraction accuracy below 70–80% without heavy curation, or data access repeatedly refused — making this an unscalable curation business.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('shipright')">Revisit ShipRight →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ============ storage (safe wrapper: localStorage when available, in-memory fallback) ============ */
+var MEM = {};
+var LS_OK = false;
+try { localStorage.setItem('__feT','1'); localStorage.removeItem('__feT'); LS_OK = true; } catch(e) {}
+function sGet(k){ try { return LS_OK ? localStorage.getItem(k) : (MEM[k]!==undefined?MEM[k]:null); } catch(e){ return MEM[k]!==undefined?MEM[k]:null; } }
+function sSet(k,v){ try { if(LS_OK){ localStorage.setItem(k,v); } } catch(e){} MEM[k]=v; }
+var NS = 'fpa09_explorer_';
+
+var OPPS = ['shipright','resolveai','tradelogic'];
+var OPP_NAMES = { shipright:'ShipRight (BUILD-FIRST)', resolveai:'ResolveAI (SECONDARY)', tradelogic:'TradeLogic (SECONDARY)' };
+
+/* ============ navigation ============ */
+function showView(id){
+  var views = document.querySelectorAll('.view');
+  for (var i=0;i<views.length;i++) views[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function openOpp(opp){
+  showView('view-'+opp);
+  markStarted(opp);
+  setupDots(opp);
+  restoreReflection(opp);
+  restoreImplications();
+}
+function goHome(){
+  showView('view-home');
+  refreshPills();
+}
+
+/* ============ story step toggles ============ */
+function toggleStep(btn){
+  var step = btn.parentElement;
+  step.classList.toggle('open');
+}
+
+/* ============ progress tracking ============ */
+function markStarted(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].started = true;
+  sSet(NS+'progress', JSON.stringify(p));
+}
+function markSeen(opp, idx){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  if(p[opp].seen.indexOf(idx) === -1) p[opp].seen.push(idx);
+  sSet(NS+'progress', JSON.stringify(p));
+  paintDots(opp);
+}
+function setupDots(opp){
+  var sections = document.querySelectorAll('#view-'+opp+' section.s');
+  var dotsBox = document.getElementById('dots-'+opp);
+  dotsBox.innerHTML = '';
+  for (var i=0;i<sections.length;i++){
+    var d = document.createElement('span');
+    dotsBox.appendChild(d);
+    sections[i].setAttribute('data-idx', i);
+  }
+  paintDots(opp);
+  if ('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ markSeen(opp, parseInt(en.target.getAttribute('data-idx'),10)); }
+      });
+    }, { threshold: 0.25 });
+    for (var j=0;j<sections.length;j++) obs.observe(sections[j]);
+  }
+}
+function paintDots(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  var seen = (p[opp] && p[opp].seen) || [];
+  var dots = document.querySelectorAll('#dots-'+opp+' span');
+  for (var i=0;i<dots.length;i++){
+    if (seen.indexOf(i) !== -1) dots[i].classList.add('seen'); else dots[i].classList.remove('seen');
+  }
+}
+function refreshPills(){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  OPPS.forEach(function(opp){
+    var pill = document.getElementById('pill-'+opp);
+    if(!pill) return;
+    var st = p[opp];
+    if(!st || !st.started){ pill.textContent = 'Not started'; pill.classList.remove('done'); }
+    else if (st.reflected){ pill.textContent = 'Reflection saved ✓'; pill.classList.add('done'); }
+    else { pill.textContent = 'In progress · '+ (st.seen ? st.seen.length : 0) +'/9 sections'; pill.classList.remove('done'); }
+  });
+}
+
+/* ============ radio pill styling ============ */
+document.addEventListener('change', function(e){
+  if (e.target && e.target.type === 'radio'){
+    var group = e.target.closest('.radio-row, .imp-opts');
+    if (group){
+      var labels = group.querySelectorAll('label');
+      for (var i=0;i<labels.length;i++) labels[i].classList.remove('sel');
+      e.target.closest('label').classList.add('sel');
+      if (group.classList.contains('imp-opts')){
+        sSet(NS+'imp_'+group.getAttribute('data-key'), e.target.value);
+      }
+    }
+  }
+});
+
+/* ============ reflection save / restore ============ */
+function saveReflection(opp, btn){
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  var data = { savedAt: new Date().toISOString() };
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  data.name = nameInput ? nameInput.value : '';
+  ['q1','q2','q5'].forEach(function(q){
+    var sel = box.querySelector('.radio-row[data-q='+q+'] input:checked');
+    data[q] = sel ? sel.value : '';
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    data[q] = ta ? ta.value : '';
+  });
+  sSet(NS+'reflection_'+opp, JSON.stringify(data));
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].reflected = true;
+  sSet(NS+'progress', JSON.stringify(p));
+  var msg = btn.parentElement.querySelector('.savemsg');
+  msg.classList.add('show');
+  setTimeout(function(){ msg.classList.remove('show'); }, 2200);
+  if (!LS_OK) {
+    msg.textContent = 'Saved for this session ✓ (open this file in a browser to keep answers permanently)';
+  }
+}
+function restoreReflection(opp){
+  var raw = sGet(NS+'reflection_'+opp);
+  if(!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch(e){ return; }
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  if(!box) return;
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  if (nameInput && data.name) nameInput.value = data.name;
+  ['q1','q2','q5'].forEach(function(q){
+    if(!data[q]) return;
+    var inp = box.querySelector('.radio-row[data-q='+q+'] input[value="'+data[q]+'"]');
+    if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    if(ta && data[q]) ta.value = data[q];
+  });
+}
+function restoreImplications(){
+  var groups = document.querySelectorAll('.imp-opts');
+  for (var i=0;i<groups.length;i++){
+    var key = groups[i].getAttribute('data-key');
+    var val = sGet(NS+'imp_'+key);
+    if(val){
+      var inp = groups[i].querySelector('input[value="'+val+'"]');
+      if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+    }
+  }
+}
+
+/* ============ export ============ */
+var RC_LABELS = {
+  shipright_rc1: 'ShipRight — Check 1: PO availability',
+  shipright_rc2: 'ShipRight — Check 2: Mis-shipment pain',
+  shipright_rc3: 'ShipRight — Check 3: Outcome pricing',
+  resolveai_rc1: 'ResolveAI — Check: Trust threshold',
+  tradelogic_rc1: 'TradeLogic — Check: Rule inference + data access'
+};
+function collectAll(){
+  var out = { artifact:'Innovation_OS Founder Explorer — FPA-09', exportedAt:new Date().toISOString(), reflections:{}, implications:{} };
+  OPPS.forEach(function(opp){
+    var raw = sGet(NS+'reflection_'+opp);
+    if(raw){ try { out.reflections[OPP_NAMES[opp]] = JSON.parse(raw); } catch(e){} }
+  });
+  Object.keys(RC_LABELS).forEach(function(k){
+    var v = sGet(NS+'imp_'+k);
+    if(v) out.implications[RC_LABELS[k]] = v;
+  });
+  return out;
+}
+function exportReflections(fmt){
+  var data = collectAll();
+  var content, mime, fname;
+  if (fmt === 'json'){
+    content = JSON.stringify(data, null, 2);
+    mime = 'application/json'; fname = 'FPA-09_founder_reflections.json';
+  } else {
+    var lines = [];
+    lines.push('INNOVATION_OS FOUNDER EXPLORER — FPA-09');
+    lines.push('Founder reflections export · ' + new Date().toLocaleString());
+    lines.push('========================================');
+    var any = false;
+    OPPS.forEach(function(opp){
+      var r = data.reflections[OPP_NAMES[opp]];
+      if(!r) return;
+      any = true;
+      lines.push('');
+      lines.push('--- ' + OPP_NAMES[opp] + ' ---');
+      if(r.name) lines.push('Founder: ' + r.name);
+      lines.push('Q1 Support allocating founder attention (if validation positive): ' + (r.q1 || '—'));
+      lines.push('Q2 Excited to help build: ' + (r.q2 || '—'));
+      lines.push('Q3 What scares you most: ' + (r.q3 || '—'));
+      lines.push('Q4 What should be validated first: ' + (r.q4 || '—'));
+      lines.push('Q5 Shortlist for validation: ' + (r.q5 || '—'));
+      if(r.savedAt) lines.push('Saved: ' + r.savedAt);
+    });
+    var impKeys = Object.keys(data.implications);
+    if (impKeys.length){
+      lines.push('');
+      lines.push('--- REALITY CHECK IMPLICATIONS ---');
+      impKeys.forEach(function(k){ lines.push(k + ': ' + data.implications[k]); });
+    }
+    if (!any && !impKeys.length){
+      lines.push('');
+      lines.push('No reflections saved yet. Explore an opportunity and answer Section 7 first.');
+    }
+    content = lines.join('\n');
+    mime = 'text/plain'; fname = 'FPA-09_founder_reflections.txt';
+  }
+  var blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ============ init ============ */
+refreshPills();
+restoreImplications();
+OPPS.forEach(restoreReflection);
+</script>
+</body>
+</html>
