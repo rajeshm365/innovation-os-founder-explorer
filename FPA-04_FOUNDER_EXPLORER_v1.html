@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation_OS Founder Explorer — FPA-04</title>
+<style>
+  :root{
+    --paper:#F6F4EE; --card:#FFFFFF; --ink:#23272E; --muted:#6E7077; --line:#E2DED3;
+    --verify:#1F7A53; --verify-bg:#EAF4EE;
+    --second:#A9742B; --second-bg:#F7F0E2;
+    --arch:#8A8C92; --arch-bg:#EEEEEC;
+    --kill:#B3402E; --kill-bg:#F9ECE9;
+    --accent:#0E5A8A; --accent-bg:#EAF1F6;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important;animation:none !important} }
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+  h1,h2,h3{font-family:var(--serif);line-height:1.25;font-weight:600}
+  p{margin-bottom:0.9em}
+  button{font-family:var(--sans);cursor:pointer}
+  a{color:var(--accent)}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+  .eyebrow.accent{color:var(--accent)}
+
+  .stamp{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+    padding:5px 12px;border:2px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--card), inset 0 0 0 3px currentColor;
+    transform:rotate(-2deg);background:var(--card)}
+  .stamp.build{color:var(--verify)} .stamp.second{color:var(--second)} .stamp.arch{color:var(--arch)} .stamp.kill{color:var(--kill)}
+
+  /* ============ HOME ============ */
+  header.masthead{padding:54px 0 28px;border-bottom:1px solid var(--line)}
+  .masthead .eyebrow{margin-bottom:14px}
+  .masthead h1{font-size:clamp(30px,6vw,42px);margin-bottom:10px}
+  .masthead .sub{color:var(--muted);font-size:17px;max-width:560px}
+  .masthead .fpa-line{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.06em}
+
+  .lockednote{margin:22px 0 0;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink);font-size:14px;color:var(--muted)}
+  .lockednote b{color:var(--ink)}
+
+  .cards{margin-top:30px;display:grid;gap:16px}
+  .opp-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 22px 18px;position:relative;transition:box-shadow .15s ease, transform .15s ease}
+  .opp-card:hover{box-shadow:0 4px 18px rgba(35,39,46,.07);transform:translateY(-1px)}
+  .opp-card .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .opp-card h2{font-size:24px}
+  .opp-card .oneline{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .opp-card .cardfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-block;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:9px 18px;font-size:14px;font-weight:600;letter-spacing:.02em}
+  .btn:hover{background:#000}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:#fff}
+  .btn:focus-visible,.toggle:focus-visible,details summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .progress-pill{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:var(--paper)}
+  .progress-pill.done{color:var(--verify);border-color:var(--verify)}
+
+  details.archived-group{margin-top:8px;border:1px dashed var(--line);border-radius:10px;background:transparent}
+  details.archived-group>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px}
+  details.archived-group>summary::-webkit-details-marker{display:none}
+  details.archived-group>summary .chev{margin-left:auto;transition:transform .15s}
+  details.archived-group[open]>summary .chev{transform:rotate(90deg)}
+  .arch-list{padding:0 20px 18px;display:grid;gap:10px}
+  .arch-item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+  .arch-item b{font-family:var(--serif);font-size:15px}
+  .arch-item span{color:var(--muted);display:block;margin-top:2px}
+
+  .export-block{margin-top:36px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .export-block h3{font-size:18px;margin-bottom:6px}
+  .export-block p{font-size:14px;color:var(--muted)}
+  .export-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  /* ============ OPPORTUNITY VIEW ============ */
+  .view{display:none}
+  .view.active{display:block}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(246,244,238,.94);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:6px}
+  .topbar-inner{max-width:760px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px}
+  .backbtn{background:none;border:none;color:var(--ink);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;padding:6px 4px}
+  .backbtn:hover{color:var(--accent)}
+  .sectdots{margin-left:auto;display:flex;gap:5px}
+  .sectdots span{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .sectdots span.seen{background:var(--verify)}
+
+  .opp-hero{padding:34px 0 8px}
+  .opp-hero h1{font-size:clamp(28px,6vw,38px);margin:12px 0 8px}
+  .opp-hero .oneline{font-size:18px;color:var(--muted);font-family:var(--serif);font-style:italic;max-width:600px}
+
+  section.s{padding:34px 0 8px;border-top:1px solid var(--line);margin-top:30px}
+  section.s:first-of-type{border-top:none;margin-top:0}
+  .s-label{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .s-label .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .s-label h2{font-size:24px}
+  .s-intro{color:var(--muted);font-size:15px;margin-bottom:18px;max-width:600px}
+
+  .why-survived{background:var(--verify-bg);border:1px solid #CDE4D7;border-radius:10px;padding:18px 20px;margin-top:14px}
+  .why-survived .eyebrow{color:var(--verify);margin-bottom:8px}
+  .why-survived p{font-size:15px;margin-bottom:8px}
+  .why-survived p:last-child{margin-bottom:0}
+
+  .story{display:flex;flex-direction:column}
+  .story-step{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .story-step+.story-connector{align-self:center;color:var(--muted);font-size:18px;padding:4px 0;line-height:1}
+  .toggle{width:100%;text-align:left;background:none;border:none;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  .toggle .step-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;white-space:nowrap}
+  .toggle .step-q{font-family:var(--serif);font-size:18px;font-weight:600;flex:1}
+  .toggle .chev{color:var(--muted);transition:transform .15s;flex-shrink:0}
+  .story-step.open .toggle .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:0 18px 18px;font-size:15.5px}
+  .story-step.open .step-body{display:block}
+  .step-body .callout{background:var(--paper);border-left:3px solid var(--accent);padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .step-body ul{margin:0 0 .9em 1.2em}
+  .step-body li{margin-bottom:6px}
+
+  .bridge{margin-top:22px;background:var(--ink);color:#F3F1EA;border-radius:10px;padding:22px 24px}
+  .bridge .eyebrow{color:#B9C4CE;margin-bottom:8px}
+  .bridge p{font-size:16px;font-family:var(--serif)}
+  .bridge p:last-child{margin-bottom:0}
+
+  .flow{display:flex;flex-direction:column;margin-top:6px}
+  .flow-node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .flow-node .eyebrow{margin-bottom:6px}
+  .flow-node p{font-size:15px;margin-bottom:6px}
+  .flow-node p:last-child{margin-bottom:0}
+  .flow-node.ai{border-left:3px solid var(--accent)}
+  .flow-node.human{border-left:3px solid var(--second)}
+  .flow-arrow{align-self:center;color:var(--muted);padding:4px 0;font-size:18px;line-height:1}
+  .guarantee{margin-top:18px;background:var(--verify-bg);border:1.5px solid var(--verify);border-radius:10px;padding:18px 20px}
+  .guarantee .eyebrow{color:var(--verify)}
+  .guarantee p{font-size:15.5px;margin:6px 0 0}
+
+  .ev-grid{display:grid;gap:12px}
+  .ev-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ev-row .eyebrow{margin-bottom:6px}
+  .ev-row p{font-size:15px;margin-bottom:6px}
+  .ev-row p:last-child{margin-bottom:0}
+
+  .concerns{display:grid;gap:12px}
+  details.concern{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  details.concern.locked-kill{border:1.5px solid var(--kill)}
+  details.concern>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  details.concern>summary::-webkit-details-marker{display:none}
+  details.concern>summary .c-title{font-family:var(--serif);font-size:17px;font-weight:600;flex:1}
+  details.concern>summary .chev{color:var(--muted);transition:transform .15s}
+  details.concern[open]>summary .chev{transform:rotate(90deg)}
+  .c-body{padding:0 18px 18px;display:grid;gap:10px}
+  .c-part{font-size:14.5px}
+  .c-part .eyebrow{display:block;margin-bottom:3px}
+  .c-part.killline{background:var(--kill-bg);border-left:3px solid var(--kill);padding:10px 12px;border-radius:0 6px 6px 0}
+  .c-part.killline .eyebrow{color:var(--kill)}
+
+  .rc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
+  .rc h3{font-size:19px;margin-bottom:10px}
+  .rc .rc-block{margin-bottom:12px;font-size:14.5px}
+  .rc .rc-block .eyebrow{display:block;margin-bottom:4px}
+  .rc ul{margin:4px 0 0 1.2em}
+  .rc li{margin-bottom:5px}
+  .rc .up{border-left:3px solid var(--verify);background:var(--verify-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .down{border-left:3px solid var(--kill);background:var(--kill-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .up .eyebrow{color:var(--verify)} .rc .down .eyebrow{color:var(--kill)}
+  .implication{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .implication .eyebrow{display:block;margin-bottom:8px}
+  .imp-opts{display:flex;gap:8px;flex-wrap:wrap}
+  .imp-opts label{border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--paper);user-select:none}
+  .imp-opts input{position:absolute;opacity:0;pointer-events:none}
+  .imp-opts label.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+
+  .reflect{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
+  .q{margin-bottom:20px}
+  .q .qt{font-weight:600;font-size:15.5px;margin-bottom:8px;display:block}
+  .radio-row{display:flex;gap:8px;flex-wrap:wrap}
+  .radio-row label{border:1.5px solid var(--line);border-radius:99px;padding:7px 18px;font-size:14px;cursor:pointer;background:var(--paper);user-select:none}
+  .radio-row input{position:absolute;opacity:0;pointer-events:none}
+  .radio-row label.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+  textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14.5px;background:var(--paper);color:var(--ink);resize:vertical}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:80px}
+  .savemsg{font-size:13px;color:var(--verify);font-weight:600;margin-left:12px;opacity:0;transition:opacity .3s}
+  .savemsg.show{opacity:1}
+
+  .starters{counter-reset:dq;display:grid;gap:10px}
+  .starters .dq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;font-size:15.5px;font-family:var(--serif)}
+  .starters .dq::before{counter-increment:dq;content:counter(dq,decimal-leading-zero);position:absolute;left:16px;top:15px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+
+  .board{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+  .board-row{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line)}
+  .board-row:last-child{border-bottom:none}
+  .board-row .bk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:var(--paper)}
+  .board-row .bv{padding:14px 16px;font-size:14.5px}
+  @media(max-width:540px){.board-row{grid-template-columns:1fr}.board-row .bk{padding-bottom:2px}.board-row .bv{padding-top:4px}}
+
+  .endnav{margin-top:40px;display:flex;gap:10px;flex-wrap:wrap}
+  footer.colophon{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<!-- ===================================================== HOME -->
+<div id="view-home" class="view active">
+  <div class="wrap">
+    <header class="masthead">
+      <div class="eyebrow">Innovation_OS · 2026</div>
+      <h1>Founder Explorer</h1>
+      <p class="sub">One world — the desks where humans investigate why two computer systems disagree about money. One build-first company, one secondary. Your job here is not to agree — it is to understand, to question, and to arrive at the founder discussion prepared.</p>
+      <div class="fpa-line">FPA-04 · RECONCILIATION EXCEPTION INVESTIGATION · RESEARCH STATUS: COMPLETE · VERDICTS: LOCKED</div>
+    </header>
+
+    <div class="lockednote">
+      <b>How to read this.</b> The investment committee (Claude + Gemini + Perplexity) has already locked its verdicts. Nothing here re-ranks, re-validates, or persuades. This Explorer exists so each founder can independently understand the world, poke at the assumptions, and record their own honest reaction before we talk.
+    </div>
+
+    <div class="cards">
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>ReconForce</h2>
+          <span class="stamp build">Build-First</span>
+        </div>
+        <p class="oneline">A managed service that investigates and resolves reconciliation exceptions — the customer forwards an email, a completed investigation brief comes back, and the 45-minute detective job becomes a 5-minute approval.</p>
+        <div class="cardfoot">
+          <button class="btn" onclick="openOpp('reconforce')">Explore ReconForce</button>
+          <span class="progress-pill" id="pill-reconforce">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>CounterpartyClear</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">Owns the entire counterparty email loop for exception resolution — drafting the inquiry, chasing the reply, parsing the PDF — so analysts never touch counterparty correspondence again.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('counterpartyclear')">Explore CounterpartyClear</button>
+          <span class="progress-pill" id="pill-counterpartyclear">Not started</span>
+        </div>
+      </div>
+
+      <details class="archived-group">
+        <summary>
+          <span class="stamp arch">Archived</span>
+          <span>Two companies were archived per the locked summary; six more carry no locked recommendation. Tap to see why.</span>
+          <span class="chev">›</span>
+        </summary>
+        <div class="arch-list">
+          <div class="arch-item"><b>ReconBrain</b><span>Archived per the locked summary — workflow assistance rather than workflow ownership. Gemini: fails the Absolute Rejection Filter (grade B — analysts still execute; it only surfaces patterns) and was flagged for drift logic used to justify its existence.</span></div>
+          <div class="arch-item"><b>ExceptionBureau</b><span>Archived per the locked summary — provides visibility rather than owning a workflow, with weaker founder fit. Gemini: grade B ownership plus impossible legal/privacy sales cycles for a part-time team; also flagged for drift.</span></div>
+          <div class="arch-item"><b>ExceptionOps · BoundaryOps · AuditReady · CheckerCo · ReconcileHQ · BoundaryStand-Up</b><span>No locked recommendation in the Founder Review Summary. Validator verdicts placed ExceptionOps and BoundaryOps under MONITOR — both explicitly dependent on ReconForce first proving investigation quality. The founder vote is on the locked outcomes only.</span></div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="export-block">
+      <h3>Your reflections</h3>
+      <p>Everything you answer inside the Explorer is saved on this device only. When you're ready to share before the founder discussion, export it.</p>
+      <div class="export-btns">
+        <button class="btn ghost" onclick="exportReflections('txt')">Export as text</button>
+        <button class="btn ghost" onclick="exportReflections('json')">Export as JSON</button>
+      </div>
+    </div>
+
+    <footer class="colophon">
+      INNOVATION_OS FOUNDER EXPLORER · FPA-04 v1 · JUNE 2026<br>
+      SOURCES: FPA-04 FOUNDER UNDERSTANDING v1 · FOUNDER COMPANY GENERATION v2 · GEMINI IC VERDICT · PERPLEXITY IC VERDICT · LOCKED FOUNDER REVIEW SUMMARY<br>
+      VERDICTS LOCKED. NO NEW COMPANIES. NO RANKING CHANGES. UNDERSTANDING, NOT PERSUASION.
+    </footer>
+  </div>
+</div>
+
+<!-- ===================================================== RECONFORCE -->
+<div id="view-reconforce" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-reconforce"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp build">Build-First · Locked</span>
+      <h1>ReconForce</h1>
+      <p class="oneline">A managed service that investigates and resolves reconciliation exceptions — the customer forwards an email, a completed investigation brief comes back.</p>
+    </div>
+
+    <!-- S1 SNAPSHOT -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Exception Investigation Operations. <b>Pattern:</b> AI-Native Service Company — Tier S in our preference criteria: "Don't build a tool that helps people do accounting. Just do the accounting." Outcome-based, per-result pricing.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived previous stages</span>
+        <p>Both independent validators — Gemini and Perplexity — returned <b>GO</b> verdicts, agreeing with the original recommendation. Three reasons kept repeating across all three committees:</p>
+        <p><b>Zero integration:</b> forwarding an email is the entire onboarding — no APIs, no IT projects, no software deployment. <b>The fastest possible kill test:</b> the one assumption everything depends on — will analysts trust an AI brief enough to approve it — can be tested in a single week with real exceptions and no product built. <b>The validation vehicle for the entire FPA-04 surface:</b> if AI cannot investigate at trusted quality, no company in this domain works, and ReconForce reveals that in days rather than months.</p>
+        <p>Even its worst case leaves behind a resolution pattern database and real BPO relationships. Gemini called it "the ideal use of founder time."</p>
+      </div>
+    </section>
+
+    <!-- S2 UNDERSTAND THE WORLD -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Forget startups for ten minutes. Let me walk you through one person's working day. If this part makes sense, everything after it is easy. Tap through — the company doesn't appear until the pain is obvious.</p>
+
+      <div class="story">
+
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Who?</span><span class="step-q">The reconciliation analyst</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>There is a job called <b>reconciliation analyst</b>. The word sounds heavy, so here's what it actually means. Every large company runs on many computer systems that were bought separately and never properly connected. Money-related information sits in more than one system at a time — a payment shows up in one system, and a record of that same payment shows up in another.</p>
+            <p><b>Reconciliation</b> simply means checking that the two systems agree about the same money. When they don't agree, that mismatch is called an <b>exception</b> — and a human being has to find out why.</p>
+            <p>Thousands of these analysts sit in Bangalore, Hyderabad, Pune and Chennai inside <b>BPO centers</b> — firms like TCS, Infosys, Wipro or Genpact that banks hire to run their back-office work. There are also permanent in-house versions of this job at Amazon, JPMorgan and Fidelity — confirmed during validation through current job postings at Citi, Deutsche Bank and Bank of America. This is not a dying job. It is a permanent, hiring-right-now job.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The work</span><span class="step-q">Software took the easy part. The queue remained.</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>When two systems disagree about money, someone must figure out why, fix it, and write down how they fixed it — before deadlines pass and before inspectors come asking.</p>
+            <p>The first pass is done by software. Matching tools like BlackLine automatically match <b>84–99%</b> of records — the easy cases where everything lines up. What's left after the daily run is the analyst's queue: roughly <b>30 exceptions land on their desk each day</b>. Each one takes <b>30–45 minutes</b> to investigate.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Concrete example</span><span class="step-q">One mismatch, forty-five minutes, days of waiting</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>An exception lands: a transaction exists in System A but won't match in System B. The analyst opens old email threads. Reads the contract terms with the other company involved — the <b>counterparty</b>, meaning the business on the other side of the transaction. Checks how similar cases were resolved before. Still unclear, so they email the counterparty and wait — replies take <b>one to five days</b>.</p>
+            <p>The answer finally comes back: the counterparty migrated to a new system, and the new system writes timestamps in a different format. The fix is reformatting one field. The analyst classifies the root cause, documents every step for the auditors, closes the exception.</p>
+            <div class="callout">Forty-five minutes of work, spread across days of waiting, for one mismatch.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">What goes wrong?</span><span class="step-q">Do the arithmetic</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Thirty exceptions a day, at 30–45 minutes each, is <b>more than a full working day</b>. The queue never empties.</p>
+            <p>On top of that, <b>15–25% of the analyst's time</b> goes into the email loop alone — composing inquiries, chasing replies, reading attachments.</p>
+            <p>And the most valuable thing in the room — the knowledge of how to resolve each pattern — lives only inside the heads of experienced analysts. <i>"I've seen this 200 times"</i> is the actual operating system of these teams.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">How people cope</span><span class="step-q">Three ways, all already tried</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <ul>
+              <li>Companies buy better matching software — already done, and it worked: matching is solved.</li>
+              <li>Companies hire more cheap labor — a BPO analyst costs about <b>$15 an hour</b>, so adding people is the standard answer.</li>
+              <li>Teams lean on their veterans' memory.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Why coping fails</span><span class="step-q">The number that says it all: 96% → 2 people</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>The software can't help, because what remains is not matching — it's reading emails, understanding contracts, and making judgment calls. One validated data point says it all: <b>an organization with 96% automatic matching reduced headcount by only two people.</b> The machines took the easy 60–70%; the human 30–40% stayed fully human.</p>
+            <p>Hiring can't keep up either — exception volumes grow faster than teams can recruit and train. And the veterans leave: BPO teams lose <b>20–30% of their people every year</b>, and when a senior analyst walks out, years of pattern knowledge walks out with them, while a replacement takes months to ramp.</p>
+            <p>Finally, the humans can't simply be removed even in theory — regulations often require that a second person independently checks decisions, and every resolution must be documented for audit. The human role is <b>deliberate risk control, not laziness</b>.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Consequences</span><span class="step-q">Aging queues, audit findings, overnight risk</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Exceptions age past the deadlines the bank has promised — the <b>SLAs</b>, service level agreements. Auditors find undocumented resolutions and issue findings, which trigger emergency budget and panic. A senior departure creates overnight risk. Costs rise every year with no ceiling.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <span class="eyebrow">The opening</span>
+        <p>So that's the world. The easy majority of this work is already automated. What remains — investigating, judging, chasing counterparties, documenting — is done <b>by hand, at enormous scale, by people whose knowledge evaporates when they resign</b>.</p>
+        <p>That leftover slice is the opportunity. Ab samajh aaya? Good — now the company.</p>
+      </div>
+    </section>
+
+    <!-- S3 WHAT WOULD WE BUILD -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <p class="s-intro">ReconForce is a managed service that does the investigation itself. The investigation work exits the customer's organization. No technology jargon — just the flow.</p>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="eyebrow">Inputs</span>
+          <p>The customer's analyst forwards an exception — <b>literally forwards an email</b>. That is the entire onboarding. No system connections, no software installed, no IT project.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">What happens</span>
+          <p>On ReconForce's side, the work the analyst would have done gets done: read the related emails, check the contract terms, compare against prior resolutions, classify the root cause. Back comes a completed <b>investigation brief</b> showing the evidence and the recommended resolution — within 24 hours.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai">
+          <span class="eyebrow accent">Where AI helps</span>
+          <p>The reading and cross-referencing — emails, contract terms, prior resolution patterns — that consumes the analyst's 30–45 minutes per exception. Every investigated exception also feeds a resolution pattern database, so the next investigation gets better.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human">
+          <span class="eyebrow" style="color:var(--second)">Where humans stay involved</span>
+          <p>On the customer's side: their analyst reviews the brief in <b>3–5 minutes</b>, approves, and closes — the regulatory requirement for human checking stays intact; the analyst becomes an approver instead of an investigator. On our side: AI plus a domain specialist do the investigation, and every brief passes verification rigor before it's sent — accuracy at regulatory standards is the product.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">Outputs</span>
+          <p>Resolved exceptions, priced per exception: <b>₹200–500 each</b>. The customer buys outcomes, not software seats.</p>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <span class="eyebrow">Why a company, not a feature</span>
+        <p>The matching software vendors don't employ investigators — investigation has never been their business. The BPOs employ investigators but sell labor hours, so automating investigation destroys their own revenue. Neither incumbent can follow. And every exception ReconForce investigates feeds a pattern database that makes the next investigation better — a moat that compounds daily.</p>
+      </div>
+    </section>
+
+    <!-- S4 WHY CUSTOMERS CARE -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row">
+          <span class="eyebrow">The pain today</span>
+          <p>Thirty exceptions a day at 30–45 minutes each — more than a full working day, every day. The queue never empties, and 15–25% of analyst time disappears into the counterparty email loop alone.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">What it costs</span>
+          <p>Exceptions aging past promised SLAs. Audit findings on undocumented resolutions, triggering emergency budget. A senior analyst's departure creating overnight key-person risk. Costs rising yearly with no ceiling.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why today's coping fails</span>
+          <p>Matching software already won its battle — 96% auto-match reduced headcount by only two people. Hiring can't outpace volume growth, and 20–30% annual attrition keeps draining the pattern knowledge that lives in veterans' heads.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why they might pay</span>
+          <p>They buy resolved exceptions at ₹200–500 each. The economics work because AI inference costs $0.05–0.50 per investigation versus $7.50–12.50 of BPO labor — a structural cost shift, not a discount. The mean investigation drops from 45 minutes of work to 5 minutes of review, measurable on day one.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5 WHAT SCARES US -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <p class="s-intro">Six honest concerns from the locked verdicts. The first is THE kill assumption — and it's testable in a single week.</p>
+      <div class="concerns">
+
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">The trust barrier</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Analysts will trust AI investigation briefs enough to approve resolutions without re-investigating from scratch.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If the trust barrier is absolute, the 45-minute investigation drops to 40 minutes, and the value proposition collapses. External evidence cited by Perplexity confirms trust is the primary barrier to agentic AI adoption in finance — and rated survival confidence only MEDIUM, noting it may hold for simple exception types but not all classes.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>When shown a brief with the actual evidence (the email, the contract clause), will an analyst approve in under 2 minutes?</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>7 of 10 analysts say "I must verify everything independently regardless."</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Can the email even be forwarded?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Customers can forward exception emails (containing transaction details, counterparty information, contract terms) to an outside vendor.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Both validators flagged this as a risk the artifact underweights — "forward an email, zero onboarding" may be less frictionless than it sounds. Gemini named enterprise data security the single biggest risk.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What infosec rules, NDAs, and privacy controls at BPOs and banks actually permit.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Data cannot leave the customer's environment without a 12+ month vendor risk process (SOC2, subprocessor approvals, data residency).</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">The counterparty wait becomes OUR problem</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>ReconForce can deliver briefs on a fast turnaround.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's portfolio observation: counterparty communication is embedded inside investigation. Many exceptions cannot be resolved without a counterparty reply that takes 1–5 days. If ReconForce promises fast briefs, the waiting loop becomes ReconForce's SLA problem, not the customer's.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How counterparty response delays inside investigations affect our own turnaround commitments.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Will the AI actually get it right, blind?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>AI reaches the same conclusion as the analyst's actual resolution often enough to be useful.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The entire service rests on investigation quality. The Friday blind-test — comparing AI output against how the BPO actually resolved real exceptions — is the single most important day in the supplied plan.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>On real forwarded exceptions, does the AI match the true resolution?</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Fewer than 40% of blind investigations match the actual resolution in week one.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">The pricing floor</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Customers will actually pay ₹200–500 per exception.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Unit economics — inference cost plus human review time against per-exception price — need a healthy margin to fund the productization.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What price real BPO team leads will agree to.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Achieved price below ₹150/exception breaks unit economics (per the supplied evidence).</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Does it generalize beyond the easy cases?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Trust and accuracy hold across all exception classes, not only the simple ones.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity's MEDIUM confidence rests precisely here — plausible for straightforward exception types, unlikely to generalize to all classes immediately. Larger customers will also eventually demand formal controls (SOC2 or equivalent), with unknown timelines.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Insufficient evidence available from previous stages.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- S6 REALITY CHECKS -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">06</span><h2>Reality checks before commitment</h2></div>
+      <p class="s-intro">The next step is not building. Two facts decide everything, and both can be learned in about a week with conversations and blind tests only — no product. The method is demonstration, not hypotheticals. For each check, mark where you'd land.</p>
+
+      <div class="rc">
+        <h3>Check 1 — The blind test: quality and trust in one move</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>5–7 BPO reconciliation team leads in Bangalore/Pune, around 3 mid-market finance operations managers, and a couple of PE portfolio operations contacts — via Ranjan's BPO network and Rajesh's HSBC alumni.</div>
+        <div class="rc-block"><span class="eyebrow">Exact approach · exact questions</span>
+          <ul>
+            <li>Demonstrate, don't ask hypotheticals: "Forward us 5 hard exceptions. We investigate them within 24 hours. You tell us if the briefs are useful."</li>
+            <li>The kill question: "If the brief showed you the actual email and contract clause, could you verify and approve in 2 minutes?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>AI investigations match the actual resolution on 3 of 5 blind exceptions. 7 of 10 analysts say "if the brief shows me evidence I can verify in 2 minutes, I approve." Perplexity's bar: 7/10 approve with a ≤2-minute review.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Under 40% blind accuracy, or 8 of 10 analysts re-investigate from scratch regardless of brief quality. Either is a stop-and-reassess signal for the whole FPA-04 surface — which is exactly why this test runs first.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="reconforce_rc1">
+            <label><input type="radio" name="rf_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="rf_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="rf_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="rf_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 2 — Can the data actually reach us?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>The same conversations — every one of them should surface the data question directly.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Can your team actually forward exception emails to an outside party?"</li>
+            <li>"What would infosec at your firm say — and who decides?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Teams confirm exception data can be shared — even with light conditions like an NDA.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Infosec blocks data forwarding outright, or sharing requires a 12+ month vendor risk process (SOC2, subprocessor approvals, data residency).</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="reconforce_rc2">
+            <label><input type="radio" name="rf_rc2" value="Proceed">Proceed</label>
+            <label><input type="radio" name="rf_rc2" value="Pause">Pause</label>
+            <label><input type="radio" name="rf_rc2" value="Pivot">Pivot</label>
+            <label><input type="radio" name="rf_rc2" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 3 — Will they pay, and can our wedge buyer even sign?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>The BPO team leads from Check 1 — once a useful brief has been demonstrated, the pricing conversation becomes real.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Would you pay per resolved exception — in the ₹200–500 range — for briefs like these?"</li>
+            <li>"Can you authorize that payment yourself, or does the decision sit above you?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Willingness to pay appears in the ₹200–500 range, and the team lead can authorize per-exception spending.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Achieved pricing falls below ₹150/exception — the unit-economics floor from the supplied evidence — or every pricing decision escalates beyond our wedge buyer.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="reconforce_rc3">
+            <label><input type="radio" name="rf_rc3" value="Proceed">Proceed</label>
+            <label><input type="radio" name="rf_rc3" value="Pause">Pause</label>
+            <label><input type="radio" name="rf_rc3" value="Pivot">Pivot</label>
+            <label><input type="radio" name="rf_rc3" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:14px;color:var(--muted)">Sequencing note from the locked evidence: validators noted CounterpartyClear as the immediate fallback if investigation complexity blocks ReconForce — and the MONITOR companies (ExceptionOps, BoundaryOps) only become real after ReconForce proves investigation quality.</p>
+    </section>
+
+    <!-- S7 REFLECTION -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <p class="s-intro">Answer honestly and independently — before the founder discussion, not during it. Saved on this device only.</p>
+      <div class="reflect" data-opp="reconforce">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="rf_q1" value="Yes">Yes</label><label><input type="radio" name="rf_q1" value="Unsure">Unsure</label><label><input type="radio" name="rf_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="rf_q2" value="Yes">Yes</label><label><input type="radio" name="rf_q2" value="Unsure">Unsure</label><label><input type="radio" name="rf_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="rf_q5" value="Yes">Yes</label><label><input type="radio" name="rf_q5" value="Unsure">Unsure</label><label><input type="radio" name="rf_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('reconforce', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 DISCUSSION STARTERS -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <p class="s-intro">Bring these to the table. They're designed to surface disagreement, not to settle it.</p>
+      <div class="starters">
+        <div class="dq">Do we genuinely believe analysts will approve AI briefs, or are we hoping? What would each of us bet on the Friday blind-test result?</div>
+        <div class="dq">Can exception data realistically be forwarded to us? What do we expect infosec at a BPO to say — and have we asked anyone yet?</div>
+        <div class="dq">Is the BPO team lead — our wedge buyer — actually able to authorize per-exception payment, or does that decision sit above them?</div>
+        <div class="dq">What week-one result would make us stop completely, and are we honestly committed to stopping if we see it?</div>
+        <div class="dq">Are we underestimating the counterparty-waiting problem inside our own promised turnaround times?</div>
+        <div class="dq">Would we enjoy living inside reconciliation operations for the next several years — learning this domain deeply?</div>
+        <div class="dq">If ReconForce fails, what do we each think the most likely reason will be: quality, trust, data access, or pricing?</div>
+      </div>
+    </section>
+
+    <!-- S9 BOARD SUMMARY -->
+    <section class="s" data-sect="reconforce">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>ReconForce</b> — Exception Investigation Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp build">Build-First · Locked</span></div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Analysts will trust AI investigation briefs enough to approve resolutions without re-investigating from scratch — when the brief shows verifiable evidence (the email, the contract clause).</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">Demonstration, not hypotheticals: 5–7 BPO team leads forward 5 hard exceptions each; briefs delivered in 24 hours; blind comparison against actual resolutions; the 2-minute approve question. Conversations and blind tests only — no product.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Under 40% blind accuracy in week one, or 7/10 analysts saying "I must verify everything independently regardless" — either stops the entire FPA-04 surface.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('counterpartyclear')">Next: CounterpartyClear →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== COUNTERPARTYCLEAR -->
+<div id="view-counterpartyclear" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-counterpartyclear"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>CounterpartyClear</h1>
+      <p class="oneline">Owns the entire counterparty email loop for exception resolution — drafting the inquiry, chasing the reply, parsing the PDF — so analysts never touch counterparty correspondence again.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Counterparty Resolution Operations. <b>Pattern:</b> AI-Native Service Company — "do the work, not help with the work," applied to the email loop.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Gemini gave it a <b>GO</b>: "a highly executable wedge that fits the technical constraints perfectly" — directly aligned with the team's email-automation skills, with validation possible immediately through simple email experiments.</p>
+        <p>The locked consensus holds it as the credible secondary: the validators explicitly noted it as <b>the immediate fallback if investigation complexity blocks ReconForce</b>. Gemini also flagged the deeper connection — counterparty communication is embedded inside ReconForce's own investigations, so this loop must be solved either way. It waits behind ReconForce because the trust kill-test comes first.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world as ReconForce — the analyst, the queue, the counterparty. (If you haven't read that story yet, start there.) This time, zoom into one slice of the day: the email loop.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">A quarter of the day spent waiting on strangers</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Remember the number: <b>15–25% of the analyst's time</b> goes into the counterparty email loop alone. Composing an inquiry takes 10 minutes. Then comes the waiting — replies take 1 to 5 days. The reply arrives as free text plus a PDF, in whatever format the counterparty felt like using. The analyst reads it, extracts the one data point that matters, updates the exception record.</p>
+            <div class="callout">"Exceptions pending counterparty response" is the <b>largest aging bucket</b> in the queue. The work isn't hard — it's scattered, slow, and endless. And no tool touches it, because it all happens inside email, invisible to the matching software.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>The analyst flags an exception for counterparty follow-up. That's it — the loop is now CounterpartyClear's.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>Drafting a contextually appropriate inquiry, monitoring for the reply, and parsing whatever comes back — free text, forwarded chains, PDFs — then extracting the resolution data.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>The inquiry goes out via the analyst's own email — the counterparty sees a familiar sender, not a robot address. The analyst stays the decision-maker: they flag what needs follow-up and receive the structured summary; they never compose, chase, or interpret.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>A structured summary with the extracted resolution data. Pricing per interaction: <b>₹100–200</b> (inquiry sent + reply parsed + data extracted). The "pending counterparty response" aging bucket drops toward zero.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>10 minutes to compose each inquiry, 1–5 days of waiting, then manual parsing of free-text-plus-PDF replies — consuming 15–25% of every analyst's time.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why coping fails</span><p>No incumbent touches it: the matching vendors handle matching, not communication, and email tools provide an inbox, not investigation-aware correspondence. The step is invisible to tool vendors because it happens in email.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>They buy resolved counterparty inquiries — the largest aging bucket in the queue going to near-zero — priced per interaction rather than per seat.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Will strangers answer a robot?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Counterparties respond to AI-generated inquiry emails at rates equal to or above human-generated emails.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If counterparties deprioritize automated emails, response rates drop and the service destroys value rather than creating it — the whole loop depends on the other side replying.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Real response rates for AI-drafted vs human-drafted inquiries — testable immediately via email experiments.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Response rates to automated inquiries falling meaningfully below human benchmarks.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Spam filters and infosec walls</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Automated inquiries actually reach the counterparty's inbox.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk: counterparties blocking automated emails via spam filters or strict infosec email policies — the message can fail before a human ever sees it.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How often automated correspondence gets filtered at financial counterparties.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Big enough on its own?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The category can expand beyond reconciliation (AP/AR correspondence, insurance claims, B2B disputes) to reach venture scale.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini rated venture potential "plausible but unproven — expansion beyond reconciliation is required to hit ₹100Cr+ ARR," and the artifact's own classification was "PRODUCT trending toward COMPANY."</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether adjacent correspondence domains pull as strongly as reconciliation.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — do counterparties reply to the machine?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>Per Gemini's week-1 experiment: counterparties from 3–5 trial exceptions sourced through Ranjan's BPO contacts — riding along with the ReconForce blind tests.</div>
+        <div class="rc-block"><span class="eyebrow">Exact approach</span>
+          <ul>
+            <li>Send structured AI-drafted inquiry emails on real open exceptions, alongside the team's normal human-drafted ones.</li>
+            <li>Measure: response rate and clarity of replies, AI-drafted vs human-drafted.</li>
+            <li>Ask the analysts: "What fraction of your exceptions are blocked waiting for counterparty responses?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Automated inquiries achieve a response rate within 10% of historical human benchmarks (Gemini's success criterion), and analysts confirm a large blocked-on-counterparty bucket.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Counterparties visibly deprioritize or never receive automated emails — filtered, ignored, or answered slower than human ones.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="counterpartyclear_rc1">
+            <label><input type="radio" name="cc_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="cc_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="cc_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="cc_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="counterpartyclear">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="cc_q1" value="Yes">Yes</label><label><input type="radio" name="cc_q1" value="Unsure">Unsure</label><label><input type="radio" name="cc_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="cc_q2" value="Yes">Yes</label><label><input type="radio" name="cc_q2" value="Unsure">Unsure</label><label><input type="radio" name="cc_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="cc_q5" value="Yes">Yes</label><label><input type="radio" name="cc_q5" value="Unsure">Unsure</label><label><input type="radio" name="cc_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('counterpartyclear', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">If a half-automated email landed in OUR inbox from an unknown vendor's system, would we answer it? Honestly?</div>
+        <div class="dq">Is "fallback if ReconForce stumbles" a real plan with a trigger we can name — or a way of keeping two doors open with one part-time team?</div>
+        <div class="dq">Gemini says the counterparty loop is embedded inside ReconForce anyway. Should we treat this as a separate company at all — or as ReconForce's hardest internal module?</div>
+        <div class="dq">₹100–200 per interaction is small money per unit. How many interactions per week would make this matter — and do we believe those volumes exist?</div>
+        <div class="dq">What's the cheapest experiment that settles the response-rate question — and can we run it inside the ReconForce week-1 work without splitting focus?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="counterpartyclear">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>CounterpartyClear</b> — Counterparty Resolution Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Gemini GO; locked as the credible secondary and the immediate fallback if ReconForce stumbles.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Counterparties respond to AI-generated inquiry emails at rates equal to or above human-generated emails — and the messages actually get past spam filters and infosec policies.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">Gemini's week-1 experiment: send AI-drafted inquiries on 3–5 real trial exceptions alongside human-drafted ones; compare response rates and reply clarity.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Automated inquiry response rates falling meaningfully below human benchmarks — counterparties deprioritizing or never receiving the machine's emails.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('reconforce')">Revisit ReconForce →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ============ storage (safe wrapper: localStorage when available, in-memory fallback) ============ */
+var MEM = {};
+var LS_OK = false;
+try { localStorage.setItem('__feT','1'); localStorage.removeItem('__feT'); LS_OK = true; } catch(e) {}
+function sGet(k){ try { return LS_OK ? localStorage.getItem(k) : (MEM[k]!==undefined?MEM[k]:null); } catch(e){ return MEM[k]!==undefined?MEM[k]:null; } }
+function sSet(k,v){ try { if(LS_OK){ localStorage.setItem(k,v); } } catch(e){} MEM[k]=v; }
+var NS = 'fpa04_explorer_';
+
+var OPPS = ['reconforce','counterpartyclear'];
+var OPP_NAMES = { reconforce:'ReconForce (BUILD-FIRST)', counterpartyclear:'CounterpartyClear (SECONDARY)' };
+
+/* ============ navigation ============ */
+function showView(id){
+  var views = document.querySelectorAll('.view');
+  for (var i=0;i<views.length;i++) views[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function openOpp(opp){
+  showView('view-'+opp);
+  markStarted(opp);
+  setupDots(opp);
+  restoreReflection(opp);
+  restoreImplications();
+}
+function goHome(){
+  showView('view-home');
+  refreshPills();
+}
+
+/* ============ story step toggles ============ */
+function toggleStep(btn){
+  var step = btn.parentElement;
+  step.classList.toggle('open');
+}
+
+/* ============ progress tracking ============ */
+function markStarted(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].started = true;
+  sSet(NS+'progress', JSON.stringify(p));
+}
+function markSeen(opp, idx){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  if(p[opp].seen.indexOf(idx) === -1) p[opp].seen.push(idx);
+  sSet(NS+'progress', JSON.stringify(p));
+  paintDots(opp);
+}
+function setupDots(opp){
+  var sections = document.querySelectorAll('#view-'+opp+' section.s');
+  var dotsBox = document.getElementById('dots-'+opp);
+  dotsBox.innerHTML = '';
+  for (var i=0;i<sections.length;i++){
+    var d = document.createElement('span');
+    dotsBox.appendChild(d);
+    sections[i].setAttribute('data-idx', i);
+  }
+  paintDots(opp);
+  if ('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ markSeen(opp, parseInt(en.target.getAttribute('data-idx'),10)); }
+      });
+    }, { threshold: 0.25 });
+    for (var j=0;j<sections.length;j++) obs.observe(sections[j]);
+  }
+}
+function paintDots(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  var seen = (p[opp] && p[opp].seen) || [];
+  var dots = document.querySelectorAll('#dots-'+opp+' span');
+  for (var i=0;i<dots.length;i++){
+    if (seen.indexOf(i) !== -1) dots[i].classList.add('seen'); else dots[i].classList.remove('seen');
+  }
+}
+function refreshPills(){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  OPPS.forEach(function(opp){
+    var pill = document.getElementById('pill-'+opp);
+    if(!pill) return;
+    var st = p[opp];
+    if(!st || !st.started){ pill.textContent = 'Not started'; pill.classList.remove('done'); }
+    else if (st.reflected){ pill.textContent = 'Reflection saved ✓'; pill.classList.add('done'); }
+    else { pill.textContent = 'In progress · '+ (st.seen ? st.seen.length : 0) +'/9 sections'; pill.classList.remove('done'); }
+  });
+}
+
+/* ============ radio pill styling ============ */
+document.addEventListener('change', function(e){
+  if (e.target && e.target.type === 'radio'){
+    var group = e.target.closest('.radio-row, .imp-opts');
+    if (group){
+      var labels = group.querySelectorAll('label');
+      for (var i=0;i<labels.length;i++) labels[i].classList.remove('sel');
+      e.target.closest('label').classList.add('sel');
+      if (group.classList.contains('imp-opts')){
+        sSet(NS+'imp_'+group.getAttribute('data-key'), e.target.value);
+      }
+    }
+  }
+});
+
+/* ============ reflection save / restore ============ */
+function saveReflection(opp, btn){
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  var data = { savedAt: new Date().toISOString() };
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  data.name = nameInput ? nameInput.value : '';
+  ['q1','q2','q5'].forEach(function(q){
+    var sel = box.querySelector('.radio-row[data-q='+q+'] input:checked');
+    data[q] = sel ? sel.value : '';
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    data[q] = ta ? ta.value : '';
+  });
+  sSet(NS+'reflection_'+opp, JSON.stringify(data));
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].reflected = true;
+  sSet(NS+'progress', JSON.stringify(p));
+  var msg = btn.parentElement.querySelector('.savemsg');
+  msg.classList.add('show');
+  setTimeout(function(){ msg.classList.remove('show'); }, 2200);
+  if (!LS_OK) {
+    msg.textContent = 'Saved for this session ✓ (open this file in a browser to keep answers permanently)';
+  }
+}
+function restoreReflection(opp){
+  var raw = sGet(NS+'reflection_'+opp);
+  if(!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch(e){ return; }
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  if(!box) return;
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  if (nameInput && data.name) nameInput.value = data.name;
+  ['q1','q2','q5'].forEach(function(q){
+    if(!data[q]) return;
+    var inp = box.querySelector('.radio-row[data-q='+q+'] input[value="'+data[q]+'"]');
+    if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    if(ta && data[q]) ta.value = data[q];
+  });
+}
+function restoreImplications(){
+  var groups = document.querySelectorAll('.imp-opts');
+  for (var i=0;i<groups.length;i++){
+    var key = groups[i].getAttribute('data-key');
+    var val = sGet(NS+'imp_'+key);
+    if(val){
+      var inp = groups[i].querySelector('input[value="'+val+'"]');
+      if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+    }
+  }
+}
+
+/* ============ export ============ */
+var RC_LABELS = {
+  reconforce_rc1: 'ReconForce — Check 1: Blind test (quality + trust)',
+  reconforce_rc2: 'ReconForce — Check 2: Can exception data be forwarded?',
+  reconforce_rc3: 'ReconForce — Check 3: Pricing + buyer authority',
+  counterpartyclear_rc1: 'CounterpartyClear — Check: Counterparty response to AI inquiries'
+};
+function collectAll(){
+  var out = { artifact:'Innovation_OS Founder Explorer — FPA-04', exportedAt:new Date().toISOString(), reflections:{}, implications:{} };
+  OPPS.forEach(function(opp){
+    var raw = sGet(NS+'reflection_'+opp);
+    if(raw){ try { out.reflections[OPP_NAMES[opp]] = JSON.parse(raw); } catch(e){} }
+  });
+  Object.keys(RC_LABELS).forEach(function(k){
+    var v = sGet(NS+'imp_'+k);
+    if(v) out.implications[RC_LABELS[k]] = v;
+  });
+  return out;
+}
+function exportReflections(fmt){
+  var data = collectAll();
+  var content, mime, fname;
+  if (fmt === 'json'){
+    content = JSON.stringify(data, null, 2);
+    mime = 'application/json'; fname = 'FPA-04_founder_reflections.json';
+  } else {
+    var lines = [];
+    lines.push('INNOVATION_OS FOUNDER EXPLORER — FPA-04');
+    lines.push('Founder reflections export · ' + new Date().toLocaleString());
+    lines.push('========================================');
+    var any = false;
+    OPPS.forEach(function(opp){
+      var r = data.reflections[OPP_NAMES[opp]];
+      if(!r) return;
+      any = true;
+      lines.push('');
+      lines.push('--- ' + OPP_NAMES[opp] + ' ---');
+      if(r.name) lines.push('Founder: ' + r.name);
+      lines.push('Q1 Support allocating founder attention (if validation positive): ' + (r.q1 || '—'));
+      lines.push('Q2 Excited to help build: ' + (r.q2 || '—'));
+      lines.push('Q3 What scares you most: ' + (r.q3 || '—'));
+      lines.push('Q4 What should be validated first: ' + (r.q4 || '—'));
+      lines.push('Q5 Shortlist for validation: ' + (r.q5 || '—'));
+      if(r.savedAt) lines.push('Saved: ' + r.savedAt);
+    });
+    var impKeys = Object.keys(data.implications);
+    if (impKeys.length){
+      lines.push('');
+      lines.push('--- REALITY CHECK IMPLICATIONS ---');
+      impKeys.forEach(function(k){ lines.push(k + ': ' + data.implications[k]); });
+    }
+    if (!any && !impKeys.length){
+      lines.push('');
+      lines.push('No reflections saved yet. Explore an opportunity and answer Section 7 first.');
+    }
+    content = lines.join('\n');
+    mime = 'text/plain'; fname = 'FPA-04_founder_reflections.txt';
+  }
+  var blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ============ init ============ */
+refreshPills();
+restoreImplications();
+OPPS.forEach(restoreReflection);
+</script>
+</body>
+</html>
