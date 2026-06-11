@@ -15,8 +15,6 @@
         --line:#E2DED3;
 
         --build:#1F7A53;
-        --secondary:#A9742B;
-        --archived:#8A8C92;
 
         --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
         --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -37,7 +35,7 @@
     }
 
     .container{
-        max-width:850px;
+        max-width:900px;
         margin:auto;
         padding:60px 20px 80px;
     }
@@ -60,7 +58,6 @@
     .intro{
         font-size:20px;
         color:var(--muted);
-        max-width:700px;
         margin-bottom:40px;
     }
 
@@ -82,20 +79,14 @@
 
     .card-grid{
         display:grid;
-        gap:20px;
+        gap:24px;
     }
 
     .card{
         background:var(--card);
         border:1px solid var(--line);
-        border-radius:12px;
-        padding:28px;
-        transition:all 0.2s ease;
-    }
-
-    .card:hover{
-        transform:translateY(-2px);
-        box-shadow:0 6px 20px rgba(0,0,0,0.08);
+        border-radius:14px;
+        padding:36px;
     }
 
     .card-top{
@@ -103,7 +94,7 @@
         justify-content:space-between;
         align-items:flex-start;
         gap:16px;
-        margin-bottom:16px;
+        margin-bottom:20px;
     }
 
     .card h2{
@@ -112,37 +103,31 @@
     }
 
     .tag{
-        padding:6px 12px;
-        border-radius:6px;
+        background:var(--build);
+        color:white;
+        padding:8px 14px;
+        border-radius:8px;
         font-family:var(--mono);
         font-size:11px;
         font-weight:700;
-        letter-spacing:0.14em;
+        letter-spacing:0.12em;
         text-transform:uppercase;
-        color:white;
         flex-shrink:0;
-    }
-
-    .build{
-        background:var(--build);
-    }
-
-    .secondary{
-        background:var(--secondary);
     }
 
     .description{
         color:var(--muted);
-        margin-bottom:24px;
+        margin-bottom:30px;
+        font-size:18px;
     }
 
     .button{
         display:inline-block;
-        text-decoration:none;
-        background:var(--ink);
+        background:#23272E;
         color:white;
-        padding:12px 22px;
-        border-radius:8px;
+        text-decoration:none;
+        padding:14px 24px;
+        border-radius:10px;
         font-weight:600;
     }
 
@@ -176,10 +161,9 @@
 
     <p class="intro">
         These opportunities have already passed multiple stages of generation,
-        interrogation, and investment committee review.
-        Your job is not to brainstorm new ideas.
-        Your job is to independently understand each world,
-        challenge the assumptions,
+        investment committee review, and founder validation.
+        Your job is not to invent new ideas.
+        Your job is to understand each world, challenge the assumptions,
         and arrive at the founder discussion prepared.
     </p>
 
@@ -187,21 +171,13 @@
 
         <p><strong>How to use this:</strong></p>
 
-        <p>
-            1. Explore each Founder Explorer independently.
-        </p>
+        <p>1. Explore each Founder Explorer independently.</p>
 
-        <p>
-            2. Focus on understanding the problem, not whether you "like" the idea.
-        </p>
+        <p>2. Focus on understanding the problem before judging the solution.</p>
 
-        <p>
-            3. Pay attention to the kill assumptions and validation questions.
-        </p>
+        <p>3. Pay attention to assumptions, risks, and validation questions.</p>
 
-        <p>
-            4. Complete your reflections before the founder discussion.
-        </p>
+        <p>4. Record your honest reflections before the founder discussion.</p>
 
     </div>
 
@@ -211,7 +187,7 @@
 
             <div class="card-top">
                 <h2>ShipRight</h2>
-                <span class="tag build">Build First</span>
+                <span class="tag">Build First</span>
             </div>
 
             <p class="description">
@@ -229,14 +205,34 @@
         <div class="card">
 
             <div class="card-top">
+                <h2>EvidentFreight</h2>
+                <span class="tag">Build First</span>
+            </div>
+
+            <p class="description">
+                AI-assisted freight evidence infrastructure that reconstructs
+                shipment timelines and helps determine liability using existing
+                operational records.
+            </p>
+
+            <a class="button"
+               href="FPA-10_FOUNDER_EXPLORER_v1.html">
+                Open Explorer →
+            </a>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-top">
                 <h2>PayrollShield</h2>
-                <span class="tag build">Build First</span>
+                <span class="tag">Build First</span>
             </div>
 
             <p class="description">
                 AI-assisted payroll reconciliation delivered as completed work,
-                eliminating the dangerous manual intelligence layer
-                between HR systems and payroll runs.
+                reducing the dangerous manual intelligence layer between HR
+                systems and payroll processing.
             </p>
 
             <a class="button"
@@ -246,39 +242,19 @@
 
         </div>
 
-        <div class="card">
-
-            <div class="card-top">
-                <h2>[Opportunity Name]</h2>
-                <span class="tag secondary">Secondary</span>
-            </div>
-
-            <p class="description">
-                Replace this section with the third surviving opportunity
-                from the Founder Explorer process.
-            </p>
-
-            <a class="button"
-               href="FPA-XX_FOUNDER_EXPLORER_v1.html">
-                Open Explorer →
-            </a>
-
-        </div>
-
     </div>
 
     <footer>
 
-        INNOVATION_OS FOUNDER BOARD · SEASON 1<br>
+        INNOVATION_OS · FOUNDER BOARD · SEASON 1<br>
 
-        PURPOSE: UNDERSTANDING, NOT PERSUASION.<br>
+        PURPOSE: UNDERSTANDING BEFORE DECISION-MAKING.<br>
 
-        EACH EXPLORER REPRESENTS A LOCKED RESEARCH ARTIFACT
-        REVIEWED THROUGH MULTIPLE VALIDATION STAGES.<br>
+        THESE EXPLORERS REPRESENT LOCKED RESEARCH ARTIFACTS REVIEWED THROUGH
+        MULTIPLE VALIDATION STAGES.<br>
 
-        FOUNDER DISCUSSIONS SHOULD FOCUS ON EVIDENCE,
-        ASSUMPTIONS, AND VALIDATION PRIORITIES —
-        NOT INDIVIDUAL PREFERENCES.
+        FOUNDER DISCUSSIONS SHOULD FOCUS ON EVIDENCE, ASSUMPTIONS,
+        AND VALIDATION PRIORITIES.
 
     </footer>
 
