@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation_OS Founder Explorer — FPA-12</title>
+<style>
+  :root{
+    --paper:#F6F4EE; --card:#FFFFFF; --ink:#23272E; --muted:#6E7077; --line:#E2DED3;
+    --verify:#1F7A53; --verify-bg:#EAF4EE;
+    --second:#A9742B; --second-bg:#F7F0E2;
+    --arch:#8A8C92; --arch-bg:#EEEEEC;
+    --kill:#B3402E; --kill-bg:#F9ECE9;
+    --accent:#0E5A8A; --accent-bg:#EAF1F6;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important;animation:none !important} }
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+  h1,h2,h3{font-family:var(--serif);line-height:1.25;font-weight:600}
+  p{margin-bottom:0.9em}
+  button{font-family:var(--sans);cursor:pointer}
+  a{color:var(--accent)}
+
+  /* eyebrow / utility labels — echo of delta files and payroll registers */
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+  .eyebrow.accent{color:var(--accent)}
+
+  /* the signature: verdict stamps, like a QA seal pressed onto the page */
+  .stamp{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+    padding:5px 12px;border:2px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--card), inset 0 0 0 3px currentColor;
+    transform:rotate(-2deg);background:var(--card)}
+  .stamp.build{color:var(--verify)} .stamp.second{color:var(--second)} .stamp.arch{color:var(--arch)} .stamp.kill{color:var(--kill)}
+
+  /* ============ HOME ============ */
+  header.masthead{padding:54px 0 28px;border-bottom:1px solid var(--line)}
+  .masthead .eyebrow{margin-bottom:14px}
+  .masthead h1{font-size:clamp(30px,6vw,42px);margin-bottom:10px}
+  .masthead .sub{color:var(--muted);font-size:17px;max-width:560px}
+  .masthead .fpa-line{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.06em}
+
+  .lockednote{margin:22px 0 0;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink);font-size:14px;color:var(--muted)}
+  .lockednote b{color:var(--ink)}
+
+  .cards{margin-top:30px;display:grid;gap:16px}
+  .opp-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 22px 18px;position:relative;transition:box-shadow .15s ease, transform .15s ease}
+  .opp-card:hover{box-shadow:0 4px 18px rgba(35,39,46,.07);transform:translateY(-1px)}
+  .opp-card .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .opp-card h2{font-size:24px}
+  .opp-card .oneline{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .opp-card .cardfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-block;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:9px 18px;font-size:14px;font-weight:600;letter-spacing:.02em}
+  .btn:hover{background:#000}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:#fff}
+  .btn:focus-visible,.toggle:focus-visible,details summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .progress-pill{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:var(--paper)}
+  .progress-pill.done{color:var(--verify);border-color:var(--verify)}
+
+  details.archived-group{margin-top:8px;border:1px dashed var(--line);border-radius:10px;background:transparent}
+  details.archived-group>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px}
+  details.archived-group>summary::-webkit-details-marker{display:none}
+  details.archived-group>summary .chev{margin-left:auto;transition:transform .15s}
+  details.archived-group[open]>summary .chev{transform:rotate(90deg)}
+  .arch-list{padding:0 20px 18px;display:grid;gap:10px}
+  .arch-item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+  .arch-item b{font-family:var(--serif);font-size:15px}
+  .arch-item span{color:var(--muted);display:block;margin-top:2px}
+
+  .export-block{margin-top:36px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .export-block h3{font-size:18px;margin-bottom:6px}
+  .export-block p{font-size:14px;color:var(--muted)}
+  .export-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  /* ============ OPPORTUNITY VIEW ============ */
+  .view{display:none}
+  .view.active{display:block}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(246,244,238,.94);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:6px}
+  .topbar-inner{max-width:760px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px}
+  .backbtn{background:none;border:none;color:var(--ink);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;padding:6px 4px}
+  .backbtn:hover{color:var(--accent)}
+  .sectdots{margin-left:auto;display:flex;gap:5px}
+  .sectdots span{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .sectdots span.seen{background:var(--verify)}
+
+  .opp-hero{padding:34px 0 8px}
+  .opp-hero h1{font-size:clamp(28px,6vw,38px);margin:12px 0 8px}
+  .opp-hero .oneline{font-size:18px;color:var(--muted);font-family:var(--serif);font-style:italic;max-width:600px}
+
+  section.s{padding:34px 0 8px;border-top:1px solid var(--line);margin-top:30px}
+  section.s:first-of-type{border-top:none;margin-top:0}
+  .s-label{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .s-label .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .s-label h2{font-size:24px}
+  .s-intro{color:var(--muted);font-size:15px;margin-bottom:18px;max-width:600px}
+
+  /* survived box */
+  .why-survived{background:var(--verify-bg);border:1px solid #CDE4D7;border-radius:10px;padding:18px 20px;margin-top:14px}
+  .why-survived .eyebrow{color:var(--verify);margin-bottom:8px}
+  .why-survived p{font-size:15px;margin-bottom:8px}
+  .why-survived p:last-child{margin-bottom:0}
+
+  /* story steps (Section 2) */
+  .story{display:flex;flex-direction:column}
+  .story-step{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .story-step+.story-connector{align-self:center;color:var(--muted);font-size:18px;padding:4px 0;line-height:1}
+  .toggle{width:100%;text-align:left;background:none;border:none;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  .toggle .step-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;white-space:nowrap}
+  .toggle .step-q{font-family:var(--serif);font-size:18px;font-weight:600;flex:1}
+  .toggle .chev{color:var(--muted);transition:transform .15s;flex-shrink:0}
+  .story-step.open .toggle .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:0 18px 18px;font-size:15.5px}
+  .story-step.open .step-body{display:block}
+  .step-body .callout{background:var(--paper);border-left:3px solid var(--accent);padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .step-body ul{margin:0 0 .9em 1.2em}
+  .step-body li{margin-bottom:6px}
+
+  .bridge{margin-top:22px;background:var(--ink);color:#F3F1EA;border-radius:10px;padding:22px 24px}
+  .bridge .eyebrow{color:#B9C4CE;margin-bottom:8px}
+  .bridge p{font-size:16px;font-family:var(--serif)}
+  .bridge p:last-child{margin-bottom:0}
+
+  /* flow (Section 3) */
+  .flow{display:flex;flex-direction:column;margin-top:6px}
+  .flow-node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .flow-node .eyebrow{margin-bottom:6px}
+  .flow-node p{font-size:15px;margin-bottom:6px}
+  .flow-node p:last-child{margin-bottom:0}
+  .flow-node.ai{border-left:3px solid var(--accent)}
+  .flow-node.human{border-left:3px solid var(--second)}
+  .flow-arrow{align-self:center;color:var(--muted);padding:4px 0;font-size:18px;line-height:1}
+  .guarantee{margin-top:18px;background:var(--verify-bg);border:1.5px solid var(--verify);border-radius:10px;padding:18px 20px}
+  .guarantee .eyebrow{color:var(--verify)}
+  .guarantee p{font-size:15.5px;margin:6px 0 0}
+
+  /* evidence rows (Section 4) */
+  .ev-grid{display:grid;gap:12px}
+  .ev-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ev-row .eyebrow{margin-bottom:6px}
+  .ev-row p{font-size:15px;margin-bottom:6px}
+  .ev-row p:last-child{margin-bottom:0}
+
+  /* concern cards (Section 5) */
+  .concerns{display:grid;gap:12px}
+  details.concern{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  details.concern.locked-kill{border:1.5px solid var(--kill)}
+  details.concern>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  details.concern>summary::-webkit-details-marker{display:none}
+  details.concern>summary .c-title{font-family:var(--serif);font-size:17px;font-weight:600;flex:1}
+  details.concern>summary .chev{color:var(--muted);transition:transform .15s}
+  details.concern[open]>summary .chev{transform:rotate(90deg)}
+  .c-body{padding:0 18px 18px;display:grid;gap:10px}
+  .c-part{font-size:14.5px}
+  .c-part .eyebrow{display:block;margin-bottom:3px}
+  .c-part.killline{background:var(--kill-bg);border-left:3px solid var(--kill);padding:10px 12px;border-radius:0 6px 6px 0}
+  .c-part.killline .eyebrow{color:var(--kill)}
+
+  /* reality checks (Section 6) */
+  .rc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
+  .rc h3{font-size:19px;margin-bottom:10px}
+  .rc .rc-block{margin-bottom:12px;font-size:14.5px}
+  .rc .rc-block .eyebrow{display:block;margin-bottom:4px}
+  .rc ul{margin:4px 0 0 1.2em}
+  .rc li{margin-bottom:5px}
+  .rc .up{border-left:3px solid var(--verify);background:var(--verify-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .down{border-left:3px solid var(--kill);background:var(--kill-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .up .eyebrow{color:var(--verify)} .rc .down .eyebrow{color:var(--kill)}
+  .implication{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .implication .eyebrow{display:block;margin-bottom:8px}
+  .imp-opts{display:flex;gap:8px;flex-wrap:wrap}
+  .imp-opts label{border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--paper);user-select:none}
+  .imp-opts input{position:absolute;opacity:0;pointer-events:none}
+  .imp-opts label.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+
+  /* reflection (Section 7) */
+  .reflect{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
+  .q{margin-bottom:20px}
+  .q .qt{font-weight:600;font-size:15.5px;margin-bottom:8px;display:block}
+  .radio-row{display:flex;gap:8px;flex-wrap:wrap}
+  .radio-row label{border:1.5px solid var(--line);border-radius:99px;padding:7px 18px;font-size:14px;cursor:pointer;background:var(--paper);user-select:none}
+  .radio-row input{position:absolute;opacity:0;pointer-events:none}
+  .radio-row label.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+  textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14.5px;background:var(--paper);color:var(--ink);resize:vertical}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:80px}
+  .savemsg{font-size:13px;color:var(--verify);font-weight:600;margin-left:12px;opacity:0;transition:opacity .3s}
+  .savemsg.show{opacity:1}
+
+  /* discussion starters (Section 8) */
+  .starters{counter-reset:dq;display:grid;gap:10px}
+  .starters .dq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;font-size:15.5px;font-family:var(--serif)}
+  .starters .dq::before{counter-increment:dq;content:counter(dq,decimal-leading-zero);position:absolute;left:16px;top:15px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+
+  /* board summary (Section 9) */
+  .board{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+  .board-row{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line)}
+  .board-row:last-child{border-bottom:none}
+  .board-row .bk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:var(--paper)}
+  .board-row .bv{padding:14px 16px;font-size:14.5px}
+  @media(max-width:540px){.board-row{grid-template-columns:1fr}.board-row .bk{padding-bottom:2px}.board-row .bv{padding-top:4px}}
+
+  .endnav{margin-top:40px;display:flex;gap:10px;flex-wrap:wrap}
+  footer.colophon{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<!-- ===================================================== HOME -->
+<div id="view-home" class="view active">
+  <div class="wrap">
+    <header class="masthead">
+      <div class="eyebrow">Innovation_OS · 2026</div>
+      <h1>Founder Explorer</h1>
+      <p class="sub">One world — the 48 hours before payroll runs at a 10,000-person company. Three opportunities that survived. Your job here is not to agree — it is to understand, to question, and to arrive at the founder discussion prepared.</p>
+      <div class="fpa-line">FPA-12 · HRIS-TO-PAYROLL MID-CYCLE CHANGE ROUTING FAILURE · RESEARCH STATUS: COMPLETE · VERDICTS: LOCKED</div>
+    </header>
+
+    <div class="lockednote">
+      <b>How to read this.</b> The investment committee (Claude + Gemini + Perplexity) has already locked its verdicts. Nothing here re-ranks, re-validates, or persuades. This Explorer exists so each founder can independently understand the world, poke at the assumptions, and record their own honest reaction before we talk.
+    </div>
+
+    <div class="cards">
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>PayrollShield</h2>
+          <span class="stamp build">Build-First</span>
+        </div>
+        <p class="oneline">Does the pre-run payroll reconciliation as a completed service — every change classified, every retro-calculation computed, delivered ready to approve.</p>
+        <div class="cardfoot">
+          <button class="btn" onclick="openOpp('payrollshield')">Explore PayrollShield</button>
+          <span class="progress-pill" id="pill-payrollshield">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>ProviderOS</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">The AI verification engine inside India's outsourced payroll providers — letting them offer accuracy guarantees their competitors cannot match.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('provideros')">Explore ProviderOS</button>
+          <span class="progress-pill" id="pill-provideros">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>AuditOps</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">Full-population payroll audits delivered as completed work — every employee, every calculation — instead of a 50-person sample from a 10,000-person register.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('auditops')">Explore AuditOps</button>
+          <span class="progress-pill" id="pill-auditops">Not started</span>
+        </div>
+      </div>
+
+      <details class="archived-group">
+        <summary>
+          <span class="stamp arch">Archived</span>
+          <span>Five companies were archived per the locked summary. Tap to see why.</span>
+          <span class="chev">›</span>
+        </summary>
+        <div class="arch-list">
+          <div class="arch-item"><b>PayrollOps India</b><span>Gemini MONITOR — brilliant long-term destination, but an unfeasible starting wedge for a part-time team; direct legal liability if a statutory filing is missed.</span></div>
+          <div class="arch-item"><b>StatutoryEngine</b><span>Gemini MONITOR — technically viable but conceptually redundant alongside the provider path; effectively ProviderOS's backend decoupled.</span></div>
+          <div class="arch-item"><b>EventFabric</b><span>Gemini ARCHIVE — textbook anti-drift failure #2, architecture expanded faster than insights; Perplexity MONITOR — gated CIO buyer, incumbent roadmap overlap.</span></div>
+          <div class="arch-item"><b>AccuracyGuarantee</b><span>Gemini ARCHIVE — cannot be sold day one; requires 6–12 months of operational data to price, plus balance-sheet reserves a startup doesn't have.</span></div>
+          <div class="arch-item"><b>ChangeGuard</b><span>Gemini ARCHIVE — workflow grade B, fails the ownership filter; an interception feature that adds friction HR teams will resist.</span></div>
+          <div class="arch-item"><b>AcquiPay &amp; PortfolioPayroll</b><span>Not listed in the locked summary. In the supplied verdicts: Gemini ARCHIVE (unpredictable M&amp;A deal flow) and MONITOR (PE partners may treat payroll as a local-entity problem) respectively.</span></div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="export-block">
+      <h3>Your reflections</h3>
+      <p>Everything you answer inside the Explorer is saved on this device only. When you're ready to share before the founder discussion, export it.</p>
+      <div class="export-btns">
+        <button class="btn ghost" onclick="exportReflections('txt')">Export as text</button>
+        <button class="btn ghost" onclick="exportReflections('json')">Export as JSON</button>
+      </div>
+    </div>
+
+    <footer class="colophon">
+      INNOVATION_OS FOUNDER EXPLORER · FPA-12 v1 · JUNE 2026<br>
+      SOURCES: FPA-12 FOUNDER UNDERSTANDING v1 · FOUNDER COMPANY GENERATION v2 · GEMINI IC VERDICT · PERPLEXITY IC VERDICT · LOCKED FOUNDER REVIEW SUMMARY<br>
+      VERDICTS LOCKED. NO NEW COMPANIES. NO RANKING CHANGES. UNDERSTANDING, NOT PERSUASION.
+    </footer>
+  </div>
+</div>
+
+<!-- ===================================================== PAYROLLSHIELD -->
+<div id="view-payrollshield" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-payrollshield"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp build">Build-First · Locked</span>
+      <h1>PayrollShield</h1>
+      <p class="oneline">Does the pre-run payroll reconciliation as a completed service — every change classified, every retro-calculation computed, delivered ready to approve.</p>
+    </div>
+
+    <!-- S1 SNAPSHOT -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Payroll Accuracy Operations. <b>Pattern:</b> AI-Native Service Company — Tier S in our preference criteria: "Don't build a tool that helps people do accounting. Just do the accounting."</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived previous stages</span>
+        <p>PayrollShield achieved the strongest cross-AI consensus of any company in FPA-12. Claude identified strong venture potential. Gemini gave it a <b>GO</b> — "the foundational wedge for the entire problem space," requiring zero new domain knowledge, with an MVP deliverable manually in 2–6 weeks. Perplexity independently selected it as build-first: the buyer is reachable, the pain is externally corroborated by Indian payroll-compliance evidence, and the validation loop runs weekly rather than quarterly.</p>
+        <p>Of all ten generated companies, the artifact rated it highest on founder-market fit and validation speed.</p>
+      </div>
+    </section>
+
+    <!-- S2 UNDERSTAND THE WORLD -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Forget startups for ten minutes. Let me show you what actually happens in the 48 hours before payroll runs at a big Indian company. Tap through — the company doesn't appear until the pain is obvious.</p>
+
+      <div class="story">
+
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Who?</span><span class="step-q">The payroll administrator</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>There is a person — let's call her the payroll administrator — sitting inside a large Indian enterprise. Think of an IT services company with more than 10,000 employees. Her job sounds simple: make sure every employee gets paid the correct amount, on time, every month.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The work</span><span class="step-q">Two systems that don't talk in real time</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>The company runs two separate systems. The first is the <b>HR system</b> (an HRIS) — where HR records everything that happens to an employee: someone joins, resigns, gets promoted, gets a salary revision, transfers cities.</p>
+            <p>The second is the <b>payroll system</b> — the engine that actually computes salaries. In India, this is very often run by an <b>outsourced payroll provider</b>, a separate company hired to process salaries.</p>
+            <p>They're connected by a <b>batch sync</b>: payroll doesn't learn about HR changes instantly. It receives them later, in a scheduled bundle — a <b>delta file</b>, simply a list of "here is everything that changed since the last update." This is not a bug. The payroll engines are built this way, by design, for over ten years in companies running SAP or Oracle HR with ADP-style payroll.</p>
+            <div class="callout">Her month: in the 48 hours before final payroll runs, she opens that delta file and reads <b>every single change</b>, asking one question for each: "Does this affect someone's pay — and how?"</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Concrete example</span><span class="step-q">One backdated termination</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>HR records a termination — but it is <b>backdated</b>. The employee actually left three months ago; the paperwork arrived late. This single entry quietly triggers a chain:</p>
+            <ul>
+              <li><b>PF</b> (Provident Fund — the retirement contribution every employer must deposit by law) has been wrongly deducted for three months and must be recalculated backwards. In the evidence, one such change involved <b>₹47,000</b> of retro-calculation.</li>
+              <li><b>ESIC</b> (the state employee insurance scheme) registration must be reversed retroactively.</li>
+              <li><b>TDS</b> (Tax Deducted at Source — the income tax cut from salary) must be recomputed.</li>
+            </ul>
+            <p>That word — <b>retro-calculation</b> — just means redoing past months' calculations because something changed after the fact. India produces a lot of these: backdated exits, statutory thresholds, state-wise rules, and now the new Labour Codes changing the rules while the game is being played.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">What goes wrong?</span><span class="step-q">Now multiply by hundreds</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>One payroll cycle contains hundreds of changes. Any one of them could hide a chain like the one above. She must catch every single one — manually.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">How people cope</span><span class="step-q">Excel, checklists, and memory</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Home-grown Excel workbooks full of macros. Personal checklists. Memory. She cross-references the delta file against the payroll cycle by hand and builds an <b>override package</b> — corrections she sends to the payroll system before the run.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Why coping fails</span><span class="step-q">She works in fear of the one she missed</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <ul>
+              <li>Excel and memory do not scale with volume.</li>
+              <li>The knowledge lives in one person's head.</li>
+              <li>The statutory rules keep moving — the Labour Codes are changing the rules mid-game.</li>
+              <li>The outsourced provider adds yet another layer where things slip.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Consequences</span><span class="step-q">When one slips through</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>A wrong amount reaches an employee's paycheck. The company must run an <b>off-cycle correction run</b> — an emergency extra payroll cycle costing <b>$5,000–$15,000</b> each time. EPFO (the Provident Fund authority) can issue penalty notices. Unions raise grievances. Legal gets involved. Employees stop trusting their payslips.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <span class="eyebrow">The opening</span>
+        <p>Here is the part that matters most. The administrator feels the labor — but she does not feel the financial pain. The person who does is the <b>Controller or VP Finance</b> — the finance leader who answers for the correction run, the penalty notice, the audit finding.</p>
+        <p>The HR vendor hands over a raw file. The payroll vendor runs an engine. The dangerous intelligence work in between — "which of these changes will blow up?" — belongs to <b>nobody</b>. It is an orphan, done by hand, every cycle, forever. Ab samajh aaya? Good — now let's see what we'd build.</p>
+      </div>
+    </section>
+
+    <!-- S3 WHAT WOULD WE BUILD -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <p class="s-intro">PayrollShield does the pre-run reconciliation as a completed service. It sits exactly in the orphaned gap — the delta file still arrives, the batch sync still exists, but the dangerous manual reading of it disappears. No technology jargon, just the flow.</p>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="eyebrow">Inputs</span>
+          <p>The enterprise shares two things it already has: the HR delta file and the payroll cycle data.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">What happens</span>
+          <p>PayrollShield returns a finished <b>exception package</b>: every change classified, every retro-calculation already computed, every override pre-formatted — before the payroll run.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai">
+          <span class="eyebrow accent">Where AI helps</span>
+          <p>The detective work: classifying which of the hundreds of changes are dangerous, mapping cross-system consequences ("this backdated exit triggers PF retro + ESIC reversal + TDS recompute"), and computing the multi-step retro-calculations that today live in her Excel macros.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human">
+          <span class="eyebrow" style="color:var(--second)">Where humans stay involved</span>
+          <p>The administrator reviews and clicks "approve" — she becomes a reviewer, not a producer. Human sign-off stays by design (the evidence is explicit that compliance requires it). On our side: the first cycles are delivered manually with AI augmentation — Rajesh reviews the delta file, Rahul's pipeline classifies and computes, and Ranjan verifies every output against official sources (EPFO circulars, ESIC notifications, Income Tax Act sections) before anything reaches the client.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">Outputs</span>
+          <p>A ready-to-approve exception package, every cycle. ₹50K–₹1L per cycle for the first client. Revenue from week 3, productizing after clients 3–5.</p>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <span class="eyebrow">Why a company, not a feature</span>
+        <p>It owns the reconciliation workflow end to end (workflow grade C — the work disappears from the client). The incumbents built delta files — raw data. None built the intelligence on top, because the admin's manual labor is invisible to their contracts. And it is the validated starting motion toward the locked secondary paths: ProviderOS and AuditOps run on the same engine.</p>
+      </div>
+    </section>
+
+    <!-- S4 WHY CUSTOMERS CARE -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row">
+          <span class="eyebrow">The pain today</span>
+          <p>Every cycle, hundreds of changes read manually in a 48-hour window, any one of which can hide a retro-calculation chain. The admin works in fear of the one change she missed.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">What it costs</span>
+          <p>Off-cycle correction runs at $5,000–$15,000 each. EPFO penalty notices. Union grievances. Labour Code audit exposure. Employee trust erosion.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why today's coping fails</span>
+          <p>Excel and memory don't scale; the knowledge lives in one head; statutory rules keep moving (Labour Code rollout); and the outsourced provider adds another layer where things slip.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why they might pay</span>
+          <p>The Controller buys risk elimination — no payroll error reaching a paycheck on their watch — not software. One prevented correction run pays for months of the service. On per-cycle pricing acceptance specifically: Insufficient evidence available from previous stages.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5 WHAT SCARES US -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <p class="s-intro">Seven honest concerns from the locked verdicts. The first is structural — if it fires, it doesn't just kill PayrollShield. It kills every company in FPA-12.</p>
+      <div class="concerns">
+
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">The buyer may not exist at budget level</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Controllers/VP Finance experience payroll error risk as a buying-trigger-level problem.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The admin feels the labor but isn't the buyer. If finance leaders treat reconciliation as routine admin work that is "handled" by the payroll team, there is no buyer at budget-holder level — for any company on the list.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How real Controllers respond when asked to show their pre-run process and its near-misses.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>7/10 Controllers say "the payroll team handles it, I don't think about it." Per the artifact and Gemini: this kills PayrollShield and the entire FPA-12 portfolio — the team moves to another FPA.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">The consultancy trap</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The team can transition from manual service delivery to AI-led product.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Both Gemini and Perplexity flagged this drift risk independently. If the team grows by adding human hours instead of AI capability, PayrollShield becomes a consulting firm, not a technology company.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether four part-timers will honor the productization milestone under client delivery pressure.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>By month 9, less than 80% of classification and retro-calculation work is done by AI agents.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Statutory hallucination — one wrong number</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Ranjan's human-in-loop layer catches every AI error before delivery.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini named this the biggest portfolio risk: a mathematically confident but statutorily incorrect retro-calculation (e.g., a misread ESIC threshold) reaching a client could trigger penalties and destroy the startup's credibility in one event.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether verification can remain flawless at scale, under deadline pressure, as volume grows.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>A statutorily incorrect calculation reaching a client's paycheck.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Crowded incumbent space</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Owning the accuracy outcome is a wedge incumbents (ADP, Workday, SAP, local vendors) do not occupy.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity confirmed the pain exists but noted incumbents are actively investing in compliance and payroll tooling. The question isn't whether pain exists — it's whether we can convert pain into budget before incumbent tooling absorbs it.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How fast incumbent compliance features close the gap.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Will a 10,000-person company trust four part-timers?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Large Indian enterprises will share payroll data with — and pay — a four-person startup (Assumption A4).</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Payroll data is among the most sensitive data an enterprise holds. Procurement and infosec policies may simply not allow it, regardless of how good the service is.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Must be observed in pilot conversations — no prior stage settled it.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Is the complexity math, or judgment?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Indian statutory calculations are complex but deterministic — many steps, multiple rules, one correct answer. That's what AI reasoning excels at.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If the real complexity is interpretive — "it depends on how the regional PF office interprets the circular" — then it's human judgment, and AI cannot replicate it. This also determines whether the India moat is real.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How much of a specialist's hard cases are computation vs. interpretation.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Specialists consistently describing complexity that is fundamentally interpretive rather than computational.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Pricing — an honest blank</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>₹50K–₹1L per cycle is acceptable to first clients.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The week-3 revenue plan depends on this number being roughly right.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Insufficient evidence available from previous stages.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- S6 REALITY CHECKS -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">06</span><h2>Reality checks before commitment</h2></div>
+      <p class="s-intro">The next phase requires conversations, not building. The interview protocol is behavioral, not opinion-seeking: a real workbook shown on screen is evidence; an opinion is not. For each check, mark where you'd land.</p>
+
+      <div class="rc">
+        <h3>Check 1 — Does the Controller-level buyer actually exist?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>10 payroll directors and Controllers at large Indian enterprises (10K+ employees, SAP/Oracle HR systems plus outsourced payroll) — via LinkedIn and warm intros through Rajesh's network.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>Do NOT ask: "Do you have data sync issues?" or "Would you buy this?"</li>
+            <li>DO ask: "Can you show me the exact Excel workbook or delta report your team opens during the 48 hours before final payroll?"</li>
+            <li>"What specific errors did it catch last month that would have reached an employee paycheck otherwise?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>7/10 show complex, home-grown macro sheets and express genuine anxiety about missing a retro-calculation change. Gemini's bar: 7/10 Controllers confirm active anxiety and openness to a paid verification pilot. Perplexity's bar: 3/10 agree to a pilot conversation and 2/10 share a real workbook within 7 days.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>7/10 say the native delta file catches everything cleanly and they just check boxes — or Controllers consistently respond "the payroll team handles it." Per the locked evidence, that response kills the entire FPA-12 portfolio.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="payrollshield_rc1">
+            <label><input type="radio" name="ps_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ps_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="ps_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ps_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 2 — Is the statutory complexity computable, or interpretive?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>5 statutory payroll specialists at outsourced providers or large Indian enterprise payroll teams (the generation artifact's third interview track).</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Walk me through the most complex retro-calculation you handled last quarter. What made it complex? How many steps? How confident were you in the answer?"</li>
+            <li>"When the Labour Code amendments change interpretation, how does your team update their calculations? How long does it take?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Specialists describe calculations that are complex but deterministic — many steps, multiple rules, cross-referencing statutory tables, but one correct answer.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Specialists describe complexity that is fundamentally interpretive — "it depends on how the regional PF office interprets the circular."</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="payrollshield_rc2">
+            <label><input type="radio" name="ps_rc2" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ps_rc2" value="Pause">Pause</label>
+            <label><input type="radio" name="ps_rc2" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ps_rc2" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 3 — Will they let a four-person startup in, and at what price?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>The same 10 interviewees from Check 1 — these questions ride along once the workbook conversation has built trust.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"If an outside service delivered this exception package ready to approve each cycle — what would procurement and infosec need before sharing the delta file?"</li>
+            <li>"Would a paid pilot at per-cycle pricing be conceivable, and who signs it?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>Pilot conversations move to concrete next steps — data-sharing terms discussed, a budget owner named, openness to a paid verification pilot (per Gemini's criterion).</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Procurement and infosec walls appear consistently regardless of interest. On exact pricing acceptance: Insufficient evidence available from previous stages — this check is how that blank gets filled.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="payrollshield_rc3">
+            <label><input type="radio" name="ps_rc3" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ps_rc3" value="Pause">Pause</label>
+            <label><input type="radio" name="ps_rc3" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ps_rc3" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:14px;color:var(--muted)">A note on sequencing from the locked evidence: if PayrollShield validates, the same interviews surface each enterprise's outsourced provider — the entry point for ProviderOS conversations later. Neither secondary path should consume attention before the foundational buyer assumption is settled.</p>
+    </section>
+
+    <!-- S7 REFLECTION -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <p class="s-intro">Answer honestly and independently — before the founder discussion, not during it. Saved on this device only.</p>
+      <div class="reflect" data-opp="payrollshield">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="ps_q1" value="Yes">Yes</label><label><input type="radio" name="ps_q1" value="Unsure">Unsure</label><label><input type="radio" name="ps_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="ps_q2" value="Yes">Yes</label><label><input type="radio" name="ps_q2" value="Unsure">Unsure</label><label><input type="radio" name="ps_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="ps_q5" value="Yes">Yes</label><label><input type="radio" name="ps_q5" value="Unsure">Unsure</label><label><input type="radio" name="ps_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('payrollshield', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 DISCUSSION STARTERS -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <p class="s-intro">Bring these to the table. They're designed to surface disagreement, not to settle it.</p>
+      <div class="starters">
+        <div class="dq">Do we genuinely believe a Controller wakes up worried about payroll errors — or are we hoping they do? What in our own networks suggests either answer?</div>
+        <div class="dq">Can we realistically get 10 payroll directors/Controllers at 10K+ employee enterprises into discovery conversations within the next few weeks, given our combined hours?</div>
+        <div class="dq">The single kill assumption ("the payroll team handles it") collapses the entire FPA-12 portfolio. Are we comfortable that one round of interviews carries that much weight — and will we honor the kill signal if it fires?</div>
+        <div class="dq">The first revenue is manual work: reading delta files, computing retro-calculations, verifying against circulars, every cycle. Are we willing to do that grind part-time — and equally willing to stop doing it by month 9?</div>
+        <div class="dq">Would we enjoy becoming deep experts in Indian statutory payroll — PF, ESIC, TDS, Labour Codes — for years?</div>
+        <div class="dq">If a statutorily wrong calculation ever reached a client's paycheck, the company's credibility could die in one event. Does our verification discipline honestly survive contact with deadline pressure?</div>
+        <div class="dq">If FPA-12 failed, what do we each privately think the reason would be — and is that reason testable in the next 30 days?</div>
+      </div>
+    </section>
+
+    <!-- S9 BOARD SUMMARY -->
+    <section class="s" data-sect="payrollshield">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>PayrollShield</b> — Payroll Accuracy Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp build">Build-First · Locked</span></div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Controllers/VP Finance experience payroll error risk as a buying-trigger-level problem — not as routine admin work that is already "handled" by the payroll team.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">10 behavioral discovery interviews with payroll directors and Controllers at 10K+ employee Indian enterprises: "Show me the exact workbook you open in the 48 hours before final payroll — what did it catch last month?" Conversations only, no product.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">7/10 Controllers say "the payroll team handles it, I don't think about it" — which per the locked evidence kills not just PayrollShield but the entire FPA-12 portfolio.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('provideros')">Next: ProviderOS →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== PROVIDEROS -->
+<div id="view-provideros" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-provideros"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>ProviderOS</h1>
+      <p class="oneline">The AI verification engine inside India's outsourced payroll providers — letting them offer accuracy guarantees their competitors cannot match.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Payroll Provider Intelligence Infrastructure. <b>Pattern:</b> Vertical AI Software — owning the verification-and-delivery workflow inside the provider.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>The generation artifact itself named ProviderOS its single company to build, and Gemini agreed with a <b>GO</b> — "the smartest GTM execution of the FPA-12 artifact": it bypasses brutal enterprise procurement by selling to owner-operated provider firms, and one provider deal opens 10–30 enterprise payroll datasets at once.</p>
+        <p>But Perplexity held it at <b>MONITOR</b> — the provider-adoption assumption is plausible but not externally validated, and the channel could slow early learning if providers treat verification as a burden rather than a sales enabler. The locked consensus: PayrollShield first (it validates the foundational buyer), ProviderOS as the credible expansion path — the same engine, sold into the provider channel once the pain is proven.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world as PayrollShield — but step inside the outsourced provider's office this time. (If you haven't read the payroll administrator's story yet, start with PayrollShield.)</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">The provider's stack is Excel and memory</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>India's outsourced payroll providers — the firms enterprises hire to actually run salaries — employ 10–30 statutory specialists who manually compute PF, ESIC, TDS, professional tax, and gratuity for every mid-cycle change. Their technology stack, per the evidence: Excel and institutional memory.</p>
+            <p>Quality depends on individual knowledge. When a specialist leaves, their edge-case knowledge leaves with them. And the Labour Code rollout changes the rules faster than manual teams can retrain.</p>
+            <div class="callout">Here's the twist: providers profit from manual billable hours — they have no incentive to automate <i>themselves</i>. ProviderOS reframes it: not "automation" (revenue destruction) but a <b>competitive weapon</b> — the provider who adopts can tell enterprise clients "every statutory calculation is independently AI-verified before delivery." Competitors cannot make that claim.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>The provider's statutory calculations and the underlying HR change data for each enterprise client, inside the provider's existing delivery workflow.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>Independently verifying every statutory calculation — PF contributions, ESIC applicability, TDS computation, retro-calculations — before the provider delivers output to the enterprise client.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>The provider's specialists become an approval layer reviewing AI-verified output, instead of computing everything by hand. On our side, Ranjan's verification methodology — checking against EPFO circulars, ESIC notifications, Income Tax Act sections — IS the product's quality layer.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>A contractual claim competitors can't make: "Every statutory calculation is independently AI-verified before delivery." Pricing: ₹10–20/employee/month through the provider — for a provider serving 20K total employees, ₹2–4L/month.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>Manual statutory computation, person-dependent quality, knowledge that walks out the door, and Labour Code changes outpacing retraining.</p></div>
+        <div class="ev-row"><span class="eyebrow">The market pressure</span><p>Larger enterprises increasingly demand SLA-backed accuracy guarantees that manual providers cannot credibly offer.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>Client acquisition advantage, not cost reduction. When an enterprise evaluates three providers, the one offering AI-verified accuracy with a contractual guarantee wins. The provider's ROI is measured in enterprise clients won.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Will providers expose their own errors?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Providers will adopt a tool that makes their calculation errors visible.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Providers may resist from denial ("we don't make errors") or reputational fear ("admitting we need AI undermines client trust"). The whole go-to-market depends on the "competitive weapon, not an audit" reframe landing.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How real provider CEOs react to the framing — Perplexity explicitly noted adoption willingness is not externally validated.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>3/5 providers reject the pilot framing — or, per Perplexity's archive trigger, providers acknowledge pain but refuse any operational change.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">The data may not be ours to touch</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Provider workflows can route client payroll data through our verification pipeline.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk: enterprise clients might forbid their outsourced providers from passing sensitive PII/payroll data through a third-party startup's AI pipeline due to infosec policies — regardless of what the provider wants.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What enterprise data-processing terms actually permit in provider contracts.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">The channel may be slower than it looks</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The provider channel compresses access — one deal, 10–30 enterprise datasets.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity's counterpoint: trust-building with providers may be slower than direct practitioner outreach, and channel dependence could slow early learning loops — the opposite of what scarce founder time needs.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Actual provider sales-cycle length for a verification layer.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — will providers pick up the weapon?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>5 CEOs/operations heads of mid-size outsourced payroll providers (50–200 employees) in Bangalore, Pune, Mumbai — reached through Rajesh's enterprise payroll contacts (every payroll director knows their provider's CEO by name).</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>DO NOT ask: "Would you buy AI for your payroll team?"</li>
+            <li>DO ask: "Can you walk me through the last payroll cycle where a client called about an error? What happened, and what did your team do?"</li>
+            <li>"What percentage of your statutory calculations do you think contain errors in a typical cycle? How do your clients verify your accuracy?"</li>
+            <li>"If you could offer your enterprise clients a contractual accuracy guarantee backed by independent AI verification — would that help you win deals against competitors?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>3/5 providers acknowledge a non-trivial error rate and express pilot interest (bonus: one mentions losing a client over accuracy). Perplexity's GO trigger: 3–5 provider CEOs explicitly ask for a verification-backed guarantee and agree to a paid pilot within 2–3 weeks.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>4/5 providers deny making errors and refuse a verification pilot — or acknowledge pain but refuse any operational change, insisting accuracy is already "good enough."</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="provideros_rc1">
+            <label><input type="radio" name="po_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="po_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="po_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="po_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="provideros">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="po_q1" value="Yes">Yes</label><label><input type="radio" name="po_q1" value="Unsure">Unsure</label><label><input type="radio" name="po_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="po_q2" value="Yes">Yes</label><label><input type="radio" name="po_q2" value="Unsure">Unsure</label><label><input type="radio" name="po_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="po_q5" value="Yes">Yes</label><label><input type="radio" name="po_q5" value="Unsure">Unsure</label><label><input type="radio" name="po_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('provideros', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">If we ran a payroll provider, would we let outsiders measure our error rate? What would it take to say yes?</div>
+        <div class="dq">Is "competitive weapon" a genuine reframe — or a polite word for an audit the provider will see through immediately?</div>
+        <div class="dq">What happens if enterprise infosec forbids client data passing through our pipeline — does the whole channel die, and how early can we find out?</div>
+        <div class="dq">The generation artifact said: ProviderOS is the company, PayrollShield is the starting motion. Do we see it that way — or are these two companies quietly competing for our 40 hours?</div>
+        <div class="dq">What evidence from the PayrollShield interviews would make us accelerate ProviderOS — and what would make us drop it entirely?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="provideros">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>ProviderOS</b> — Payroll Provider Intelligence Infrastructure</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Gemini GO; Perplexity MONITOR; credible expansion path behind PayrollShield.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Providers will adopt a layer that exposes their own errors — because the "competitive weapon" framing (win clients with an AI-verified accuracy guarantee) outweighs denial and reputational fear.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">5 provider CEO/ops-head conversations in Bangalore/Pune/Mumbai using the behavioral protocol: last client error call, honest error-rate estimate, reaction to the guarantee framing.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">3/5 providers reject the pilot framing — denial of errors or refusal of any operational change — collapsing the provider channel.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('auditops')">Next: AuditOps →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== AUDITOPS -->
+<div id="view-auditops" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-auditops"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>AuditOps</h1>
+      <p class="oneline">Full-population payroll audits delivered as completed work — every employee, every calculation — instead of a 50-person sample from a 10,000-person register.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Payroll Control Assurance Operations. <b>Pattern:</b> AI-Native Service Company — not a tool for auditors, but the audit itself, delivered as a finished workpaper.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Gemini gave AuditOps a <b>GO</b>: "a robust, highly targeted application of the FPA-12 core engine that taps into mandatory compliance budgets rather than discretionary ops budgets" — and an excellent use of Ranjan's QA background translated into SOX-grade audit work.</p>
+        <p>The locked consensus holds it as a supporting opportunity requiring stronger evidence on two specific fronts: whether internal audit teams actually hold budget authority for a payroll-specific service, and whether external (Big 4) auditors would rely on automated testing output. Neither should consume attention before PayrollShield's foundational buyer assumption is settled.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world — but now meet a different team in the same building: internal audit.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">Checking 50 people out of 10,000</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Internal audit teams at large enterprises are required to test payroll accuracy — for US-listed Indian companies (think Infosys, TCS, Wipro), it's part of SOX compliance; on top of that sit Indian statutory audit requirements (EPFO, ESIC).</p>
+            <p>How do they do it today? Manual sampling: select 50–100 employees per quarter from a population of 10,000+, recalculate their payroll by hand, check HRIS alignment, document findings. 2–3 weeks of analyst time per cycle.</p>
+            <div class="callout">The sample covers <b>less than 1% of the population</b>. Sampling is accepted — but known to miss errors. Full-population testing was always better; it was simply too expensive to do by hand. Per the evidence, that cost inversion flipped: AI-powered full-population analysis is now cheaper than human sample-based testing.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>After each payroll cycle: the payroll register and the HRIS export.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>The full-population comparison — every employee, every calculation, every statutory amount — the work that made 100% coverage impossible by hand.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>The internal audit team reviews the delivered workpaper and files it — the audit stays theirs to sign. On our side, Ranjan's verification methodology — rigorous, documented, traceable — is what makes the output audit-grade.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>A completed audit workpaper with findings classified by severity, root cause, and remediation recommendation. ₹2–5L per audit cycle, delivered quarterly — ₹8–20L per client per year.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>2–3 weeks of analyst time per audit cycle for under 1% coverage — a methodology everyone accepts and everyone knows misses errors.</p></div>
+        <div class="ev-row"><span class="eyebrow">The dual burden</span><p>Indian enterprises carry both SOX obligations (US-listed entities) and Indian statutory audit requirements (EPFO, ESIC) — a double compliance load that raises audit demand.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>The Chief Audit Executive gets 100% coverage at sample-testing cost, with analysts freed for higher-value audit work — paid from mandatory compliance budgets, not discretionary ops budgets.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Is there even a budget line for us?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Internal audit teams have budget authority for a payroll-specific audit service.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Internal audit budgets may be centrally allocated to general-purpose platforms (AuditBoard, Workiva, TeamMate), leaving no line item for payroll-specific services. AuditOps might be forced to live as a module inside someone else's platform rather than a standalone purchase.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether CAEs can carve out budget without procurement blocking it — Gemini's week-1 question.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Audit teams locked into single-vendor platforms with no carve-out authority.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Will the Big 4 accept our work?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>External auditors will rely on AuditOps's automated testing output for SOX sign-off.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk: if external (Big 4) auditors refuse to rely on automated testing output, the service becomes useless for the SOX purpose it was bought for.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>External auditor acceptance criteria for automated full-population testing.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">A supporting act, not the headline</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>AuditOps deserves founder attention as a path of its own.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The locked consensus explicitly labels it a supporting opportunity requiring stronger evidence. It shares PayrollShield's engine — pursuing it early risks splitting four part-timers across two sales motions before the foundational buyer is even proven.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether audit demand surfaces naturally inside PayrollShield's enterprise conversations.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — does internal audit hold the wallet?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>5–10 Internal Audit Directors / Chief Audit Executives at SOX-obligated Indian enterprises (e.g., Infosys, Wipro-scale companies), via LinkedIn and Rajesh's enterprise network.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"How do you test payroll controls today — sample size, time spent, what the sample misses?"</li>
+            <li>"What's your appetite for outsourcing full-population payroll testing versus continuing manual sample-based testing?"</li>
+            <li>"Could you carve out budget for a payroll-specific automated audit without enterprise procurement blocking it?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>3/5 confirm they can carve out budget for a payroll-specific automated audit without procurement blocking it (Gemini's success criterion).</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Budgets are locked into monolithic platforms, or doubts surface that external auditors would rely on the output for sign-off.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="auditops_rc1">
+            <label><input type="radio" name="ao_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ao_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="ao_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ao_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="auditops">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="ao_q1" value="Yes">Yes</label><label><input type="radio" name="ao_q1" value="Unsure">Unsure</label><label><input type="radio" name="ao_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="ao_q2" value="Yes">Yes</label><label><input type="radio" name="ao_q2" value="Unsure">Unsure</label><label><input type="radio" name="ao_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="ao_q5" value="Yes">Yes</label><label><input type="radio" name="ao_q5" value="Unsure">Unsure</label><label><input type="radio" name="ao_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('auditops', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">Does an audit director really hold a wallet — or just a platform subscription someone else negotiated?</div>
+        <div class="dq">If the Big 4 won't sign off on our output, is there any version of AuditOps worth building?</div>
+        <div class="dq">Ranjan's QA discipline maps beautifully here. Is that founder-fit signal — or are we pattern-matching to what we wish were true?</div>
+        <div class="dq">Should AuditOps wait until a PayrollShield client asks for it — and what would we do if one asked next month?</div>
+        <div class="dq">Are we honest about this being the third priority? What would have to happen for it to deserve hours before ProviderOS?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="auditops">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>AuditOps</b> — Payroll Control Assurance Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Gemini GO; locked as a supporting opportunity requiring stronger evidence.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Internal audit teams hold budget authority for a payroll-specific automated audit — and external auditors will rely on its output for SOX sign-off.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">5–10 conversations with Internal Audit Directors / CAEs at SOX-obligated Indian enterprises on testing methodology, coverage gaps, and budget carve-out authority.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Audit budgets locked into monolithic platforms with no carve-out — or external auditors refusing to rely on automated testing output.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('payrollshield')">Revisit PayrollShield →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ============ storage (safe wrapper: localStorage when available, in-memory fallback) ============ */
+var MEM = {};
+var LS_OK = false;
+try { localStorage.setItem('__feT','1'); localStorage.removeItem('__feT'); LS_OK = true; } catch(e) {}
+function sGet(k){ try { return LS_OK ? localStorage.getItem(k) : (MEM[k]!==undefined?MEM[k]:null); } catch(e){ return MEM[k]!==undefined?MEM[k]:null; } }
+function sSet(k,v){ try { if(LS_OK){ localStorage.setItem(k,v); } } catch(e){} MEM[k]=v; }
+var NS = 'fpa12_explorer_';
+
+var OPPS = ['payrollshield','provideros','auditops'];
+var OPP_NAMES = { payrollshield:'PayrollShield (BUILD-FIRST)', provideros:'ProviderOS (SECONDARY)', auditops:'AuditOps (SECONDARY)' };
+
+/* ============ navigation ============ */
+function showView(id){
+  var views = document.querySelectorAll('.view');
+  for (var i=0;i<views.length;i++) views[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function openOpp(opp){
+  showView('view-'+opp);
+  markStarted(opp);
+  setupDots(opp);
+  restoreReflection(opp);
+  restoreImplications();
+}
+function goHome(){
+  showView('view-home');
+  refreshPills();
+}
+
+/* ============ story step toggles ============ */
+function toggleStep(btn){
+  var step = btn.parentElement;
+  step.classList.toggle('open');
+}
+
+/* ============ progress tracking ============ */
+function markStarted(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].started = true;
+  sSet(NS+'progress', JSON.stringify(p));
+}
+function markSeen(opp, idx){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  if(p[opp].seen.indexOf(idx) === -1) p[opp].seen.push(idx);
+  sSet(NS+'progress', JSON.stringify(p));
+  paintDots(opp);
+}
+function setupDots(opp){
+  var sections = document.querySelectorAll('#view-'+opp+' section.s');
+  var dotsBox = document.getElementById('dots-'+opp);
+  dotsBox.innerHTML = '';
+  for (var i=0;i<sections.length;i++){
+    var d = document.createElement('span');
+    dotsBox.appendChild(d);
+    sections[i].setAttribute('data-idx', i);
+  }
+  paintDots(opp);
+  if ('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ markSeen(opp, parseInt(en.target.getAttribute('data-idx'),10)); }
+      });
+    }, { threshold: 0.25 });
+    for (var j=0;j<sections.length;j++) obs.observe(sections[j]);
+  }
+}
+function paintDots(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  var seen = (p[opp] && p[opp].seen) || [];
+  var dots = document.querySelectorAll('#dots-'+opp+' span');
+  for (var i=0;i<dots.length;i++){
+    if (seen.indexOf(i) !== -1) dots[i].classList.add('seen'); else dots[i].classList.remove('seen');
+  }
+}
+function refreshPills(){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  OPPS.forEach(function(opp){
+    var pill = document.getElementById('pill-'+opp);
+    if(!pill) return;
+    var st = p[opp];
+    if(!st || !st.started){ pill.textContent = 'Not started'; pill.classList.remove('done'); }
+    else if (st.reflected){ pill.textContent = 'Reflection saved ✓'; pill.classList.add('done'); }
+    else { pill.textContent = 'In progress · '+ (st.seen ? st.seen.length : 0) +'/9 sections'; pill.classList.remove('done'); }
+  });
+}
+
+/* ============ radio pill styling ============ */
+document.addEventListener('change', function(e){
+  if (e.target && e.target.type === 'radio'){
+    var group = e.target.closest('.radio-row, .imp-opts');
+    if (group){
+      var labels = group.querySelectorAll('label');
+      for (var i=0;i<labels.length;i++) labels[i].classList.remove('sel');
+      e.target.closest('label').classList.add('sel');
+      if (group.classList.contains('imp-opts')){
+        sSet(NS+'imp_'+group.getAttribute('data-key'), e.target.value);
+      }
+    }
+  }
+});
+
+/* ============ reflection save / restore ============ */
+function saveReflection(opp, btn){
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  var data = { savedAt: new Date().toISOString() };
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  data.name = nameInput ? nameInput.value : '';
+  ['q1','q2','q5'].forEach(function(q){
+    var sel = box.querySelector('.radio-row[data-q='+q+'] input:checked');
+    data[q] = sel ? sel.value : '';
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    data[q] = ta ? ta.value : '';
+  });
+  sSet(NS+'reflection_'+opp, JSON.stringify(data));
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].reflected = true;
+  sSet(NS+'progress', JSON.stringify(p));
+  var msg = btn.parentElement.querySelector('.savemsg');
+  msg.classList.add('show');
+  setTimeout(function(){ msg.classList.remove('show'); }, 2200);
+  if (!LS_OK) {
+    msg.textContent = 'Saved for this session ✓ (open this file in a browser to keep answers permanently)';
+  }
+}
+function restoreReflection(opp){
+  var raw = sGet(NS+'reflection_'+opp);
+  if(!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch(e){ return; }
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  if(!box) return;
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  if (nameInput && data.name) nameInput.value = data.name;
+  ['q1','q2','q5'].forEach(function(q){
+    if(!data[q]) return;
+    var inp = box.querySelector('.radio-row[data-q='+q+'] input[value="'+data[q]+'"]');
+    if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    if(ta && data[q]) ta.value = data[q];
+  });
+}
+function restoreImplications(){
+  var groups = document.querySelectorAll('.imp-opts');
+  for (var i=0;i<groups.length;i++){
+    var key = groups[i].getAttribute('data-key');
+    var val = sGet(NS+'imp_'+key);
+    if(val){
+      var inp = groups[i].querySelector('input[value="'+val+'"]');
+      if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+    }
+  }
+}
+
+/* ============ export ============ */
+var RC_LABELS = {
+  payrollshield_rc1: 'PayrollShield — Check 1: Does the Controller-level buyer exist?',
+  payrollshield_rc2: 'PayrollShield — Check 2: Computable vs interpretive complexity',
+  payrollshield_rc3: 'PayrollShield — Check 3: Startup access + pricing',
+  provideros_rc1: 'ProviderOS — Check: Provider adoption of the verification layer',
+  auditops_rc1: 'AuditOps — Check: Internal audit budget authority'
+};
+function collectAll(){
+  var out = { artifact:'Innovation_OS Founder Explorer — FPA-12', exportedAt:new Date().toISOString(), reflections:{}, implications:{} };
+  OPPS.forEach(function(opp){
+    var raw = sGet(NS+'reflection_'+opp);
+    if(raw){ try { out.reflections[OPP_NAMES[opp]] = JSON.parse(raw); } catch(e){} }
+  });
+  Object.keys(RC_LABELS).forEach(function(k){
+    var v = sGet(NS+'imp_'+k);
+    if(v) out.implications[RC_LABELS[k]] = v;
+  });
+  return out;
+}
+function exportReflections(fmt){
+  var data = collectAll();
+  var content, mime, fname;
+  if (fmt === 'json'){
+    content = JSON.stringify(data, null, 2);
+    mime = 'application/json'; fname = 'FPA-12_founder_reflections.json';
+  } else {
+    var lines = [];
+    lines.push('INNOVATION_OS FOUNDER EXPLORER — FPA-12');
+    lines.push('Founder reflections export · ' + new Date().toLocaleString());
+    lines.push('========================================');
+    var any = false;
+    OPPS.forEach(function(opp){
+      var r = data.reflections[OPP_NAMES[opp]];
+      if(!r) return;
+      any = true;
+      lines.push('');
+      lines.push('--- ' + OPP_NAMES[opp] + ' ---');
+      if(r.name) lines.push('Founder: ' + r.name);
+      lines.push('Q1 Support allocating founder attention (if validation positive): ' + (r.q1 || '—'));
+      lines.push('Q2 Excited to help build: ' + (r.q2 || '—'));
+      lines.push('Q3 What scares you most: ' + (r.q3 || '—'));
+      lines.push('Q4 What should be validated first: ' + (r.q4 || '—'));
+      lines.push('Q5 Shortlist for validation: ' + (r.q5 || '—'));
+      if(r.savedAt) lines.push('Saved: ' + r.savedAt);
+    });
+    var impKeys = Object.keys(data.implications);
+    if (impKeys.length){
+      lines.push('');
+      lines.push('--- REALITY CHECK IMPLICATIONS ---');
+      impKeys.forEach(function(k){ lines.push(k + ': ' + data.implications[k]); });
+    }
+    if (!any && !impKeys.length){
+      lines.push('');
+      lines.push('No reflections saved yet. Explore an opportunity and answer Section 7 first.');
+    }
+    content = lines.join('\n');
+    mime = 'text/plain'; fname = 'FPA-12_founder_reflections.txt';
+  }
+  var blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ============ init ============ */
+refreshPills();
+restoreImplications();
+OPPS.forEach(restoreReflection);
+</script>
+</body>
+</html>

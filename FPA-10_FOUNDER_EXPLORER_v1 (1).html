@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation_OS Founder Explorer — FPA-10</title>
+<style>
+  :root{
+    --paper:#F6F4EE; --card:#FFFFFF; --ink:#23272E; --muted:#6E7077; --line:#E2DED3;
+    --verify:#1F7A53; --verify-bg:#EAF4EE;
+    --second:#A9742B; --second-bg:#F7F0E2;
+    --arch:#8A8C92; --arch-bg:#EEEEEC;
+    --kill:#B3402E; --kill-bg:#F9ECE9;
+    --accent:#0E5A8A; --accent-bg:#EAF1F6;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important;animation:none !important} }
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+  h1,h2,h3{font-family:var(--serif);line-height:1.25;font-weight:600}
+  p{margin-bottom:0.9em}
+  button{font-family:var(--sans);cursor:pointer}
+  a{color:var(--accent)}
+
+  /* eyebrow / utility labels — echo of ELD logs and billing screens */
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+  .eyebrow.accent{color:var(--accent)}
+
+  /* the signature: verdict stamps, like a QA seal pressed onto the page */
+  .stamp{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+    padding:5px 12px;border:2px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--card), inset 0 0 0 3px currentColor;
+    transform:rotate(-2deg);background:var(--card)}
+  .stamp.build{color:var(--verify)} .stamp.second{color:var(--second)} .stamp.arch{color:var(--arch)} .stamp.kill{color:var(--kill)}
+
+  /* ============ HOME ============ */
+  header.masthead{padding:54px 0 28px;border-bottom:1px solid var(--line)}
+  .masthead .eyebrow{margin-bottom:14px}
+  .masthead h1{font-size:clamp(30px,6vw,42px);margin-bottom:10px}
+  .masthead .sub{color:var(--muted);font-size:17px;max-width:560px}
+  .masthead .fpa-line{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.06em}
+
+  .lockednote{margin:22px 0 0;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink);font-size:14px;color:var(--muted)}
+  .lockednote b{color:var(--ink)}
+
+  .cards{margin-top:30px;display:grid;gap:16px}
+  .opp-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 22px 18px;position:relative;transition:box-shadow .15s ease, transform .15s ease}
+  .opp-card:hover{box-shadow:0 4px 18px rgba(35,39,46,.07);transform:translateY(-1px)}
+  .opp-card .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .opp-card h2{font-size:24px}
+  .opp-card .oneline{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .opp-card .cardfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-block;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:9px 18px;font-size:14px;font-weight:600;letter-spacing:.02em}
+  .btn:hover{background:#000}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:#fff}
+  .btn:focus-visible,.toggle:focus-visible,details summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .progress-pill{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:var(--paper)}
+  .progress-pill.done{color:var(--verify);border-color:var(--verify)}
+
+  details.archived-group{margin-top:8px;border:1px dashed var(--line);border-radius:10px;background:transparent}
+  details.archived-group>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px}
+  details.archived-group>summary::-webkit-details-marker{display:none}
+  details.archived-group>summary .chev{margin-left:auto;transition:transform .15s}
+  details.archived-group[open]>summary .chev{transform:rotate(90deg)}
+  .arch-list{padding:0 20px 18px;display:grid;gap:10px}
+  .arch-item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+  .arch-item b{font-family:var(--serif);font-size:15px}
+  .arch-item span{color:var(--muted);display:block;margin-top:2px}
+
+  .export-block{margin-top:36px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .export-block h3{font-size:18px;margin-bottom:6px}
+  .export-block p{font-size:14px;color:var(--muted)}
+  .export-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  /* ============ OPPORTUNITY VIEW ============ */
+  .view{display:none}
+  .view.active{display:block}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(246,244,238,.94);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:6px}
+  .topbar-inner{max-width:760px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px}
+  .backbtn{background:none;border:none;color:var(--ink);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;padding:6px 4px}
+  .backbtn:hover{color:var(--accent)}
+  .sectdots{margin-left:auto;display:flex;gap:5px}
+  .sectdots span{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .sectdots span.seen{background:var(--verify)}
+
+  .opp-hero{padding:34px 0 8px}
+  .opp-hero h1{font-size:clamp(28px,6vw,38px);margin:12px 0 8px}
+  .opp-hero .oneline{font-size:18px;color:var(--muted);font-family:var(--serif);font-style:italic;max-width:600px}
+
+  section.s{padding:34px 0 8px;border-top:1px solid var(--line);margin-top:30px}
+  section.s:first-of-type{border-top:none;margin-top:0}
+  .s-label{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .s-label .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .s-label h2{font-size:24px}
+  .s-intro{color:var(--muted);font-size:15px;margin-bottom:18px;max-width:600px}
+
+  /* survived box */
+  .why-survived{background:var(--verify-bg);border:1px solid #CDE4D7;border-radius:10px;padding:18px 20px;margin-top:14px}
+  .why-survived .eyebrow{color:var(--verify);margin-bottom:8px}
+  .why-survived p{font-size:15px;margin-bottom:8px}
+  .why-survived p:last-child{margin-bottom:0}
+
+  /* story steps (Section 2) */
+  .story{display:flex;flex-direction:column}
+  .story-step{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .story-step+.story-connector{align-self:center;color:var(--muted);font-size:18px;padding:4px 0;line-height:1}
+  .toggle{width:100%;text-align:left;background:none;border:none;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  .toggle .step-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;white-space:nowrap}
+  .toggle .step-q{font-family:var(--serif);font-size:18px;font-weight:600;flex:1}
+  .toggle .chev{color:var(--muted);transition:transform .15s;flex-shrink:0}
+  .story-step.open .toggle .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:0 18px 18px;font-size:15.5px}
+  .story-step.open .step-body{display:block}
+  .step-body .callout{background:var(--paper);border-left:3px solid var(--accent);padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .step-body ul{margin:0 0 .9em 1.2em}
+  .step-body li{margin-bottom:6px}
+
+  .bridge{margin-top:22px;background:var(--ink);color:#F3F1EA;border-radius:10px;padding:22px 24px}
+  .bridge .eyebrow{color:#B9C4CE;margin-bottom:8px}
+  .bridge p{font-size:16px;font-family:var(--serif)}
+  .bridge p:last-child{margin-bottom:0}
+
+  /* flow (Section 3) */
+  .flow{display:flex;flex-direction:column;margin-top:6px}
+  .flow-node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .flow-node .eyebrow{margin-bottom:6px}
+  .flow-node p{font-size:15px;margin-bottom:6px}
+  .flow-node p:last-child{margin-bottom:0}
+  .flow-node.ai{border-left:3px solid var(--accent)}
+  .flow-node.human{border-left:3px solid var(--second)}
+  .flow-arrow{align-self:center;color:var(--muted);padding:4px 0;font-size:18px;line-height:1}
+  .guarantee{margin-top:18px;background:var(--verify-bg);border:1.5px solid var(--verify);border-radius:10px;padding:18px 20px}
+  .guarantee .eyebrow{color:var(--verify)}
+  .guarantee p{font-size:15.5px;margin:6px 0 0}
+
+  /* evidence rows (Section 4) */
+  .ev-grid{display:grid;gap:12px}
+  .ev-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ev-row .eyebrow{margin-bottom:6px}
+  .ev-row p{font-size:15px;margin-bottom:6px}
+  .ev-row p:last-child{margin-bottom:0}
+
+  /* concern cards (Section 5) */
+  .concerns{display:grid;gap:12px}
+  details.concern{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  details.concern.locked-kill{border:1.5px solid var(--kill)}
+  details.concern>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  details.concern>summary::-webkit-details-marker{display:none}
+  details.concern>summary .c-title{font-family:var(--serif);font-size:17px;font-weight:600;flex:1}
+  details.concern>summary .chev{color:var(--muted);transition:transform .15s}
+  details.concern[open]>summary .chev{transform:rotate(90deg)}
+  .c-body{padding:0 18px 18px;display:grid;gap:10px}
+  .c-part{font-size:14.5px}
+  .c-part .eyebrow{display:block;margin-bottom:3px}
+  .c-part.killline{background:var(--kill-bg);border-left:3px solid var(--kill);padding:10px 12px;border-radius:0 6px 6px 0}
+  .c-part.killline .eyebrow{color:var(--kill)}
+
+  /* reality checks (Section 6) */
+  .rc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
+  .rc h3{font-size:19px;margin-bottom:10px}
+  .rc .rc-block{margin-bottom:12px;font-size:14.5px}
+  .rc .rc-block .eyebrow{display:block;margin-bottom:4px}
+  .rc ul{margin:4px 0 0 1.2em}
+  .rc li{margin-bottom:5px}
+  .rc .up{border-left:3px solid var(--verify);background:var(--verify-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .down{border-left:3px solid var(--kill);background:var(--kill-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .up .eyebrow{color:var(--verify)} .rc .down .eyebrow{color:var(--kill)}
+  .implication{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .implication .eyebrow{display:block;margin-bottom:8px}
+  .imp-opts{display:flex;gap:8px;flex-wrap:wrap}
+  .imp-opts label{border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--paper);user-select:none}
+  .imp-opts input{position:absolute;opacity:0;pointer-events:none}
+  .imp-opts label.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+
+  /* reflection (Section 7) */
+  .reflect{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
+  .q{margin-bottom:20px}
+  .q .qt{font-weight:600;font-size:15.5px;margin-bottom:8px;display:block}
+  .radio-row{display:flex;gap:8px;flex-wrap:wrap}
+  .radio-row label{border:1.5px solid var(--line);border-radius:99px;padding:7px 18px;font-size:14px;cursor:pointer;background:var(--paper);user-select:none}
+  .radio-row input{position:absolute;opacity:0;pointer-events:none}
+  .radio-row label.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+  textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14.5px;background:var(--paper);color:var(--ink);resize:vertical}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:80px}
+  .savemsg{font-size:13px;color:var(--verify);font-weight:600;margin-left:12px;opacity:0;transition:opacity .3s}
+  .savemsg.show{opacity:1}
+
+  /* discussion starters (Section 8) */
+  .starters{counter-reset:dq;display:grid;gap:10px}
+  .starters .dq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;font-size:15.5px;font-family:var(--serif)}
+  .starters .dq::before{counter-increment:dq;content:counter(dq,decimal-leading-zero);position:absolute;left:16px;top:15px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+
+  /* board summary (Section 9) */
+  .board{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+  .board-row{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line)}
+  .board-row:last-child{border-bottom:none}
+  .board-row .bk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:var(--paper)}
+  .board-row .bv{padding:14px 16px;font-size:14.5px}
+  @media(max-width:540px){.board-row{grid-template-columns:1fr}.board-row .bk{padding-bottom:2px}.board-row .bv{padding-top:4px}}
+
+  .endnav{margin-top:40px;display:flex;gap:10px;flex-wrap:wrap}
+  footer.colophon{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<!-- ===================================================== HOME -->
+<div id="view-home" class="view active">
+  <div class="wrap">
+    <header class="masthead">
+      <div class="eyebrow">Innovation_OS · 2026</div>
+      <h1>Founder Explorer</h1>
+      <p class="sub">One world — the office behind America's trucks. Three opportunities that survived. Your job here is not to agree — it is to understand, to question, and to arrive at the founder discussion prepared.</p>
+      <div class="fpa-line">FPA-10 · FREIGHT EXCEPTION REVENUE RECOVERY · RESEARCH STATUS: COMPLETE · VERDICTS: LOCKED</div>
+    </header>
+
+    <div class="lockednote">
+      <b>How to read this.</b> The investment committee (Claude + Gemini + Perplexity) has already locked its verdicts. Nothing here re-ranks, re-validates, or persuades. This Explorer exists so each founder can independently understand the world, poke at the assumptions, and record their own honest reaction before we talk.
+    </div>
+
+    <div class="cards">
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>EvidentFreight</h2>
+          <span class="stamp build">Build-First</span>
+        </div>
+        <p class="oneline">An automated evidence assembler for denied freight claims. It turns a carrier's scattered records into one dossier per claim — built to defeat the broker's three standard denial arguments.</p>
+        <div class="cardfoot">
+          <button class="btn" onclick="openOpp('evidentfreight')">Explore EvidentFreight</button>
+          <span class="progress-pill" id="pill-evidentfreight">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>FreightReclaim</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">Takes over the entire detention claim lifecycle — from detection through filing, dispute, and collection — charging only on recovered revenue.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('freightreclaim')">Explore FreightReclaim</button>
+          <span class="progress-pill" id="pill-freightreclaim">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>ClockIn.ai</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">An autonomous agent that watches the contractual detention clock and fires the broker notification inside the 15–30 minute window — so claims stop dying before they're born.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('clockin')">Explore ClockIn.ai</button>
+          <span class="progress-pill" id="pill-clockin">Not started</span>
+        </div>
+      </div>
+
+      <details class="archived-group">
+        <summary>
+          <span class="stamp arch">Archived</span>
+          <span>All remaining concepts were archived per the locked summary. Tap to see them.</span>
+          <span class="chev">›</span>
+        </summary>
+        <div class="arch-list">
+          <div class="arch-item"><b>FleetBilling</b><span>Crowded software landscape and a slower, trust-heavy cycle — billing replacement touches core finance workflows (Perplexity MONITOR).</span></div>
+          <div class="arch-item"><b>DockScore</b><span>Severe cold-start data problem, and Samsara already ships detention reports — platform encroachment weakens the standalone moat (Perplexity MONITOR).</span></div>
+          <div class="arch-item"><b>ClaimBundle</b><span>Perplexity rated it GO, but it was not selected in the locked consensus.</span></div>
+          <div class="arch-item"><b>LoadShield</b><span>Improves a decision rather than owning an outcome; a fast kill test, but a wedge, not a destination.</span></div>
+          <div class="arch-item"><b>FreightProof</b><span>Depends on fleets granting simultaneous access to ELD, driver communications, BOL images, and broker correspondence.</span></div>
+          <div class="arch-item"><b>ClaimBridge</b><span>Requires working capital to purchase claims — a Series A concept, not a pre-seed concept for a bootstrapped team.</span></div>
+          <div class="arch-item"><b>FreightMemory</b><span>Knowledge moat is real, but unproven whether dispute strategy (not evidence quality) actually drives claim outcomes.</span></div>
+          <div class="arch-item"><b>BrokerClear</b><span>Asks brokers to pay for approving more carrier claims — only works if carrier retention outweighs per-claim savings.</span></div>
+          <div class="arch-item"><b>CarrierVoice</b><span>A feature standalone, a wedge at best — ₹100Cr+ requires expansion into FreightReclaim anyway.</span></div>
+          <div class="arch-item"><b>VoiceAccessorial</b><span>Severe privacy, data governance, and legal integration friction around monitoring driver communications (Gemini ARCHIVE).</span></div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="export-block">
+      <h3>Your reflections</h3>
+      <p>Everything you answer inside the Explorer is saved on this device only. When you're ready to share before the founder discussion, export it.</p>
+      <div class="export-btns">
+        <button class="btn ghost" onclick="exportReflections('txt')">Export as text</button>
+        <button class="btn ghost" onclick="exportReflections('json')">Export as JSON</button>
+      </div>
+    </div>
+
+    <footer class="colophon">
+      INNOVATION_OS FOUNDER EXPLORER · FPA-10 v1 · JUNE 2026<br>
+      SOURCES: FPA-10 FOUNDER UNDERSTANDING v1 · FOUNDER COMPANY GENERATION v2 · GEMINI IC VERDICT · PERPLEXITY IC VERDICT · LOCKED FOUNDER REVIEW SUMMARY<br>
+      VERDICTS LOCKED. NO NEW COMPANIES. NO RANKING CHANGES. UNDERSTANDING, NOT PERSUASION.
+    </footer>
+  </div>
+</div>
+
+<!-- ===================================================== EVIDENTFREIGHT -->
+<div id="view-evidentfreight" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-evidentfreight"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp build">Build-First · Locked</span>
+      <h1>EvidentFreight</h1>
+      <p class="oneline">An automated evidence assembler for denied freight claims — scattered records in, one dossier per claim out, built to defeat the broker's three standard denial arguments.</p>
+    </div>
+
+    <!-- S1 SNAPSHOT -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Automated Freight Claim Evidence Assembler. <b>Pattern:</b> AI Vertical Software, functioning as a Multi-Agent Enterprise System — an automated back-office that pulls disparate records into structured output. Both Tier S patterns in our preference criteria.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived previous stages</span>
+        <p>Three committees, three different favorites — and one consensus. Claude favored ClockIn.ai's venture upside. Perplexity favored FreightReclaim's service-first economics. Gemini gave EvidentFreight the only <b>GO</b> in its review, calling it "the only company in the portfolio that perfectly balances high venture potential with the team's strict part-time, cross-border execution constraints."</p>
+        <p>The consensus saw the three survivors as a natural sequence, not rivals: <b>EvidentFreight → FreightReclaim → ClockIn.ai</b>. EvidentFreight is the entry point — it runs entirely on asynchronous batch data (no live integrations, no real-time clocks, no night shifts for an India-based team) and teaches us broker contracts, geofencing logic, and dispute packages, from which the later companies become reachable.</p>
+      </div>
+    </section>
+
+    <!-- S2 UNDERSTAND THE WORLD -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Forget startups for ten minutes. This is one day in an American trucking company — not the trucks, the office behind the trucks. Tap through, one step at a time. The company doesn't appear until the pain is obvious.</p>
+
+      <div class="story">
+
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Who?</span><span class="step-q">Two people behind 20–100 trucks</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>A mid-size trucking company in the US runs maybe 20 to 100 trucks. Behind those trucks sit two kinds of office people.</p>
+            <p>A <b>dispatcher</b> — the person who decides which truck takes which load, and who stays on the phone with drivers all day.</p>
+            <p>And a <b>billing clerk</b> — the person who turns finished deliveries into invoices and chases the money.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The work</span><span class="step-q">Trucking's second kind of money</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>When a truck delivers goods, the company gets paid for the trip. Simple. But trucking has a second kind of money, and that's where this whole story lives.</p>
+            <p>A driver arrives at a warehouse to unload. The warehouse is slow. The driver sits in his cab for four hours doing nothing. That waiting time is called <b>detention</b> — and the contract says the trucking company can charge for it, because a parked truck earns nothing.</p>
+            <p>There's also a middleman in most of these deals called a <b>broker</b> — the company that connects whoever owns the goods with whoever owns the trucks. The broker is the one the trucking company must bill, and the one who decides whether to pay.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Concrete example</span><span class="step-q">"lumper 275 walmart load"</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>A driver texts his dispatcher: <b>"lumper 275 walmart load"</b> — meaning he paid $275 cash to warehouse workers to unload the Walmart shipment. The dispatcher, juggling 45 active loads at that moment, scribbles it on a sticky note. At shift end he types it into a Google Sheet. Three days later the billing clerk tries to match that note to the right load. Sometimes she gets it wrong. Sometimes it's simply lost. The $275 was real money spent — and it quietly vanishes.</p>
+            <p>Now the bigger version. That same driver waited four hours at a dock. The contract allows a detention charge — say $200–$300. The clerk files the claim with the broker.</p>
+            <div class="callout">Here's the number that should stop you: <b>across the industry, only 29.3% of billed detention money is ever collected.</b> More than 70% of money the trucking company has earned, on paper, never arrives.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">What goes wrong?</span><span class="step-q">The broker's three standard arguments</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>When the clerk files a claim, the broker pushes back with three standard arguments:</p>
+            <ul>
+              <li><i>"Your driver wasn't actually there that whole time"</i> — prove his status minute by minute.</li>
+              <li><i>"Your driver arrived late for his appointment, so the waiting is your fault."</i></li>
+              <li><i>"We need the signed paper documents, not your screenshots."</i></li>
+            </ul>
+            <p>To answer these, the clerk needs proof from many places at once: the truck's <b>ELD</b> — the electronic logbook every US truck must carry, recording where the truck was and when — plus photos of delivery papers, the appointment confirmation, the contract terms, the driver's texts. These live in 4–5 different systems.</p>
+            <div class="callout">Assembling proof for ONE claim takes her <b>45 to 90 minutes</b>. The evidence comes out incomplete in most cases.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">How people cope</span><span class="step-q">The math she does in her head</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>The clerk handles about 15 claims a week and actually collects on 4. When a claim is denied, she spends 2 hours writing a response, follows up 3–5 times, and after 60 days... gives up.</p>
+            <p>Why? Do the math she does in her head: this claim is worth $200. Fighting it costs hours of work. <b>For claims of $100–$500, fighting costs more than the claim is worth.</b> So the rational move is to abandon it. Every single small claim, abandoned rationally, one by one.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Why coping fails</span><span class="step-q">Three things that won't fix themselves</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <ul>
+              <li><b>The broker is structurally motivated to deny.</b> Every denied claim is money the broker keeps. This is not rudeness — it's the permanent shape of the relationship.</li>
+              <li><b>Some contracts void claims in minutes.</b> They say the trucking company must notify the broker <i>within 15–30 minutes</i> of detention starting — or the claim is void. A dispatcher watching 45 loads cannot watch 45 stopwatches.</li>
+              <li><b>The knowledge lives in one head.</b> How each broker denies, and what works against them, lives only inside the veteran clerk's head. Billing teams have 40%+ turnover per year. When she quits, the company starts from zero.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Consequences</span><span class="step-q">Earned, billed, silently written off</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>A fleet leaks <b>$1,500–$3,000 per truck per month</b> this way. For these companies that's <b>2–5% of their entire operating margin</b> — earned, billed, and then silently written off every quarter.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <span class="eyebrow">The opening</span>
+        <p>The trucking company is not losing this fight because it lacks data. The ELD knows exactly where the truck sat and for how long. It loses because <b>nobody has the time to assemble that proof into a package the broker cannot refuse</b> — claim by claim, for claims too small to justify a human's hours.</p>
+        <p>That gap — between proof that exists and proof that gets assembled — is where the company we chose lives. Ab samajh aaya? Good — now let's see what we'd build.</p>
+      </div>
+    </section>
+
+    <!-- S3 WHAT WOULD WE BUILD -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <p class="s-intro">EvidentFreight is an automated evidence assembler. Not live, not real-time — it works on yesterday's and last week's denied claims, in batches, on our own hours. Here's the flow, no technology jargon.</p>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="eyebrow">Inputs</span>
+          <p>The carrier's pile of denied claims, as ordinary historical files sent over email: PDFs, spreadsheets, ELD logs, geofence records, text logs.</p>
+          <p><b>No live integrations. No real-time clocks.</b> Nothing in the carrier's infrastructure changes.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">What happens</span>
+          <p>For each denied claim, the scattered records are pulled together into one structured, multi-source evidence dossier — built specifically to refute the broker's three standard denial arguments: driver status, appointment fault, paper supremacy.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai">
+          <span class="eyebrow accent">Where AI helps</span>
+          <p>The assembly itself — the work that takes the clerk 45–90 minutes per claim across 4–5 systems. The system reads the documents, matches the records to the claim, and structures the argument. That's what makes claims too small for a human's hours suddenly worth pursuing.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human">
+          <span class="eyebrow" style="color:var(--second)">Where humans stay involved</span>
+          <p>The clerk still submits the package into the broker's portal — EvidentFreight owns the compilation and the argument, not the submission. And on our side, the founders run the pipelines and review outputs entirely within their own part-time hours. That's the honest shape of it: we own the evidence, not the outcome.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">Outputs</span>
+          <p>One dispute-ready dossier per claim. Claims that were rationally abandoned become rationally pursuable.</p>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <span class="eyebrow">Why a company, not a feature</span>
+        <p>The stated moat is the accumulated cross-carrier knowledge base of broker denial patterns and winning evidentiary thresholds — something legacy systems cannot match — plus the stated expansion sequence into FreightReclaim and ClockIn.ai. Beyond that: Insufficient evidence available from previous stages.</p>
+      </div>
+    </section>
+
+    <!-- S4 WHY CUSTOMERS CARE -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row">
+          <span class="eyebrow">The pain today</span>
+          <p>45–90 minutes to assemble evidence for one claim, across 4–5 systems — and it still comes out incomplete in most cases. Anything under $500 is rationally abandoned.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">What it costs</span>
+          <p>Only 29.3% of billed detention is ever collected — 70.7% leaks. That's $1,500–$3,000 per truck per month, or 2–5% of operating margin, written off every quarter.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why today's coping fails</span>
+          <p>The broker is structurally motivated to deny. Notification windows of 15–30 minutes void claims before anyone notices. And the knowledge of how to fight each broker lives in one veteran clerk's head, in a role with 40%+ annual turnover.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why they might pay</span>
+          <p>This is their own written-off revenue coming back — demonstrated on their own historical denial files before they commit to anything. A carrier billing $500K/month in extra charges is leaking over $350K of it; per the locked evidence, reclaiming even 20% of that leakage yields massive savings. On pricing and contract structure specifically: Insufficient evidence available from previous stages.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5 WHAT SCARES US -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <p class="s-intro">Six honest concerns from the locked verdicts. Tap each one. The first is the primary stated kill risk — and it's testable in seven days.</p>
+      <div class="concerns">
+
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Paper supremacy</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Broker denials can be refuted with digital evidence alone — ELD logs, geofences, text logs.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If brokers demand physical stamps and signatures that no digital dossier can satisfy, the core value proposition fails. This is the artifact's primary stated risk.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What a manual audit of real historical denials will show. Gemini judged this testable within 7 days.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>The audit showing digital evidence cannot cleanly refute the stated denial reasons.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Portal gatekeeping</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Evidence packages can actually reach the broker's decision process.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk: broker portals implementing CAPTCHAs or multi-factor authentication that blocks automated data gathering or mechanical portal validation. At portfolio level, broker platform whitelisting/gatekeeping is framed as an existential risk to the delivery model.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How widespread such defenses are at the brokers our target carriers bill.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Programmatic auto-denial</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Brokers respond to an un-falsifiable digital evidence bundle.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini named this the core two-week validation target: "If brokers use programmatic auto-denials that ignore digital records completely, the underlying value proposition across the entire portfolio changes."</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>The actual response rate of US mid-market brokers when presented with such a bundle.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Broker response rate to evidence bundles is effectively zero.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Relationship sensitivity</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Fleets will pursue denied claims more aggressively once evidence is cheap.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity flagged that broker–carrier relationship damage could slow adoption more than the artifacts imply. The broker is also the source of future loads.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Where carriers draw the line between recovering money and protecting the relationship.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Will strangers hand us their files?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Carriers will share historical denial files with an unproven remote team.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The entire Week-1 experiment — and the demonstration that converts customers — depends on getting real denied-claims files before any product exists.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether LinkedIn cold outreach and warm intros can produce 3 willing carriers.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Carriers refuse to share denial files.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">We own the evidence, not the outcome</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Customers will pay meaningfully for the dossier even though their own clerk still submits it (Grade B workflow ownership).</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If the human-submission step limits how much value customers attribute to the service, the pricing ceiling drops.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Pricing, willingness to pay, and contract structure for EvidentFreight specifically.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- S6 REALITY CHECKS -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">06</span><h2>Reality checks before commitment</h2></div>
+      <p class="s-intro">The locked verdicts already define the next learning loop: conversations and manual work — no build. Ten calls, then a by-hand audit. The answer arrives in days, not months. For each check, mark where you'd land.</p>
+
+      <div class="rc">
+        <h3>Check 1 — Will carriers share their denied-claims files?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>10 freight billing/settlement managers (or fleet operations / billing-AR managers) at 20–100 truck US carriers, via LinkedIn cold outreach or warm intros.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"Would you share 15–20 historical denied claims so we can audit them — free — and show you what was refutable?"</li>
+            <li>"Would you share 3 recent denied claims and allow a manual recovery attempt?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>3 carriers provide historical data, and 7 of 10 confirm current collection leakage.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Carriers refuse to share denial files with an unproven remote team.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="evidentfreight_rc1">
+            <label><input type="radio" name="ef_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ef_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="ef_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ef_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 2 — Can digital evidence actually refute the denials?</h3>
+        <div class="rc-block"><span class="eyebrow">Who does this · how</span>Us — by hand. A manual audit of the historical denial files: assemble the multi-source digital dossier (ELD logs, geofences, text logs) per claim and test it against the broker's stated denial reason. No product. No automation. This is the kill-or-confirm step.</div>
+        <div class="rc-block"><span class="eyebrow">What to count</span>
+          <ul>
+            <li>For each denied claim: can the stated denial reason be cleanly refuted via digital evidence alone?</li>
+            <li>Track which of the three arguments (driver status, appointment fault, paper supremacy) each denial rests on.</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>The manual audit proves digital evidence refutes at least 40% of stated denial reasons (Gemini's success criteria).</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>The audit shows denials rest on paper supremacy that digital dossiers cannot answer.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="evidentfreight_rc2">
+            <label><input type="radio" name="ef_rc2" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ef_rc2" value="Pause">Pause</label>
+            <label><input type="radio" name="ef_rc2" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ef_rc2" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 3 — Do brokers respond to digital evidence bundles at all?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>Within the same 10 calls — plus, per Perplexity's framing, live pilot attempts on real denied claims.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"When you've submitted strong digital evidence in the past, what did the broker actually do?"</li>
+            <li>"Would you allow a live recovery attempt on a few denied claims within 7 days?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>3 of 10 agree to a live pilot within 7 days (Perplexity's success criteria), and real broker responses to evidence bundles exist.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Evidence emerges that brokers programmatically ignore digital evidence bundles — the portfolio-level kill Gemini named.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="evidentfreight_rc3">
+            <label><input type="radio" name="ef_rc3" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ef_rc3" value="Pause">Pause</label>
+            <label><input type="radio" name="ef_rc3" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ef_rc3" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:14px;color:var(--muted)">That's the whole path: get the files, do the audit by hand, count what's refutable. Get 3 carriers' files, prove ≥40% refutable, confirm brokers respond — then build.</p>
+    </section>
+
+    <!-- S7 REFLECTION -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <p class="s-intro">Answer honestly and independently — before the founder discussion, not during it. Saved on this device only.</p>
+      <div class="reflect" data-opp="evidentfreight">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="ef_q1" value="Yes">Yes</label><label><input type="radio" name="ef_q1" value="Unsure">Unsure</label><label><input type="radio" name="ef_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="ef_q2" value="Yes">Yes</label><label><input type="radio" name="ef_q2" value="Unsure">Unsure</label><label><input type="radio" name="ef_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="ef_q5" value="Yes">Yes</label><label><input type="radio" name="ef_q5" value="Unsure">Unsure</label><label><input type="radio" name="ef_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('evidentfreight', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 DISCUSSION STARTERS -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <p class="s-intro">Bring these to the table. They're designed to surface disagreement, not to settle it.</p>
+      <div class="starters">
+        <div class="dq">After reading the world above — does this problem feel real and meaningful to us, or does it feel like someone else's spreadsheet problem?</div>
+        <div class="dq">The Week-1 experiment depends on strangers handing us their denied-claims files. Do we genuinely believe we can get 3 carriers to do that — and what's our honest plan if we can't?</div>
+        <div class="dq">Paper supremacy is the kill condition. If 40% of denials turn out to be refutable digitally, we go. What do we do at 25%? Where is OUR line?</div>
+        <div class="dq">EvidentFreight is the entry point of a sequence (→ FreightReclaim → ClockIn.ai). Are we committed to the sequence logic, or are we secretly still attached to the bigger companies?</div>
+        <div class="dq">The work is US freight billing disputes. Would we enjoy learning this industry deeply for the next 2–3 years?</div>
+        <div class="dq">The human still submits the package into the broker portal. Are we comfortable that we own the evidence, not the outcome — and does that change what customers will pay?</div>
+        <div class="dq">If this failed six months from now, what would the post-mortem most likely say? Are we underestimating that thing today?</div>
+      </div>
+    </section>
+
+    <!-- S9 BOARD SUMMARY -->
+    <section class="s" data-sect="evidentfreight">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>EvidentFreight</b> — Automated Freight Claim Evidence Assembler</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp build">Build-First · Locked</span></div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Digital evidence alone (ELD logs, geofences, text logs) can refute at least 40% of brokers' stated denial reasons — i.e., paper supremacy is not an absolute barrier.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">10 calls with billing/settlement managers at 20–100 truck US carriers; obtain 15–20 historical denied claims from 3 carriers; manual by-hand audit of refutability. Conversations and manual work only — no product.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">The audit shows denials rest on paper supremacy that digital dossiers cannot answer — or carriers refuse to share denial files at all.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('freightreclaim')">Next: FreightReclaim →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== FREIGHTRECLAIM -->
+<div id="view-freightreclaim" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-freightreclaim"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>FreightReclaim</h1>
+      <p class="oneline">Takes over the entire detention claim lifecycle — from detection through filing, dispute, and collection — charging only on recovered revenue.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Freight Exception Recovery Operations. <b>Pattern:</b> AI-Native Service Company — the fleet's billing department never touches detention claims; FreightReclaim executes the whole lifecycle.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Perplexity gave it a <b>GO</b>: strong market pain (ATRI: fewer than half of detention invoices get paid, ~$11.5B industry cost), reachable buyers, and a fast service-based validation loop — the first learning loop runs through conversations and manual delivery, not software.</p>
+        <p>But the locked sequence places it second: <b>EvidentFreight → FreightReclaim → ClockIn.ai</b>. EvidentFreight teaches us broker contracts, denial patterns, and dispute packages on batch data; FreightReclaim is the natural next step — adding filing, dispute management, and collection on top of the evidence engine we'll already have.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world as EvidentFreight — the billing clerk, the broker, the abandoned claims. (If you haven't read that story yet, start there.) The difference is how much of the fight this company takes over.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">EvidentFreight builds the weapon. FreightReclaim fights the war.</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Remember the clerk's week: 15 claims handled, 4 collected. A denial means 2 hours of response writing, 3–5 follow-ups, and abandonment after 60 days. EvidentFreight hands her a dossier — but she still files it, still chases it, still decides when to give up.</p>
+            <p>FreightReclaim removes her from the fight entirely. Detection of the event, evidence assembly, filing within the contractual notification window, broker-pattern-specific dispute responses, escalation, collection — the whole lifecycle. The clerk handles exception cases only, about 5% of claims.</p>
+            <div class="callout">The pitch from the generation artifact: "You bill $180,000/year in detention. You collect $52,000. We collect $100,000. Our fee is 25% of incremental recovery. You net $36,000 more. <b>You pay nothing if we collect nothing.</b>"</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>The fleet's detention events (detected from its electronic logbook data), contract terms from rate confirmations, and the records needed for evidence — accessed with the fleet's permission.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>The full lifecycle: spotting the detention event, assembling the evidence package, filing within the notification window, and responding to denials with counter-arguments learned from each broker's patterns.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>The clerk handles the exception cases (~5%). And in the v1 safety design from the generation artifact, the fleet approves each claim before anything is sent — a human-in-loop gate on every dispute filing.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>Recovered revenue, deposited. The fee: 20–25% of incremental recovery above the fleet's historical baseline. No subscription, no upfront fee.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>70.7% of billed detention leaks through denials, evidentiary failures, and abandonment. Sub-$500 claims fall below the human pursuit threshold — written off rationally, one by one.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why coping fails</span><p>The broker is structurally motivated to deny, the clerk's fight costs more than each claim is worth, and the knowledge of how to win lives in one head with 40%+ annual turnover.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>The pricing removes the objection: "Do I want free money?" — outcome-based fees mean the fleet risks nothing. Per the example economics, a 30-truck fleet nets roughly $46,800/year per customer in fees to FreightReclaim — meaning far more than that in recovered revenue for the fleet itself.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Does the 29.3% gap exist at OUR target fleets?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The 29.3% ATRI collection rate reflects the experience of well-run 20–100 truck fleets with modern electronic logbooks.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If this segment already collects at 55–65% through competent billing staff, the incremental gap is too small to justify the 25% fee. The whole revenue model rests on the size of the gap.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Fleet-level collection rates — the generation artifact says this must be confirmed in the first 3 interviews.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Target fleets reporting collection rates above 60%, or fewer than 5 of 10 confirming significant detention leakage.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Fighting the hand that feeds</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Fleet owners will let a third party run adversarial disputes against the brokers who give them loads.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity agreed this is the largest risk — the model depends on trust, permissions, and comfort delegating an adversarial revenue-recovery process. Its confidence the assumption survives: MEDIUM. Broker–carrier relationship damage could slow adoption more than the artifacts imply.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Which brokers fleets would exclude from automated claim filing — and whether the exclusions swallow the opportunity.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Fleets confirming the leakage but refusing automated broker disputes — though per the generation artifact's decision gate, this softens rather than kills: it forces a human-in-loop design where the fleet approves before anything is sent.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Heavy machinery for part-time hands</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>A part-time team can operate the full adversarial lifecycle: detection → assembly → filing → dispute → escalation → collection.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The generation artifact itself names this the accepted risk: a 6-week MVP at minimum, with dispute management requiring operational maturity "that a part-time founding team is stretching to deliver."</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How much of this load the EvidentFreight phase will have absorbed by the time we get here — that's the point of the sequence.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — is the gap real, and will they hand us the fight?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>10 fleet operations managers or billing/AR managers at 20–100 truck carriers — the same population as EvidentFreight's calls, via LinkedIn and industry network intros.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"What percentage of your detention claims get paid? What are the top 3 denial reasons?"</li>
+            <li>"If a service doubled your collection rate and charged 25% of incremental recovery — no upfront fee — would you try it?"</li>
+            <li>"Which brokers would you exclude from automated claim filing?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>7 of 10 confirm collection rates below 50% AND 5 of 10 would try the outcome-based service (the generation artifact's BUILD gate). Perplexity's bar: 7/10 confirm leakage, 3/10 agree to a live pilot within 7 days.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Collection rates above 60% at well-run fleets, or uniform refusal to let a third party near broker relationships.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="freightreclaim_rc1">
+            <label><input type="radio" name="fr_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="fr_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="fr_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="fr_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="freightreclaim">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="fr_q1" value="Yes">Yes</label><label><input type="radio" name="fr_q1" value="Unsure">Unsure</label><label><input type="radio" name="fr_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="fr_q2" value="Yes">Yes</label><label><input type="radio" name="fr_q2" value="Unsure">Unsure</label><label><input type="radio" name="fr_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="fr_q5" value="Yes">Yes</label><label><input type="radio" name="fr_q5" value="Unsure">Unsure</label><label><input type="radio" name="fr_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('freightreclaim', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">"You pay nothing if we collect nothing" sounds unbeatable. So why isn't everyone already doing this? What do we think we see that others don't?</div>
+        <div class="dq">Would a fleet owner really let outsiders fight their brokers — the same brokers who hand them tomorrow's loads? Which relationships are too precious to touch?</div>
+        <div class="dq">If the first three interviews show well-run fleets already collect 55–65%, the gap shrinks below the fee. What's our move then — and do we agree on it now?</div>
+        <div class="dq">Are we genuinely treating this as step two after EvidentFreight — or is part of us tempted to skip straight to the bigger fight?</div>
+        <div class="dq">The full lifecycle is operationally heavy for four part-timers. Which piece breaks first — and would we see it breaking in time?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="freightreclaim">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>FreightReclaim</b> — Freight Exception Recovery Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Perplexity's GO; step two of the locked sequence.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">The industry-level 29.3% collection rate also holds for well-run 20–100 truck fleets — leaving a gap big enough to justify a 25% fee on incremental recovery.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">First 3 of 10 fleet interviews: actual collection rates, top denial reasons, willingness to try outcome-based recovery, and which brokers they'd exclude.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Target fleets already collecting at 55–65%, or fewer than 5 of 10 confirming significant detention leakage — the gap becomes too small for the model.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('clockin')">Next: ClockIn.ai →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== CLOCKIN.AI -->
+<div id="view-clockin" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-clockin"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>ClockIn.ai</h1>
+      <p class="oneline">An autonomous agent that watches the contractual detention clock and fires the broker notification inside the 15–30 minute window — so claims stop dying before they're born.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Autonomous Micro-Notification Agent. <b>Pattern:</b> AI-Native Service Company — it charges for an outcome (securing the detention window validation), not for a tool, and fully owns the workflow without dispatcher intervention.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Claude favored ClockIn.ai's venture upside — capturing part of the 70.7% leaked detention revenue at the moment claims are born, not after they die. Gemini rated the workflow ownership full (C) and the pattern a genuine Tier S match.</p>
+        <p>But Gemini held it at <b>MONITOR</b>: a real-time, zero-error 15-minute contractual clock during US daytime is India's night — "a dangerous time sink" for a part-time, cross-timezone team, and an idea "optimized for a full-time, venture-backed engineering team based in the US." The locked view: reachable later, from validated domain authority, as step three of the sequence.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world again — but this time, look at the claims that die before anyone even fights for them.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">45 loads, 45 stopwatches</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Remember the third reason coping fails: some contracts say the trucking company must notify the broker <b>within 15–30 minutes</b> of detention starting — or the claim is void. Not denied. Void. Retroactively, before any evidence matters.</p>
+            <p>A dispatcher watching 45 active loads cannot watch 45 contractual stopwatches. So a slice of the leaked 70.7% never even reaches the denial fight — it dies silently at the notification deadline.</p>
+            <div class="callout">EvidentFreight fights for claims after they're denied. FreightReclaim fights the whole war. ClockIn.ai stops claims from being void in the first place — by never missing the clock.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>Live signals from the truck's electronic logbook and the fleet's transport management system — when the truck arrived, where it's sitting — plus the contractual notification rules for that load.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>Per Gemini's evaluation: the agent intercepts the data, calculates the contractual window, drafts the notification, and sends it autonomously — without dispatcher intervention. The dispatcher's 45 stopwatches become zero.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>This is exactly the problem. A zero-error 15-minute clock requires constant operational monitoring of failures — during US daytime, which is night for the India-based founders. The supplied verdicts identify no lighter human role; on a more detailed human-in-loop design: Insufficient evidence available from previous stages.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>Notifications fired inside the contractual window — claims preserved instead of voided. On pricing and contract structure: Insufficient evidence available from previous stages.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>Micro-notification windows (15–30 minutes) void claims retroactively. A dispatcher managing 45 loads cannot monitor all contractual clocks simultaneously — this survived validation as structurally permanent.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why coping fails</span><p>No amount of dispatcher diligence scales to 45 simultaneous clocks during live operations. The window is measured in minutes; human attention isn't.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>Per Gemini: capturing a share of the 70.7% leaked detention revenue across thousands of loads offers a route to high-margin recurring revenue. Specific willingness-to-pay evidence: Insufficient evidence available from previous stages.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">The data may be slower than the clock</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Electronic logbook data arrives fast enough to act inside a 15-minute contractual window.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini called this the bigger, unstated kill assumption: if standard carrier ELD pings occur every 15–30 minutes, the notification window is frequently breached before the AI even registers the arrival event. The product would be structurally late.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether target carriers can expose sub-minute latencies on their ELD streams.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Standard ELD ping intervals of 15–30 minutes with no sub-minute option at target carriers.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">A night shift disguised as a startup</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>A part-time, cross-timezone team can operate a real-time, zero-error system.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's verdict rationale: the operational overhead of a real-time, zero-latency system is incompatible with a part-time remote team — US daytime operations would force the India-based founders into a high-stress night shift for operational failures.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether the EvidentFreight → FreightReclaim path builds enough operational muscle and revenue to change this constraint later.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Brokers can slam the door on bots</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Brokers will accept automated notifications as valid contractual notice.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini noted large broker incumbents (e.g., TQL, C.H. Robinson) can programmatically block automated incoming emails or alter portal configurations to defeat external bots — and its archive trigger is proof that top-tier brokers filter out or fine carriers for automated notification mechanisms.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether brokers would accept standardized API-driven arrival receipts instead.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Clear proof that top-tier brokers programmatically filter out or fine carriers for using automated email/bot notification mechanisms.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Every contract ticks differently</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Contractual notification rules can be reliably read and applied per load.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The artifact named contractual fragmentation as the main risk — different brokers, different windows, different notice requirements, all of which must be parsed correctly for the clock to mean anything.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How much of this parsing the EvidentFreight phase will have already taught us — Gemini noted EvidentFreight is the direct pipeline to ClockIn.ai, revealing exactly which brokers enforce the micro-windows and where the money is lost.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — can anyone even see the clock in time?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>Per Gemini's GO-trigger: 5 target carriers, on their ELD data streams — plus broker-side evidence on automated notification acceptance. (These conversations can ride along with the EvidentFreight calls to the same population.)</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask</span>
+          <ul>
+            <li>"How often does your ELD actually report position — every minute, or every 15–30 minutes? Can sub-minute streams be enabled?"</li>
+            <li>"Have you ever had a claim voided because the broker was notified too late?"</li>
+            <li>"Do your brokers accept automated, API-driven arrival notifications as valid notice — or only manual ones?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>5 target carriers can expose sub-minute latencies on their ELD streams, and brokers accept standardized API-driven arrival receipts (Gemini's MONITOR→GO trigger).</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Standard pings are 15–30 minutes apart with no faster option, or proof emerges that top-tier brokers filter or fine automated notifications (Gemini's MONITOR→ARCHIVE trigger).</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="clockin_rc1">
+            <label><input type="radio" name="ck_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="ck_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="ck_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="ck_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="clockin">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="ck_q1" value="Yes">Yes</label><label><input type="radio" name="ck_q1" value="Unsure">Unsure</label><label><input type="radio" name="ck_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="ck_q2" value="Yes">Yes</label><label><input type="radio" name="ck_q2" value="Unsure">Unsure</label><label><input type="radio" name="ck_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="ck_q5" value="Yes">Yes</label><label><input type="radio" name="ck_q5" value="Unsure">Unsure</label><label><input type="radio" name="ck_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('clockin', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">Are we honestly willing to run a 15-minute clock during US daytime — our night — for months? Who among us would actually be awake?</div>
+        <div class="dq">If electronic logbooks only report every 15–30 minutes, can this product even exist? What's the cheapest way to find out before falling in love with it?</div>
+        <div class="dq">What do we think brokers will do when bots start sending contractual notifications — accept them, ignore them, or block and fine us?</div>
+        <div class="dq">Claude loved this company's upside. Knowing Gemini's objection, what specific evidence would make us side with Claude?</div>
+        <div class="dq">"Later, from validated domain authority" — is that a real plan with a trigger we can name, or a polite shelf? What exactly unlocks step three?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="clockin">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>ClockIn.ai</b> — Autonomous Micro-Notification Agent</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Claude's favorite for upside; Gemini MONITOR — step three of the sequence.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">ELD data streams can deliver sub-minute latency — fast enough to act inside a 15-minute contractual window — and brokers accept automated notifications as valid notice.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">Ask 5 target carriers about actual ELD ping frequency and sub-minute stream availability; gather broker-side evidence on automated notification acceptance. Ride along with the EvidentFreight calls.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">Standard ELD pings of 15–30 minutes breach the window before the agent can act — or top-tier brokers programmatically filter or fine automated notifications.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('evidentfreight')">Revisit EvidentFreight →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ============ storage (safe wrapper: localStorage when available, in-memory fallback) ============ */
+var MEM = {};
+var LS_OK = false;
+try { localStorage.setItem('__feT','1'); localStorage.removeItem('__feT'); LS_OK = true; } catch(e) {}
+function sGet(k){ try { return LS_OK ? localStorage.getItem(k) : (MEM[k]!==undefined?MEM[k]:null); } catch(e){ return MEM[k]!==undefined?MEM[k]:null; } }
+function sSet(k,v){ try { if(LS_OK){ localStorage.setItem(k,v); } } catch(e){} MEM[k]=v; }
+var NS = 'fpa10_explorer_';
+
+var OPPS = ['evidentfreight','freightreclaim','clockin'];
+var OPP_NAMES = { evidentfreight:'EvidentFreight (BUILD-FIRST)', freightreclaim:'FreightReclaim (SECONDARY)', clockin:'ClockIn.ai (SECONDARY)' };
+
+/* ============ navigation ============ */
+function showView(id){
+  var views = document.querySelectorAll('.view');
+  for (var i=0;i<views.length;i++) views[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function openOpp(opp){
+  showView('view-'+opp);
+  markStarted(opp);
+  setupDots(opp);
+  restoreReflection(opp);
+  restoreImplications();
+}
+function goHome(){
+  showView('view-home');
+  refreshPills();
+}
+
+/* ============ story step toggles ============ */
+function toggleStep(btn){
+  var step = btn.parentElement;
+  step.classList.toggle('open');
+}
+
+/* ============ progress tracking ============ */
+function markStarted(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].started = true;
+  sSet(NS+'progress', JSON.stringify(p));
+}
+function markSeen(opp, idx){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  if(p[opp].seen.indexOf(idx) === -1) p[opp].seen.push(idx);
+  sSet(NS+'progress', JSON.stringify(p));
+  paintDots(opp);
+}
+function setupDots(opp){
+  var sections = document.querySelectorAll('#view-'+opp+' section.s');
+  var dotsBox = document.getElementById('dots-'+opp);
+  dotsBox.innerHTML = '';
+  for (var i=0;i<sections.length;i++){
+    var d = document.createElement('span');
+    dotsBox.appendChild(d);
+    sections[i].setAttribute('data-idx', i);
+  }
+  paintDots(opp);
+  if ('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ markSeen(opp, parseInt(en.target.getAttribute('data-idx'),10)); }
+      });
+    }, { threshold: 0.25 });
+    for (var j=0;j<sections.length;j++) obs.observe(sections[j]);
+  }
+}
+function paintDots(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  var seen = (p[opp] && p[opp].seen) || [];
+  var dots = document.querySelectorAll('#dots-'+opp+' span');
+  for (var i=0;i<dots.length;i++){
+    if (seen.indexOf(i) !== -1) dots[i].classList.add('seen'); else dots[i].classList.remove('seen');
+  }
+}
+function refreshPills(){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  OPPS.forEach(function(opp){
+    var pill = document.getElementById('pill-'+opp);
+    if(!pill) return;
+    var st = p[opp];
+    if(!st || !st.started){ pill.textContent = 'Not started'; pill.classList.remove('done'); }
+    else if (st.reflected){ pill.textContent = 'Reflection saved ✓'; pill.classList.add('done'); }
+    else { pill.textContent = 'In progress · '+ (st.seen ? st.seen.length : 0) +'/9 sections'; pill.classList.remove('done'); }
+  });
+}
+
+/* ============ radio pill styling ============ */
+document.addEventListener('change', function(e){
+  if (e.target && e.target.type === 'radio'){
+    var group = e.target.closest('.radio-row, .imp-opts');
+    if (group){
+      var labels = group.querySelectorAll('label');
+      for (var i=0;i<labels.length;i++) labels[i].classList.remove('sel');
+      e.target.closest('label').classList.add('sel');
+      if (group.classList.contains('imp-opts')){
+        sSet(NS+'imp_'+group.getAttribute('data-key'), e.target.value);
+      }
+    }
+  }
+});
+
+/* ============ reflection save / restore ============ */
+function saveReflection(opp, btn){
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  var data = { savedAt: new Date().toISOString() };
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  data.name = nameInput ? nameInput.value : '';
+  ['q1','q2','q5'].forEach(function(q){
+    var sel = box.querySelector('.radio-row[data-q='+q+'] input:checked');
+    data[q] = sel ? sel.value : '';
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    data[q] = ta ? ta.value : '';
+  });
+  sSet(NS+'reflection_'+opp, JSON.stringify(data));
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].reflected = true;
+  sSet(NS+'progress', JSON.stringify(p));
+  var msg = btn.parentElement.querySelector('.savemsg');
+  msg.classList.add('show');
+  setTimeout(function(){ msg.classList.remove('show'); }, 2200);
+  if (!LS_OK) {
+    msg.textContent = 'Saved for this session ✓ (open this file in a browser to keep answers permanently)';
+  }
+}
+function restoreReflection(opp){
+  var raw = sGet(NS+'reflection_'+opp);
+  if(!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch(e){ return; }
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  if(!box) return;
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  if (nameInput && data.name) nameInput.value = data.name;
+  ['q1','q2','q5'].forEach(function(q){
+    if(!data[q]) return;
+    var inp = box.querySelector('.radio-row[data-q='+q+'] input[value="'+data[q]+'"]');
+    if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    if(ta && data[q]) ta.value = data[q];
+  });
+}
+function restoreImplications(){
+  var groups = document.querySelectorAll('.imp-opts');
+  for (var i=0;i<groups.length;i++){
+    var key = groups[i].getAttribute('data-key');
+    var val = sGet(NS+'imp_'+key);
+    if(val){
+      var inp = groups[i].querySelector('input[value="'+val+'"]');
+      if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+    }
+  }
+}
+
+/* ============ export ============ */
+var RC_LABELS = {
+  evidentfreight_rc1: 'EvidentFreight — Check 1: Will carriers share denial files?',
+  evidentfreight_rc2: 'EvidentFreight — Check 2: Digital evidence refutability',
+  evidentfreight_rc3: 'EvidentFreight — Check 3: Broker response to evidence bundles',
+  freightreclaim_rc1: 'FreightReclaim — Check: Collection gap + delegation willingness',
+  clockin_rc1: 'ClockIn.ai — Check: ELD latency + broker acceptance'
+};
+function collectAll(){
+  var out = { artifact:'Innovation_OS Founder Explorer — FPA-10', exportedAt:new Date().toISOString(), reflections:{}, implications:{} };
+  OPPS.forEach(function(opp){
+    var raw = sGet(NS+'reflection_'+opp);
+    if(raw){ try { out.reflections[OPP_NAMES[opp]] = JSON.parse(raw); } catch(e){} }
+  });
+  Object.keys(RC_LABELS).forEach(function(k){
+    var v = sGet(NS+'imp_'+k);
+    if(v) out.implications[RC_LABELS[k]] = v;
+  });
+  return out;
+}
+function exportReflections(fmt){
+  var data = collectAll();
+  var content, mime, fname;
+  if (fmt === 'json'){
+    content = JSON.stringify(data, null, 2);
+    mime = 'application/json'; fname = 'FPA-10_founder_reflections.json';
+  } else {
+    var lines = [];
+    lines.push('INNOVATION_OS FOUNDER EXPLORER — FPA-10');
+    lines.push('Founder reflections export · ' + new Date().toLocaleString());
+    lines.push('========================================');
+    var any = false;
+    OPPS.forEach(function(opp){
+      var r = data.reflections[OPP_NAMES[opp]];
+      if(!r) return;
+      any = true;
+      lines.push('');
+      lines.push('--- ' + OPP_NAMES[opp] + ' ---');
+      if(r.name) lines.push('Founder: ' + r.name);
+      lines.push('Q1 Support allocating founder attention (if validation positive): ' + (r.q1 || '—'));
+      lines.push('Q2 Excited to help build: ' + (r.q2 || '—'));
+      lines.push('Q3 What scares you most: ' + (r.q3 || '—'));
+      lines.push('Q4 What should be validated first: ' + (r.q4 || '—'));
+      lines.push('Q5 Shortlist for validation: ' + (r.q5 || '—'));
+      if(r.savedAt) lines.push('Saved: ' + r.savedAt);
+    });
+    var impKeys = Object.keys(data.implications);
+    if (impKeys.length){
+      lines.push('');
+      lines.push('--- REALITY CHECK IMPLICATIONS ---');
+      impKeys.forEach(function(k){ lines.push(k + ': ' + data.implications[k]); });
+    }
+    if (!any && !impKeys.length){
+      lines.push('');
+      lines.push('No reflections saved yet. Explore an opportunity and answer Section 7 first.');
+    }
+    content = lines.join('\n');
+    mime = 'text/plain'; fname = 'FPA-10_founder_reflections.txt';
+  }
+  var blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ============ init ============ */
+refreshPills();
+restoreImplications();
+OPPS.forEach(restoreReflection);
+</script>
+</body>
+</html>
