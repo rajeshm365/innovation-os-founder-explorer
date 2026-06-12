@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innovation_OS Founder Explorer — FPA-11</title>
+<style>
+  :root{
+    --paper:#F6F4EE; --card:#FFFFFF; --ink:#23272E; --muted:#6E7077; --line:#E2DED3;
+    --verify:#1F7A53; --verify-bg:#EAF4EE;
+    --second:#A9742B; --second-bg:#F7F0E2;
+    --arch:#8A8C92; --arch-bg:#EEEEEC;
+    --kill:#B3402E; --kill-bg:#F9ECE9;
+    --accent:#0E5A8A; --accent-bg:#EAF1F6;
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} *{transition:none !important;animation:none !important} }
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 18px 80px}
+  h1,h2,h3{font-family:var(--serif);line-height:1.25;font-weight:600}
+  p{margin-bottom:0.9em}
+  button{font-family:var(--sans);cursor:pointer}
+  a{color:var(--accent)}
+
+  .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+  .eyebrow.accent{color:var(--accent)}
+
+  .stamp{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+    padding:5px 12px;border:2px solid currentColor;border-radius:4px;box-shadow:inset 0 0 0 1.5px var(--card), inset 0 0 0 3px currentColor;
+    transform:rotate(-2deg);background:var(--card)}
+  .stamp.build{color:var(--verify)} .stamp.second{color:var(--second)} .stamp.arch{color:var(--arch)} .stamp.kill{color:var(--kill)}
+
+  /* ============ HOME ============ */
+  header.masthead{padding:54px 0 28px;border-bottom:1px solid var(--line)}
+  .masthead .eyebrow{margin-bottom:14px}
+  .masthead h1{font-size:clamp(30px,6vw,42px);margin-bottom:10px}
+  .masthead .sub{color:var(--muted);font-size:17px;max-width:560px}
+  .masthead .fpa-line{margin-top:18px;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:0.06em}
+
+  .lockednote{margin:22px 0 0;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-left:3px solid var(--ink);font-size:14px;color:var(--muted)}
+  .lockednote b{color:var(--ink)}
+
+  .cards{margin-top:30px;display:grid;gap:16px}
+  .opp-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px 22px 18px;position:relative;transition:box-shadow .15s ease, transform .15s ease}
+  .opp-card:hover{box-shadow:0 4px 18px rgba(35,39,46,.07);transform:translateY(-1px)}
+  .opp-card .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+  .opp-card h2{font-size:24px}
+  .opp-card .oneline{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .opp-card .cardfoot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-block;border:1.5px solid var(--ink);background:var(--ink);color:#fff;border-radius:6px;padding:9px 18px;font-size:14px;font-weight:600;letter-spacing:.02em}
+  .btn:hover{background:#000}
+  .btn.ghost{background:transparent;color:var(--ink)}
+  .btn.ghost:hover{background:var(--ink);color:#fff}
+  .btn:focus-visible,.toggle:focus-visible,details summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  .progress-pill{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:4px 10px;background:var(--paper)}
+  .progress-pill.done{color:var(--verify);border-color:var(--verify)}
+
+  details.archived-group{margin-top:8px;border:1px dashed var(--line);border-radius:10px;background:transparent}
+  details.archived-group>summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;align-items:center;gap:12px;color:var(--muted);font-size:14px}
+  details.archived-group>summary::-webkit-details-marker{display:none}
+  details.archived-group>summary .chev{margin-left:auto;transition:transform .15s}
+  details.archived-group[open]>summary .chev{transform:rotate(90deg)}
+  .arch-list{padding:0 20px 18px;display:grid;gap:10px}
+  .arch-item{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:14px}
+  .arch-item b{font-family:var(--serif);font-size:15px}
+  .arch-item span{color:var(--muted);display:block;margin-top:2px}
+
+  .export-block{margin-top:36px;padding:20px;background:var(--card);border:1px solid var(--line);border-radius:10px}
+  .export-block h3{font-size:18px;margin-bottom:6px}
+  .export-block p{font-size:14px;color:var(--muted)}
+  .export-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+
+  /* ============ OPPORTUNITY VIEW ============ */
+  .view{display:none}
+  .view.active{display:block}
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(246,244,238,.94);backdrop-filter:blur(4px);border-bottom:1px solid var(--line);padding:10px 0;margin-bottom:6px}
+  .topbar-inner{max-width:760px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:12px}
+  .backbtn{background:none;border:none;color:var(--ink);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;padding:6px 4px}
+  .backbtn:hover{color:var(--accent)}
+  .sectdots{margin-left:auto;display:flex;gap:5px}
+  .sectdots span{width:7px;height:7px;border-radius:50%;background:var(--line)}
+  .sectdots span.seen{background:var(--verify)}
+
+  .opp-hero{padding:34px 0 8px}
+  .opp-hero h1{font-size:clamp(28px,6vw,38px);margin:12px 0 8px}
+  .opp-hero .oneline{font-size:18px;color:var(--muted);font-family:var(--serif);font-style:italic;max-width:600px}
+
+  section.s{padding:34px 0 8px;border-top:1px solid var(--line);margin-top:30px}
+  section.s:first-of-type{border-top:none;margin-top:0}
+  .s-label{display:flex;align-items:baseline;gap:12px;margin-bottom:14px}
+  .s-label .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em}
+  .s-label h2{font-size:24px}
+  .s-intro{color:var(--muted);font-size:15px;margin-bottom:18px;max-width:600px}
+
+  .why-survived{background:var(--verify-bg);border:1px solid #CDE4D7;border-radius:10px;padding:18px 20px;margin-top:14px}
+  .why-survived .eyebrow{color:var(--verify);margin-bottom:8px}
+  .why-survived p{font-size:15px;margin-bottom:8px}
+  .why-survived p:last-child{margin-bottom:0}
+
+  .story{display:flex;flex-direction:column}
+  .story-step{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .story-step+.story-connector{align-self:center;color:var(--muted);font-size:18px;padding:4px 0;line-height:1}
+  .toggle{width:100%;text-align:left;background:none;border:none;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  .toggle .step-tag{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;white-space:nowrap}
+  .toggle .step-q{font-family:var(--serif);font-size:18px;font-weight:600;flex:1}
+  .toggle .chev{color:var(--muted);transition:transform .15s;flex-shrink:0}
+  .story-step.open .toggle .chev{transform:rotate(90deg)}
+  .step-body{display:none;padding:0 18px 18px;font-size:15.5px}
+  .story-step.open .step-body{display:block}
+  .step-body .callout{background:var(--paper);border-left:3px solid var(--accent);padding:10px 14px;margin:10px 0;font-size:14.5px}
+  .step-body ul{margin:0 0 .9em 1.2em}
+  .step-body li{margin-bottom:6px}
+
+  .bridge{margin-top:22px;background:var(--ink);color:#F3F1EA;border-radius:10px;padding:22px 24px}
+  .bridge .eyebrow{color:#B9C4CE;margin-bottom:8px}
+  .bridge p{font-size:16px;font-family:var(--serif)}
+  .bridge p:last-child{margin-bottom:0}
+
+  .flow{display:flex;flex-direction:column;margin-top:6px}
+  .flow-node{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .flow-node .eyebrow{margin-bottom:6px}
+  .flow-node p{font-size:15px;margin-bottom:6px}
+  .flow-node p:last-child{margin-bottom:0}
+  .flow-node.ai{border-left:3px solid var(--accent)}
+  .flow-node.human{border-left:3px solid var(--second)}
+  .flow-arrow{align-self:center;color:var(--muted);padding:4px 0;font-size:18px;line-height:1}
+  .guarantee{margin-top:18px;background:var(--verify-bg);border:1.5px solid var(--verify);border-radius:10px;padding:18px 20px}
+  .guarantee .eyebrow{color:var(--verify)}
+  .guarantee p{font-size:15.5px;margin:6px 0 0}
+
+  .ev-grid{display:grid;gap:12px}
+  .ev-row{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+  .ev-row .eyebrow{margin-bottom:6px}
+  .ev-row p{font-size:15px;margin-bottom:6px}
+  .ev-row p:last-child{margin-bottom:0}
+
+  .concerns{display:grid;gap:12px}
+  details.concern{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  details.concern.locked-kill{border:1.5px solid var(--kill)}
+  details.concern>summary{list-style:none;cursor:pointer;padding:16px 18px;display:flex;align-items:center;gap:12px}
+  details.concern>summary::-webkit-details-marker{display:none}
+  details.concern>summary .c-title{font-family:var(--serif);font-size:17px;font-weight:600;flex:1}
+  details.concern>summary .chev{color:var(--muted);transition:transform .15s}
+  details.concern[open]>summary .chev{transform:rotate(90deg)}
+  .c-body{padding:0 18px 18px;display:grid;gap:10px}
+  .c-part{font-size:14.5px}
+  .c-part .eyebrow{display:block;margin-bottom:3px}
+  .c-part.killline{background:var(--kill-bg);border-left:3px solid var(--kill);padding:10px 12px;border-radius:0 6px 6px 0}
+  .c-part.killline .eyebrow{color:var(--kill)}
+
+  .rc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:16px}
+  .rc h3{font-size:19px;margin-bottom:10px}
+  .rc .rc-block{margin-bottom:12px;font-size:14.5px}
+  .rc .rc-block .eyebrow{display:block;margin-bottom:4px}
+  .rc ul{margin:4px 0 0 1.2em}
+  .rc li{margin-bottom:5px}
+  .rc .up{border-left:3px solid var(--verify);background:var(--verify-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .down{border-left:3px solid var(--kill);background:var(--kill-bg);padding:10px 14px;border-radius:0 6px 6px 0}
+  .rc .up .eyebrow{color:var(--verify)} .rc .down .eyebrow{color:var(--kill)}
+  .implication{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)}
+  .implication .eyebrow{display:block;margin-bottom:8px}
+  .imp-opts{display:flex;gap:8px;flex-wrap:wrap}
+  .imp-opts label{border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:600;cursor:pointer;background:var(--paper);user-select:none}
+  .imp-opts input{position:absolute;opacity:0;pointer-events:none}
+  .imp-opts label.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+
+  .reflect{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:22px}
+  .q{margin-bottom:20px}
+  .q .qt{font-weight:600;font-size:15.5px;margin-bottom:8px;display:block}
+  .radio-row{display:flex;gap:8px;flex-wrap:wrap}
+  .radio-row label{border:1.5px solid var(--line);border-radius:99px;padding:7px 18px;font-size:14px;cursor:pointer;background:var(--paper);user-select:none}
+  .radio-row input{position:absolute;opacity:0;pointer-events:none}
+  .radio-row label.sel{border-color:var(--accent);background:var(--accent);color:#fff}
+  textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:10px 12px;font-family:var(--sans);font-size:14.5px;background:var(--paper);color:var(--ink);resize:vertical}
+  textarea:focus,input[type=text]:focus{outline:none;border-color:var(--accent)}
+  textarea{min-height:80px}
+  .savemsg{font-size:13px;color:var(--verify);font-weight:600;margin-left:12px;opacity:0;transition:opacity .3s}
+  .savemsg.show{opacity:1}
+
+  .starters{counter-reset:dq;display:grid;gap:10px}
+  .starters .dq{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 52px;position:relative;font-size:15.5px;font-family:var(--serif)}
+  .starters .dq::before{counter-increment:dq;content:counter(dq,decimal-leading-zero);position:absolute;left:16px;top:15px;font-family:var(--mono);font-size:11px;color:var(--accent);letter-spacing:.08em}
+
+  .board{background:var(--card);border:1.5px solid var(--ink);border-radius:10px;overflow:hidden}
+  .board-row{display:grid;grid-template-columns:170px 1fr;border-bottom:1px solid var(--line)}
+  .board-row:last-child{border-bottom:none}
+  .board-row .bk{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);padding:14px 16px;background:var(--paper)}
+  .board-row .bv{padding:14px 16px;font-size:14.5px}
+  @media(max-width:540px){.board-row{grid-template-columns:1fr}.board-row .bk{padding-bottom:2px}.board-row .bv{padding-top:4px}}
+
+  .endnav{margin-top:40px;display:flex;gap:10px;flex-wrap:wrap}
+  footer.colophon{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.04em;line-height:1.8}
+</style>
+</head>
+<body>
+
+<!-- ===================================================== HOME -->
+<div id="view-home" class="view active">
+  <div class="wrap">
+    <header class="masthead">
+      <div class="eyebrow">Innovation_OS · 2026</div>
+      <h1>Founder Explorer</h1>
+      <p class="sub">One world — a thousands-of-lines Excel macro that one person understands, holding together the monthly numbers of an entire company group. Three opportunities that survived. Your job here is not to agree — it is to understand, to question, and to arrive at the founder discussion prepared.</p>
+      <div class="fpa-line">FPA-11 · FINANCIAL CONSOLIDATION PERSONAL MACRO KEY-PERSON RISK · RESEARCH STATUS: COMPLETE · VERDICTS: LOCKED</div>
+    </header>
+
+    <div class="lockednote">
+      <b>How to read this.</b> The investment committee has locked its verdicts. Nothing here re-ranks, re-validates, or persuades. Two caveats travel with everything on this page: <b>only 2 of 3 validators</b> (Gemini + Perplexity) reviewed FPA-11, and the company concepts were generated by the same AI family that ranked them (the same-AI caveat) — founders must validate independently before committing build resources.
+    </div>
+
+    <div class="cards">
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>CloseFactory</h2>
+          <span class="stamp build">Build-First</span>
+        </div>
+        <p class="oneline">Does the monthly financial consolidation FOR the customer — entity data uploaded, finished consolidated accounts delivered on Day 2, no macro, no one-person dependency.</p>
+        <div class="cardfoot">
+          <button class="btn" onclick="openOpp('closefactory')">Explore CloseFactory</button>
+          <span class="progress-pill" id="pill-closefactory">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>MacroMigrate</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">Replaces the fragile macro one component at a time — the macro keeps running and shrinks each month until the last line of VBA is gone, with no cutover ever. The locked contingency if outsourcing is rejected.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('macromigrate')">Explore MacroMigrate</button>
+          <span class="progress-pill" id="pill-macromigrate">Not started</span>
+        </div>
+      </div>
+
+      <div class="opp-card">
+        <div class="toprow">
+          <h2>PortfolioOS</h2>
+          <span class="stamp second">Secondary</span>
+        </div>
+        <p class="oneline">The financial data infrastructure for PE portfolios — every acquisition connects, financials normalize automatically, consolidated visibility from Day 30 without touching any ERP.</p>
+        <div class="cardfoot">
+          <button class="btn ghost" onclick="openOpp('portfolioos')">Explore PortfolioOS</button>
+          <span class="progress-pill" id="pill-portfolioos">Not started</span>
+        </div>
+      </div>
+
+      <details class="archived-group">
+        <summary>
+          <span class="stamp arch">Archived</span>
+          <span>Seven companies were archived per the locked summary. Tap to see why.</span>
+          <span class="chev">›</span>
+        </summary>
+        <div class="arch-list">
+          <div class="arch-item"><b>AuditShield</b><span>MONITOR verdicts — enterprise compliance sales cycles too slow for the execution window; audit-urgency proof absent.</span></div>
+          <div class="arch-item"><b>ICClear</b><span>MONITOR verdicts — external evidence suggests feature, not category, unless software IC modules fail overwhelmingly.</span></div>
+          <div class="arch-item"><b>GroupClose</b><span>MONITOR — onboarding complexity threatens the 6-week constraint; architecture-before-insight drift flagged by Gemini.</span></div>
+          <div class="arch-item"><b>DealScope</b><span>First 10 customers implausible in compressed DD windows; transactional model violates the founder time principle.</span></div>
+          <div class="arch-item"><b>ExitReady</b><span>Exit-window timing makes early customer acquisition implausible; better as a premium tier elsewhere.</span></div>
+          <div class="arch-item"><b>EdgeClose</b><span>Absolute Rejection Filter violation — operates on top of existing software; does not own the core workflow.</span></div>
+          <div class="arch-item"><b>CloseBridge</b><span>Fails the first-10-customers filter; unpredictable trigger event; functions as a marketing wedge, not a company.</span></div>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="export-block">
+      <h3>Your reflections</h3>
+      <p>Everything you answer inside the Explorer is saved on this device only. When you're ready to share before the founder discussion, export it.</p>
+      <div class="export-btns">
+        <button class="btn ghost" onclick="exportReflections('txt')">Export as text</button>
+        <button class="btn ghost" onclick="exportReflections('json')">Export as JSON</button>
+      </div>
+    </div>
+
+    <footer class="colophon">
+      INNOVATION_OS FOUNDER EXPLORER · FPA-11 v1 · JUNE 2026<br>
+      SOURCES: FPA-11 FOUNDER UNDERSTANDING v1 · FOUNDER COMPANY GENERATION v4 · GEMINI IC VERDICT · PERPLEXITY IC VERDICT · LOCKED FOUNDER REVIEW SUMMARY<br>
+      VALIDATOR COVERAGE: 2 OF 3 · SAME-AI CAVEAT APPLIES (LM-005)<br>
+      VERDICTS LOCKED. NO NEW COMPANIES. NO RANKING CHANGES. UNDERSTANDING, NOT PERSUASION.
+    </footer>
+  </div>
+</div>
+
+<!-- ===================================================== CLOSEFACTORY -->
+<div id="view-closefactory" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-closefactory"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp build">Build-First · Locked</span>
+      <h1>CloseFactory</h1>
+      <p class="oneline">Does the monthly financial consolidation FOR the customer — entity data in, finished consolidated accounts out on Day 2.</p>
+    </div>
+
+    <!-- S1 SNAPSHOT -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Financial Close Operations — a new category where the vendor owns the close, not the customer. <b>Pattern:</b> AI-Native Service Company — Tier S in our preference criteria: "Don't build a tool that helps people do accounting. Just do the accounting."</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived previous stages</span>
+        <p>Both validators independently issued <b>GO</b> verdicts. Gemini called it "the quintessential AI-native service wedge" — strong team fit, fast feedback loop, and it builds the proprietary pattern library that unlocks the rest of the FPA-11 portfolio. Perplexity confirmed the market is real, buyers are reachable, and the kill assumption is testable and survivable — while flagging that the category is crowded with software vendors.</p>
+        <p>The locked consensus sequence: <b>CloseFactory → MacroMigrate → PortfolioOS</b>. Worth knowing: PortfolioOS actually ranked higher on the weighted score, but CloseFactory's kill tests are faster and more granular — ranking and execution sequencing are different questions. Caveats that travel with this: 2-of-3 validator coverage, and the same-AI caveat (these concepts were generated and ranked by the same AI family).</p>
+      </div>
+    </section>
+
+    <!-- S2 UNDERSTAND THE WORLD -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Forget startups for ten minutes. Let me show you what is actually happening inside a mid-sized company group every single month. Tap through — the company doesn't appear until the pain is obvious.</p>
+
+      <div class="story">
+
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Who?</span><span class="step-q">One analyst, thirty companies</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>There is a financial analyst sitting in a mid-sized company. Not a giant like a bank, not a small shop — a group doing roughly <b>$50M–$500M in revenue</b>. That group is not one company. It is many companies stitched together: maybe 10, 20, 30 separate legal companies. Each one is called an <b>entity</b> — just a fancy word for "one legal company inside the bigger group." One entity makes products, one handles distribution, one was bought two years ago and still runs on different software.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The work</span><span class="step-q">The macro only he understands</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Every month, the boss of all money matters — the <b>CFO</b> — must answer one question for the board: "How did the whole group do this month?"</p>
+            <p>To answer that, someone has to take the numbers from every entity and combine them into one truthful set of accounts. This combining is called <b>consolidation</b>. It is not simple addition. Entities sell to each other, use different account names, and submit data in different formats. Someone has to clean and merge all of it.</p>
+            <p>That someone is our analyst. And here is the key: the merging is done by a <b>macro</b> — a personal program he wrote inside Excel years ago, in <b>VBA</b> (the programming language built into Excel). Thousands of lines of code that <b>only he understands</b>. He built it under deadline pressure just to survive a reporting cycle, and never got the time to rebuild or document it properly.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Concrete example</span><span class="step-q">One normal month</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Walk through a normal month with him:</p>
+            <ul>
+              <li><b>Days 1–5:</b> he chases all the entities to submit their numbers. Phone calls, emails, reminders.</li>
+              <li><b>Days 5–8:</b> he feeds everything into his macro and runs it, often overnight.</li>
+              <li><b>Days 8–10:</b> he reviews the output, fixes oddities, adjusts.</li>
+              <li><b>Day 12 or later:</b> the board finally sees the numbers.</li>
+            </ul>
+            <div class="callout">That is when the macro behaves. Per the practitioner account in our validation, <b>it breaks most months</b>. When it breaks, only he can fix it — because only he knows what those thousands of lines do.</div>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">What goes wrong?</span><span class="step-q">The 2–3 day blackout</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>While the macro is broken, the company is <b>financially blind</b>. The validated consequence: a <b>2–3 day reporting blackout</b> — days where nobody can say how the group performed. If that happens during a board meeting cycle or an investor review, it is genuinely painful.</p>
+            <p>And it is worse in one specific setting: <b>private equity (PE)</b> firms — investment firms that buy 5–30 companies per fund. Every company they buy uses different software and different account formats. They need a combined view of the whole portfolio, and they typically hold companies only 3–7 years — too short to justify forcing everyone onto one system. So the same Excel-and-one-person pattern repeats, multiplied.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">How people cope</span><span class="step-q">The CFO has done the math</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>The CFO knows all this. He is not ignorant. He has done the math: keeping the analyst costs about <b>$90K a year</b>. Replacing the macro with proper enterprise consolidation software costs <b>$300K+</b> plus 6–12 months of risky, disruptive implementation. So he keeps the analyst and the macro. <b>This is a rational, conscious decision — not negligence.</b></p>
+            <p>Even companies that DID buy software didn't escape: validation showed the software handles maybe most of the work, and Excel still handles the edge cases. The personal spreadsheet survives. This is called the <b>hybrid trap</b>.</p>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Why coping fails</span><span class="step-q">The whole arrangement stands on one human</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <ul>
+              <li>He gets sick. He resigns — and validation confirmed <b>actual departures</b>, not vague threats, are a real trigger.</li>
+              <li>He cannot even hand over properly, because the knowledge lives in undocumented code, not in his head as teachable steps.</li>
+              <li>Auditors flag the spreadsheet as a risk year after year.</li>
+              <li>Each new acquisition adds entities and makes the macro more fragile.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="story-connector">↓</div>
+
+        <div class="story-step">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">Consequences</span><span class="step-q">When it breaks at the wrong time</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>Blackouts during board cycles. Audit findings. Exit and IPO preparation turning into a <b>6–12 month emergency cleanup</b>. PE partners waiting weeks for portfolio numbers. And one person, trapped, holding everything up.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bridge">
+        <span class="eyebrow">The opening</span>
+        <p>Here is the gap: everyone in this market sells <b>tools</b> — software the customer must implement and operate themselves. Nobody sells the <b>outcome</b> — "give us your entity data, we hand you finished consolidated accounts."</p>
+        <p>That was never economically possible before, because understanding someone's macro logic required weeks of expensive consultant time. AI can now read and reason about that VBA logic in hours, and processing all entity files costs a few dollars per run instead of hundreds. Ab samajh aaya? Good — that gap is where the company lives.</p>
+      </div>
+    </section>
+
+    <!-- S3 WHAT WOULD WE BUILD -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <p class="s-intro">CloseFactory does the monthly consolidation FOR the customer. The analyst's consolidation role ceases to exist; he only reviews flagged exceptions. No technology jargon — just the flow.</p>
+
+      <div class="flow">
+        <div class="flow-node">
+          <span class="eyebrow">Inputs</span>
+          <p>The customer uploads their entity data each month. Nothing gets implemented, installed, or migrated — which is exactly why the CFO's biggest objection to change disappears.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">What happens</span>
+          <p>A coordinated set of AI agents handles extraction, consolidation logic, and validation, with human quality review — and delivers the finished consolidated management accounts.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai">
+          <span class="eyebrow accent">Where AI helps</span>
+          <p>Reading and reasoning about the analyst's VBA logic in hours instead of consultant-weeks, and processing all entity files for a few dollars per run instead of hundreds. That cost collapse is what makes selling the outcome possible at all.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human">
+          <span class="eyebrow" style="color:var(--second)">Where humans stay involved</span>
+          <p>On the customer's side: the analyst reviews flagged exceptions only. On our side: this is a near-zero-error domain, so Ranjan's human-in-loop QA verifies output accuracy before anything is delivered, and Vikas runs onboarding, data collection, and SLA tracking. The onboarding logic-capture phase is operationally intensive — a flagged tension against our part-time hours.</p>
+        </div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node">
+          <span class="eyebrow">Outputs</span>
+          <p>Consolidated accounts on <b>Day 2</b> instead of Day 12. No macro. No one-person dependency. No blackout when that person is unavailable. Pricing: <b>₹1.5L–₹4L/month</b> — cheaper than the analyst (~$7.5K/month loaded) and far cheaper than enterprise software (~$25K+/month amortized).</p>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <span class="eyebrow">Why a company, not a feature</span>
+        <p>It owns the entire workflow and the deliverable (Workflow Ownership grade C). It creates a new category — Financial Close Operations — where the vendor owns the close. Incumbents structurally cannot follow: their license-plus-implementation business model requires the customer to do the work. And every customer's captured consolidation logic compounds into a pattern library that powers the entire downstream ecosystem — PortfolioOS, MacroMigrate and the rest.</p>
+      </div>
+    </section>
+
+    <!-- S4 WHY CUSTOMERS CARE -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row">
+          <span class="eyebrow">The pain today</span>
+          <p>A 12-day close held together by a macro that breaks most months, fixable by exactly one person. The board waits; the group flies blind for 2–3 days when it fails.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">What it costs</span>
+          <p>Blackouts during board and investor cycles. Annual audit flags on the spreadsheet. Exit/IPO prep becoming a 6–12 month emergency cleanup. PE partners waiting weeks for portfolio numbers.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why today's coping fails</span>
+          <p>The coping IS the trap: keeping the analyst is rationally cheaper than $300K+ software, and even bought software leaves Excel handling the edge cases (the hybrid trap). So the one-person dependency survives every rational decision the CFO makes.</p>
+        </div>
+        <div class="ev-row">
+          <span class="eyebrow">Why they might pay</span>
+          <p>They buy the outcome — accounts delivered on time, every month, without depending on a single person — at ₹1.5L–₹4L/month, cheaper than the analyst. Crucially, the CFO's biggest objection to change (implementation risk) disappears, because there is nothing to implement.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5 WHAT SCARES US -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <p class="s-intro">Seven honest concerns from the locked verdicts. The first is the structural kill — and the locked contingency if it fires is already named: MacroMigrate.</p>
+      <div class="concerns">
+
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Will anyone hand over their close?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>CFOs will hand the consolidation workflow to an external service.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk and its stated most-important 2-week validation: internal compliance mandates or audit requirements may force companies to own the close internally regardless of cost savings.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How real Indian finance directors respond when offered the outsourced outcome with SLA and accuracy guarantees.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>7/10 finance directors say "we cannot outsource our consolidation — regulatory/audit requirements mean we must own the process internally." If this fires, CloseFactory dies as an outsourced service and the locked contingency is MacroMigrate.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Can we hit 95% on the first cycle?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>95%+ accuracy on a new customer's first consolidation cycle without extensive manual configuration.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If each customer requires enormous manual setup, unit economics turn negative and the service doesn't scale. Gemini highlighted this is testable in 1–2 weeks using historical data with no external coordination.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether the macro parsing + data ingestion pipeline can reproduce the analyst's output from historical data.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>&gt;10% variance despite 80+ hours of manual configuration.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">A crowded field</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The service-owned-workflow model is a real wedge against software incumbents.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity flagged the category as crowded — OneStream, Joiin, NetSuite, Abacum and similar — with established vendors already moving into AI-assisted close. This is not a blue-ocean wedge.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether incumbents absorb AI-assisted close as a feature before the wedge establishes.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Will the Big Four sign off? (Portfolio-level risk)</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>External auditors will accept AI-produced consolidation outputs and trails.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini flagged this as the biggest portfolio risk: if auditors refuse to sign off on AI-generated financials, the ENTIRE FPA-11 thesis collapses — not just CloseFactory.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Flagged as binary; no numeric threshold supplied.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">Will they pay for an 80% solution?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The first customer pays before the product is polished — willingness to pay for imperfect output is the strongest validation signal.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The artifact's discipline is explicit: revenue before product. If they won't pay for an 80% solution, they won't pay for a 100% solution.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether buyers will pay for an 80% solution is untested.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">How long does logic capture really take?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The analyst's macro logic is capturable in weeks, not months.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Onboarding is the operationally intensive phase — a recurring cost against 40–48 total part-time hours. The artifact lists this as an explicit kill signal.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether real macros decompose cleanly or demand multi-month observation.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>The macro logic is too idiosyncratic to capture without multi-month observation.</div>
+          </div>
+        </details>
+
+        <details class="concern">
+          <summary><span class="c-title">A missing third opinion</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The 2-of-3 consensus would have held with full validator coverage.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Only Gemini and Perplexity reviewed FPA-11. The third perspective is absent, and the same-AI caveat (LM-005) applies on top: the concepts were generated and ranked by the same AI family.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What a third independent validator would have challenged.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <!-- S6 REALITY CHECKS -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">06</span><h2>Reality checks before commitment</h2></div>
+      <p class="s-intro">Two tracks run in parallel: behavioral evidence from interviews, and technical evidence from one pilot's historical data. The artifact's discipline is strict — the first kill decision must happen by Week 4. For each check, mark where you'd land.</p>
+
+      <div class="rc">
+        <h3>Check 1 — Will Indian CFOs outsource their close?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>10–15 Finance Directors / Group Controllers at Indian multi-entity organizations, via warm introductions and LinkedIn. Ranjan runs ALL validation interviews — behavioral specifics, not polite agreement.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask (locked)</span>
+          <ul>
+            <li>"How do you produce your monthly consolidated management accounts? How many entities? Who runs the process?"</li>
+            <li>"What happens if that person is unavailable tomorrow?"</li>
+            <li>"Have you evaluated enterprise consolidation software? Why haven't you implemented it?"</li>
+            <li>"If I delivered your consolidated accounts by Day 2 of every close — no macro, no analyst — for ₹2L/month, would you take that deal?"</li>
+            <li>"What would have to be true for you to trust an external service with your consolidation?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>5/10 describe person-dependent processes AND respond positively to the outsourced model (artifact bar). Gemini's bar: 5/15 confirm openness to an outsourced outcome with SLA/accuracy guarantees. Perplexity's bar: 3/10 share a recent close packet, 2/10 accept a paid-pilot conversation, at least 1 buyer describes pain severe enough to outsource.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>7/10 say consolidation cannot be outsourced (→ the locked pivot is MacroMigrate). Week-4 discipline: if 8/10 interviews fail to confirm the problem itself, stop and move to another FPA.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="closefactory_rc1">
+            <label><input type="radio" name="cf_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="cf_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="cf_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="cf_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 2 — Can the pipeline reproduce the analyst's output?</h3>
+        <div class="rc-block"><span class="eyebrow">Who does this · how</span>Us — on one willing pilot's historical data: 3–6 months of trial balances, plus (if accessible) the analyst's macro or historical consolidated output. Run the parsing and ingestion pipelines, produce a test consolidation, compare. Gemini: testable in 1–2 weeks, no external coordination.</div>
+        <div class="rc-block"><span class="eyebrow">What to measure</span>
+          <ul>
+            <li>Match rate between the test consolidation and the analyst's actual historical output. Target: <b>95%+ on first attempt</b>.</li>
+            <li>Hours of manual configuration consumed to get there.</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>The accuracy test passes at 95%+ without heavy manual configuration — and logic capture completes in weeks, not months.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>&gt;10% variance despite 80+ hours of configuration, or the macro proves too idiosyncratic to capture without multi-month observation.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="closefactory_rc2">
+            <label><input type="radio" name="cf_rc2" value="Proceed">Proceed</label>
+            <label><input type="radio" name="cf_rc2" value="Pause">Pause</label>
+            <label><input type="radio" name="cf_rc2" value="Pivot">Pivot</label>
+            <label><input type="radio" name="cf_rc2" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rc">
+        <h3>Check 3 — Will the first customer pay before it's polished?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>The willing pilot from Checks 1–2 — once the accuracy test passes, the payment conversation is the real test.</div>
+        <div class="rc-block"><span class="eyebrow">Exact approach</span>
+          <ul>
+            <li>Per the artifact's discipline: the first customer should pay BEFORE the product is polished. Offer the first paid consolidation at ₹1.5L–₹4L/month.</li>
+            <li>"If they won't pay for an 80% solution, they won't pay for a 100% solution."</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>A first customer commits to paying for imperfect output — the strongest validation signal in the supplied evidence.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>Interest stays warm but payment waits for polish. On exact thresholds here: Insufficient evidence available from previous stages — this check is how the blank gets filled.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="closefactory_rc3">
+            <label><input type="radio" name="cf_rc3" value="Proceed">Proceed</label>
+            <label><input type="radio" name="cf_rc3" value="Pause">Pause</label>
+            <label><input type="radio" name="cf_rc3" value="Pivot">Pivot</label>
+            <label><input type="radio" name="cf_rc3" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+
+      <p style="font-size:14px;color:var(--muted)">Sequencing note from the locked evidence: do not build PortfolioOS, MacroMigrate, or any other company in the set until CloseFactory's core thesis is validated or killed. One company at a time — though the PE operating-partner interviews (PortfolioOS validation) can run simultaneously as conversations.</p>
+    </section>
+
+    <!-- S7 REFLECTION -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <p class="s-intro">Answer honestly and independently — before the founder discussion, not during it. Saved on this device only.</p>
+      <div class="reflect" data-opp="closefactory">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="cf_q1" value="Yes">Yes</label><label><input type="radio" name="cf_q1" value="Unsure">Unsure</label><label><input type="radio" name="cf_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="cf_q2" value="Yes">Yes</label><label><input type="radio" name="cf_q2" value="Unsure">Unsure</label><label><input type="radio" name="cf_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="cf_q5" value="Yes">Yes</label><label><input type="radio" name="cf_q5" value="Unsure">Unsure</label><label><input type="radio" name="cf_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('closefactory', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 DISCUSSION STARTERS -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <p class="s-intro">Bring these to the table. They're designed to surface disagreement, not to settle it.</p>
+      <div class="starters">
+        <div class="dq">Do we believe Indian mid-market CFOs will hand their group's consolidation to four part-time founders with no finance-services brand — and what evidence, not opinion, supports our answer?</div>
+        <div class="dq">The locked contingency says: if outsourcing is rejected, MacroMigrate is the fallback. Are we genuinely prepared to make that pivot by Week 4, or are we emotionally committed to CloseFactory?</div>
+        <div class="dq">Financial consolidation is a near-zero-error domain. Are we confident our QA process can guarantee that standard every single month, with 40–48 total hours per week?</div>
+        <div class="dq">The onboarding/logic-capture phase is operationally intensive. Could two or three simultaneous onboardings exceed our part-time capacity?</div>
+        <div class="dq">If external auditors refuse to rely on AI-produced financials, the entire FPA-11 thesis collapses. How early, and how, should we test that?</div>
+        <div class="dq">Would we enjoy living inside financial close operations for the next several years — chart of accounts, intercompany entries, audit trails?</div>
+        <div class="dq">What single piece of evidence, if we saw it in the next 30 days, would change our vote?</div>
+      </div>
+    </section>
+
+    <!-- S9 BOARD SUMMARY -->
+    <section class="s" data-sect="closefactory">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>CloseFactory</b> — Financial Close Operations</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp build">Build-First · Locked</span> (2-of-3 validator coverage; same-AI caveat applies)</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Indian mid-market CFOs will hand the consolidation workflow to an external service — compliance and audit mandates won't force internal ownership regardless of cost savings.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">In parallel: 10–15 behavioral interviews with Finance Directors / Group Controllers (locked questions), and the technical accuracy test on one pilot's 3–6 months of historical data — target 95%+ match on first attempt. Kill decision by Week 4.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">7/10 finance directors saying consolidation cannot be outsourced (→ pivot to MacroMigrate), or &gt;10% variance despite 80+ hours of configuration.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('macromigrate')">Next: MacroMigrate →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== MACROMIGRATE -->
+<div id="view-macromigrate" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-macromigrate"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>MacroMigrate</h1>
+      <p class="oneline">Replaces the fragile macro one component at a time — it keeps running and shrinks every month until the last line of VBA is gone, with no cutover ever.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Legacy Financial Logic Migration. <b>Pattern:</b> Company Brain — progressively taking ownership of the consolidation workflow, one component at a time.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Gemini gave it a <b>GO</b>: "the strongest alternative to the outsourced service model. It solves the exact same problem (macro fragility) but caters to buyers who demand internal ownership." Team fit is deep — the VBA expertise and agent architecture map perfectly to the approach.</p>
+        <p>The locked consensus holds it as the <b>strongest contingency path</b>: if CloseFactory's kill fires — 7/10 finance directors refusing to outsource — MacroMigrate is the named pivot. It solves the same fragility for buyers who must own the process internally. It waits behind CloseFactory because the outsourcing question must be answered first.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world as CloseFactory — the analyst, the macro, the rational CFO. (If you haven't read that story yet, start there.) This time, look at the choice the CFO is trapped between.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">Two bad options — and a third that never existed</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>The CFO faces a binary choice: keep the fragile macro, OR implement $300K+ software with a 6–12 month risky, disruptive cutover. Both options are bad. The "known devil" beats the "unknown devil," so nothing changes — year after year.</p>
+            <div class="callout">MacroMigrate removes the choice. The macro shrinks by one component per month — each replacement small, testable, <b>reversible</b>. After 6–12 months, the macro is empty and all logic lives in versioned, tested AI agents. At no point did the organization "switch systems." If any piece fails, the corresponding macro component still exists.</div>
+            <p>Why this never existed before: decomposing thousands of lines of monolithic VBA into logical components required weeks of senior developer time. AI code reasoning can now find those boundaries automatically.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>The existing macro and the live monthly consolidation cycles — nothing is ripped out, nothing replaced upfront.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>Reading the monolithic VBA, identifying where one consolidation step ends and another begins, and producing equivalent logic for one component at a time.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>Every component migration ships with a validation suite verifying the agent's output matches the original VBA output across historical cycles — Ranjan's QA layer. The analyst keeps running the (shrinking) macro throughout; the team manages the migration timeline with the analyst, not around them.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>After 6–12 months: an empty macro, all logic in versioned, tested agents, no cliff edge ever crossed. Pricing: <b>₹2L–₹5L/month</b> — per-cycle, not per-project; the customer pays for continuous, invisible improvement. Revenue from Month 1 (data ingestion migrates first).</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>The same macro fragility as CloseFactory's world — but for buyers whose compliance, audit, or culture demands the close stays in-house.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why coping fails</span><p>Implementation risk aversion is the persistence mechanism itself: the CFO rationally refuses the $300K cutover, so the fragile macro survives every budget cycle.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>Risk-free modernization: no implementation project, no cutover date, no cliff edge, every step reversible. CFOs are — per Gemini — "terrified of rip and replace"; this is the only option that never asks them to jump.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Is the macro even decomposable?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>The macro is built of loosely coupled components that can be replaced one at a time.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>If the logic is a tightly coupled hairball rather than separable components, decomposition introduces more errors than it eliminates — the entire incremental promise fails.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>What real-world consolidation macros look like inside. Gemini rated this testable and survivable — technically feasible to check.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Decomposition of real macros introducing more errors than it eliminates — the hairball scenario.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">The dual-maintenance nightmare</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>Customers will tolerate running a shrinking macro AND a growing agent system side by side.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk: customers may balk at maintaining both for 6–12 months — two systems, one close, every month.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How real finance teams react to the parallel-running period.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">A contingency, not a first move</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>MacroMigrate deserves founder attention only after the outsourcing question is answered.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>The locked discipline is one company at a time. Starting MacroMigrate early splits four part-timers across two motions before CloseFactory's structural kill has even been tested — and the same CloseFactory pattern library will make MacroMigrate's decomposition faster later.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether the Week-4 interview wall will actually fire the pivot trigger.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — do CFOs prefer the invisible migration?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>Per Gemini's Week-1 experiment: 10 Indian Finance Directors with known legacy processes — the same population as CloseFactory's interviews, so this can ride along.</div>
+        <div class="rc-block"><span class="eyebrow">Exact approach</span>
+          <ul>
+            <li>Pitch the choice directly: a ₹2L/month slow, invisible, reversible migration vs. a standard ₹300K implementation project.</li>
+            <li>Listen for which fear dominates: cutover risk, or the dual-running period.</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>5/10 prefer the incremental risk-free approach (Gemini's success criterion) — especially those who already rejected enterprise software.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>CFOs recoil from maintaining two systems in parallel, or decomposition tests on sample macros show tightly coupled logic.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="macromigrate_rc1">
+            <label><input type="radio" name="mm_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="mm_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="mm_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="mm_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="macromigrate">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="mm_q1" value="Yes">Yes</label><label><input type="radio" name="mm_q1" value="Unsure">Unsure</label><label><input type="radio" name="mm_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="mm_q2" value="Yes">Yes</label><label><input type="radio" name="mm_q2" value="Unsure">Unsure</label><label><input type="radio" name="mm_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="mm_q5" value="Yes">Yes</label><label><input type="radio" name="mm_q5" value="Unsure">Unsure</label><label><input type="radio" name="mm_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('macromigrate', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">If we were the CFO, which would scare us more: a one-time cutover, or running two systems side by side for a year?</div>
+        <div class="dq">Is "contingency" a real plan with a named trigger — 7/10 refusing to outsource — or a comfort blanket that lets us avoid hard kill decisions?</div>
+        <div class="dq">Decomposing someone's undocumented VBA is intimate work. Will analysts cooperate with the thing replacing their macro — and what if they don't?</div>
+        <div class="dq">CloseFactory's pattern library supposedly makes MacroMigrate faster later. Do we actually believe that, or is it sequencing rhetoric?</div>
+        <div class="dq">What's the cheapest way to test decomposability — could we try it on a public sample macro before any customer conversation?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="macromigrate">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>MacroMigrate</b> — Legacy Financial Logic Migration</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> Gemini GO; the strongest contingency if organizations reject outsourcing.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">Real consolidation macros are loosely coupled enough to decompose one component at a time — and customers will tolerate the dual-running period.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">Gemini's Week-1 experiment: pitch 10 Indian Finance Directors the ₹2L/month invisible migration vs. the ₹300K implementation; success = 5/10 prefer incremental.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">The macro proves to be a tightly coupled hairball — decomposition introduces more errors than it eliminates.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('portfolioos')">Next: PortfolioOS →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- ===================================================== PORTFOLIOOS -->
+<div id="view-portfolioos" class="view">
+  <div class="topbar"><div class="topbar-inner">
+    <button class="backbtn" onclick="goHome()">← All opportunities</button>
+    <div class="sectdots" id="dots-portfolioos"></div>
+  </div></div>
+  <div class="wrap">
+
+    <div class="opp-hero">
+      <span class="stamp second">Secondary · Locked</span>
+      <h1>PortfolioOS</h1>
+      <p class="oneline">The financial data infrastructure for PE portfolios — every acquisition connects, financials normalize automatically, consolidated visibility from Day 30 without touching any ERP.</p>
+    </div>
+
+    <!-- S1 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">01</span><h2>Opportunity snapshot</h2></div>
+      <p><b>Category:</b> Portfolio Financial Infrastructure. <b>Pattern:</b> Industrial Data Infrastructure — a proprietary semantic financial graph that grows with every entity connected.</p>
+      <div class="why-survived">
+        <span class="eyebrow">Why it survived — and why it's secondary, not first</span>
+        <p>Here's the honest part: PortfolioOS ranked <b>#1 on the weighted score</b> (8.35 vs CloseFactory's 7.85) — highest venture potential and defensibility in the set. But both validators held it at <b>MONITOR</b>. Gemini: "the venture upside is massive, but it carries a binary, untested kill assumption regarding fund administrators, and multi-party sales cycles drain part-time founder energy." Perplexity: the portfolio-monitoring space is already populated by specialist vendors.</p>
+        <p>The locked consensus keeps it as the longer-term infrastructure opportunity, step three of <b>CloseFactory → MacroMigrate → PortfolioOS</b> — pending validation of the fund-administrator gap. Ranking and sequencing are different questions.</p>
+      </div>
+    </section>
+
+    <!-- S2 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">02</span><h2>Understand the world</h2></div>
+      <p class="s-intro">Same world — but climb one level up, from a single company group to the PE firm that owns many of them.</p>
+      <div class="story">
+        <div class="story-step open">
+          <button class="toggle" onclick="toggleStep(this)"><span class="step-tag">The angle</span><span class="step-q">Thirty companies, thirty formats, one impatient partner</span><span class="chev">›</span></button>
+          <div class="step-body">
+            <p>A PE firm buys 5–30 companies per fund. Every company uses different software and different account formats. The <b>operating partner</b> — the person responsible for making the portfolio perform — chases portfolio company CFOs for quarterly financials, an analyst manually aggregates everything in Excel, and the consolidated view arrives <b>3–4 weeks after quarter-end</b>, with no entity-level comparability.</p>
+            <div class="callout">The structural trap: holding periods are 3–7 years — too short to justify forcing everyone onto one ERP system, which takes 2–3 years. So the gap between "need visibility NOW" and "standardization takes years" is permanent. PortfolioOS fills it: financial data flows in from each company in whatever format it lives in, semantic mapping normalizes it automatically ("COGS" = "Cost of Revenue" = "Direct Costs"), and a consolidated portfolio view exists within 48 hours of period-end — new acquisitions integrated in 30 days.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">03</span><h2>What would we build?</h2></div>
+      <div class="flow">
+        <div class="flow-node"><span class="eyebrow">Inputs</span><p>Each portfolio company's financial data, in whatever heterogeneous format it lives in — no ERP changes, no standardization project.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node ai"><span class="eyebrow accent">Where AI helps</span><p>Semantic mapping across charts of accounts — identifying that different names mean the same thing — which used to be a $50K–$200K consulting engagement per portfolio.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node human"><span class="eyebrow" style="color:var(--second)">Where humans stay involved</span><p>Ranjan validates mapping accuracy across accounting standards (Ind AS, IFRS, US GAAP). Vikas — Riyadh-based — opens Gulf PE firms and family offices as the secondary market and coordinates multi-entity data collection.</p></div>
+        <div class="flow-arrow">↓</div>
+        <div class="flow-node"><span class="eyebrow">Outputs</span><p>Consolidated portfolio P&amp;L, balance sheet, and cash flow within 48 hours of period-end; each new acquisition visible within 30 days. Pricing: <b>₹50K–₹1.5L per entity per month</b> — one PE firm with 15 entities is ₹7.5L–₹22.5L/month, and one PE firm alone satisfies the first-10-customers test.</p></div>
+      </div>
+    </section>
+
+    <!-- S4 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">04</span><h2>Why might customers care?</h2></div>
+      <div class="ev-grid">
+        <div class="ev-row"><span class="eyebrow">The pain today</span><p>Quarterly chasing, manual Excel aggregation, 3–4 weeks of delay, no comparability across entities — repeated for every acquisition.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why coping fails</span><p>ERP unification takes longer than the holding period; fund administrators handle fund-level NAV accounting, not operating-level portfolio consolidation. The gap is structural.</p></div>
+        <div class="ev-row"><span class="eyebrow">Why they might pay</span><p>Time and visibility: portfolio monitoring compressed from weeks to days, every new acquisition added without incremental effort — without a multi-year ERP project or an army of Excel analysts.</p></div>
+      </div>
+    </section>
+
+    <!-- S5 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">05</span><h2>What scares us?</h2></div>
+      <div class="concerns">
+        <details class="concern locked-kill">
+          <summary><span class="stamp kill">Kill</span><span class="c-title">Maybe the fund admin already does this</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>PE operating partners experience consolidation pain that is NOT already addressed by their fund administrator or outsourced finance team.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>This is the binary, untested kill that kept both validators at MONITOR despite the #1 ranking. Gemini: "testable but likely fatal — if fund admins already solve this adequately, the wedge collapses immediately."</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether the fund-administrator gap actually exists — 3–4 weeks and 5–8 interviews to resolve.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>4/5 PE operating partners say "our fund admin handles this and it works fine."</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">A space already full of software</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>A new entrant can claim a distinct workflow before platform vendors absorb it.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Perplexity: Allvue, Cobalt GP, PE Front Office and similar platforms already sell portfolio management and monitoring — "this looks like an established software category, not greenfield," with a platform-dominated risk.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>Whether a crisp wedge exists against existing portfolio-monitoring tools.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Evidence that incumbents already cover the portfolio visibility workflow end-to-end (Perplexity's archive trigger).</div>
+          </div>
+        </details>
+        <details class="concern">
+          <summary><span class="c-title">Will they let us see everything?</span><span class="chev">›</span></summary>
+          <div class="c-body">
+            <div class="c-part"><span class="eyebrow">Assumption</span>PE firms will allow a third-party startup to ingest granular operating data across their entire portfolio.</div>
+            <div class="c-part"><span class="eyebrow">Why it matters</span>Gemini's flagged missed risk: data privacy and NDA bottlenecks — and multi-party sales cycles (PE partner + every portfolio CFO) that drain part-time founder energy.</div>
+            <div class="c-part"><span class="eyebrow">What we still don't know</span>How heavy the NDA and coordination load really is per portfolio.</div>
+            <div class="c-part killline"><span class="eyebrow">What evidence would kill this</span>Insufficient evidence available from previous stages.</div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <!-- S6 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">06</span><h2>Reality check before commitment</h2></div>
+      <div class="rc">
+        <h3>The one check that matters — does the fund-administrator gap exist?</h3>
+        <div class="rc-block"><span class="eyebrow">Who to speak to · how many</span>5–8 PE operating partners at Indian PE firms (LinkedIn, warm intros, IVCA events in Mumbai). These conversations can run simultaneously with CloseFactory's build — conversations only.</div>
+        <div class="rc-block"><span class="eyebrow">Exact questions to ask (locked)</span>
+          <ul>
+            <li>"Walk me through how you get consolidated financial visibility across your portfolio companies today. Who does that work? What tools?"</li>
+            <li>"When you acquire a new company, how long before you see their financials in your portfolio view? What's the bottleneck?"</li>
+            <li>"Does your fund administrator handle portfolio-level operating consolidation, or is that internal?"</li>
+            <li>"What's the most frustrating part of portfolio financial reporting?"</li>
+            <li>"If I delivered a normalized, consolidated portfolio view — within 30 days of each acquisition — what would that be worth?"</li>
+          </ul>
+        </div>
+        <div class="rc-block up"><span class="eyebrow">Conviction increases if</span>3/5 describe manual Excel-based consolidation with pain points (artifact survival bar). Perplexity's GO trigger: 5–7 interviews confirm a repeated reporting gap current tools don't solve.</div>
+        <div class="rc-block down"><span class="eyebrow">Conviction decreases if</span>4/5 say the fund admin handles it fine (the kill), or evidence shows incumbents cover the workflow end-to-end.</div>
+        <div class="implication"><span class="eyebrow">Your founder implication</span>
+          <div class="imp-opts" data-key="portfolioos_rc1">
+            <label><input type="radio" name="po_rc1" value="Proceed">Proceed</label>
+            <label><input type="radio" name="po_rc1" value="Pause">Pause</label>
+            <label><input type="radio" name="po_rc1" value="Pivot">Pivot</label>
+            <label><input type="radio" name="po_rc1" value="Stop">Stop</label>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">07</span><h2>Your reflection</h2></div>
+      <div class="reflect" data-opp="portfolioos">
+        <div class="q"><span class="qt">Your name (optional, for the export)</span><input type="text" data-q="name" placeholder="Rajesh / Rahul / Ranjan / Vikas"></div>
+        <div class="q"><span class="qt">1. If validation was strongly positive, would you support allocating founder attention here?</span>
+          <div class="radio-row" data-q="q1"><label><input type="radio" name="po_q1" value="Yes">Yes</label><label><input type="radio" name="po_q1" value="Unsure">Unsure</label><label><input type="radio" name="po_q1" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">2. Would you be excited to help build this if validation succeeded?</span>
+          <div class="radio-row" data-q="q2"><label><input type="radio" name="po_q2" value="Yes">Yes</label><label><input type="radio" name="po_q2" value="Unsure">Unsure</label><label><input type="radio" name="po_q2" value="No">No</label></div>
+        </div>
+        <div class="q"><span class="qt">3. What scares you most?</span><textarea data-q="q3" placeholder="In your own words…"></textarea></div>
+        <div class="q"><span class="qt">4. What should be validated first?</span><textarea data-q="q4" placeholder="If we only had time for one thing…"></textarea></div>
+        <div class="q"><span class="qt">5. Would this make your shortlist for validation?</span>
+          <div class="radio-row" data-q="q5"><label><input type="radio" name="po_q5" value="Yes">Yes</label><label><input type="radio" name="po_q5" value="Unsure">Unsure</label><label><input type="radio" name="po_q5" value="No">No</label></div>
+        </div>
+        <button class="btn" onclick="saveReflection('portfolioos', this)">Save my reflection</button><span class="savemsg">Saved ✓</span>
+      </div>
+    </section>
+
+    <!-- S8 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">08</span><h2>Founder discussion starters</h2></div>
+      <div class="starters">
+        <div class="dq">PortfolioOS ranked #1 on the weighted score but isn't the first build. Do we all genuinely understand why — and agree?</div>
+        <div class="dq">If 4/5 operating partners say "fund admin handles it," do we archive PortfolioOS for good, or keep it warm? Where is OUR line?</div>
+        <div class="dq">Multi-party sales — one PE partner plus fifteen portfolio CFOs — with 40–48 hours a week between us. Who exactly runs that, and when?</div>
+        <div class="dq">Allvue, Cobalt and the rest already sell portfolio monitoring. In one sentence each: what is our wedge that they can't absorb as a feature?</div>
+        <div class="dq">Would one PE firm's data really seed the semantic graph the defensibility story depends on — or does the moat only appear at a scale we can't reach part-time?</div>
+      </div>
+    </section>
+
+    <!-- S9 -->
+    <section class="s" data-sect="portfolioos">
+      <div class="s-label"><span class="num">09</span><h2>Founder board summary</h2></div>
+      <div class="board">
+        <div class="board-row"><div class="bk">Opportunity</div><div class="bv"><b>PortfolioOS</b> — Portfolio Financial Infrastructure</div></div>
+        <div class="board-row"><div class="bk">Build status</div><div class="bv"><span class="stamp second">Secondary · Locked</span> #1 weighted score, but MONITOR from both validators — longer-term infrastructure, step three of the sequence.</div></div>
+        <div class="board-row"><div class="bk">Biggest assumption</div><div class="bv">The PE fund-administrator gap exists — operating partners experience portfolio consolidation pain their fund admin does not already solve.</div></div>
+        <div class="board-row"><div class="bk">Highest-priority validation</div><div class="bv">5–8 PE operating-partner interviews using the locked questions, run as conversations alongside CloseFactory's build — resolving the binary kill in 3–4 weeks.</div></div>
+        <div class="board-row"><div class="bk">Primary kill condition</div><div class="bv">4/5 PE operating partners saying "our fund admin handles this fine" — or evidence incumbents already cover the workflow end-to-end.</div></div>
+      </div>
+      <div class="endnav">
+        <button class="btn" onclick="goHome()">Back to all opportunities</button>
+        <button class="btn ghost" onclick="openOpp('closefactory')">Revisit CloseFactory →</button>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+/* ============ storage (safe wrapper: localStorage when available, in-memory fallback) ============ */
+var MEM = {};
+var LS_OK = false;
+try { localStorage.setItem('__feT','1'); localStorage.removeItem('__feT'); LS_OK = true; } catch(e) {}
+function sGet(k){ try { return LS_OK ? localStorage.getItem(k) : (MEM[k]!==undefined?MEM[k]:null); } catch(e){ return MEM[k]!==undefined?MEM[k]:null; } }
+function sSet(k,v){ try { if(LS_OK){ localStorage.setItem(k,v); } } catch(e){} MEM[k]=v; }
+var NS = 'fpa11_explorer_';
+
+var OPPS = ['closefactory','macromigrate','portfolioos'];
+var OPP_NAMES = { closefactory:'CloseFactory (BUILD-FIRST)', macromigrate:'MacroMigrate (SECONDARY)', portfolioos:'PortfolioOS (SECONDARY)' };
+
+/* ============ navigation ============ */
+function showView(id){
+  var views = document.querySelectorAll('.view');
+  for (var i=0;i<views.length;i++) views[i].classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+function openOpp(opp){
+  showView('view-'+opp);
+  markStarted(opp);
+  setupDots(opp);
+  restoreReflection(opp);
+  restoreImplications();
+}
+function goHome(){
+  showView('view-home');
+  refreshPills();
+}
+
+/* ============ story step toggles ============ */
+function toggleStep(btn){
+  var step = btn.parentElement;
+  step.classList.toggle('open');
+}
+
+/* ============ progress tracking ============ */
+function markStarted(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].started = true;
+  sSet(NS+'progress', JSON.stringify(p));
+}
+function markSeen(opp, idx){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  if(p[opp].seen.indexOf(idx) === -1) p[opp].seen.push(idx);
+  sSet(NS+'progress', JSON.stringify(p));
+  paintDots(opp);
+}
+function setupDots(opp){
+  var sections = document.querySelectorAll('#view-'+opp+' section.s');
+  var dotsBox = document.getElementById('dots-'+opp);
+  dotsBox.innerHTML = '';
+  for (var i=0;i<sections.length;i++){
+    var d = document.createElement('span');
+    dotsBox.appendChild(d);
+    sections[i].setAttribute('data-idx', i);
+  }
+  paintDots(opp);
+  if ('IntersectionObserver' in window){
+    var obs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){ markSeen(opp, parseInt(en.target.getAttribute('data-idx'),10)); }
+      });
+    }, { threshold: 0.25 });
+    for (var j=0;j<sections.length;j++) obs.observe(sections[j]);
+  }
+}
+function paintDots(opp){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  var seen = (p[opp] && p[opp].seen) || [];
+  var dots = document.querySelectorAll('#dots-'+opp+' span');
+  for (var i=0;i<dots.length;i++){
+    if (seen.indexOf(i) !== -1) dots[i].classList.add('seen'); else dots[i].classList.remove('seen');
+  }
+}
+function refreshPills(){
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  OPPS.forEach(function(opp){
+    var pill = document.getElementById('pill-'+opp);
+    if(!pill) return;
+    var st = p[opp];
+    if(!st || !st.started){ pill.textContent = 'Not started'; pill.classList.remove('done'); }
+    else if (st.reflected){ pill.textContent = 'Reflection saved ✓'; pill.classList.add('done'); }
+    else { pill.textContent = 'In progress · '+ (st.seen ? st.seen.length : 0) +'/9 sections'; pill.classList.remove('done'); }
+  });
+}
+
+/* ============ radio pill styling ============ */
+document.addEventListener('change', function(e){
+  if (e.target && e.target.type === 'radio'){
+    var group = e.target.closest('.radio-row, .imp-opts');
+    if (group){
+      var labels = group.querySelectorAll('label');
+      for (var i=0;i<labels.length;i++) labels[i].classList.remove('sel');
+      e.target.closest('label').classList.add('sel');
+      if (group.classList.contains('imp-opts')){
+        sSet(NS+'imp_'+group.getAttribute('data-key'), e.target.value);
+      }
+    }
+  }
+});
+
+/* ============ reflection save / restore ============ */
+function saveReflection(opp, btn){
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  var data = { savedAt: new Date().toISOString() };
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  data.name = nameInput ? nameInput.value : '';
+  ['q1','q2','q5'].forEach(function(q){
+    var sel = box.querySelector('.radio-row[data-q='+q+'] input:checked');
+    data[q] = sel ? sel.value : '';
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    data[q] = ta ? ta.value : '';
+  });
+  sSet(NS+'reflection_'+opp, JSON.stringify(data));
+  var p = JSON.parse(sGet(NS+'progress') || '{}');
+  if(!p[opp]) p[opp] = { started:true, seen:[], reflected:false };
+  p[opp].reflected = true;
+  sSet(NS+'progress', JSON.stringify(p));
+  var msg = btn.parentElement.querySelector('.savemsg');
+  msg.classList.add('show');
+  setTimeout(function(){ msg.classList.remove('show'); }, 2200);
+  if (!LS_OK) {
+    msg.textContent = 'Saved for this session ✓ (open this file in a browser to keep answers permanently)';
+  }
+}
+function restoreReflection(opp){
+  var raw = sGet(NS+'reflection_'+opp);
+  if(!raw) return;
+  var data;
+  try { data = JSON.parse(raw); } catch(e){ return; }
+  var box = document.querySelector('.reflect[data-opp="'+opp+'"]');
+  if(!box) return;
+  var nameInput = box.querySelector('input[type=text][data-q=name]');
+  if (nameInput && data.name) nameInput.value = data.name;
+  ['q1','q2','q5'].forEach(function(q){
+    if(!data[q]) return;
+    var inp = box.querySelector('.radio-row[data-q='+q+'] input[value="'+data[q]+'"]');
+    if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+  });
+  ['q3','q4'].forEach(function(q){
+    var ta = box.querySelector('textarea[data-q='+q+']');
+    if(ta && data[q]) ta.value = data[q];
+  });
+}
+function restoreImplications(){
+  var groups = document.querySelectorAll('.imp-opts');
+  for (var i=0;i<groups.length;i++){
+    var key = groups[i].getAttribute('data-key');
+    var val = sGet(NS+'imp_'+key);
+    if(val){
+      var inp = groups[i].querySelector('input[value="'+val+'"]');
+      if(inp){ inp.checked = true; inp.closest('label').classList.add('sel'); }
+    }
+  }
+}
+
+/* ============ export ============ */
+var RC_LABELS = {
+  closefactory_rc1: 'CloseFactory — Check 1: Will Indian CFOs outsource the close?',
+  closefactory_rc2: 'CloseFactory — Check 2: 95% accuracy on historical data',
+  closefactory_rc3: 'CloseFactory — Check 3: Pay before polish',
+  macromigrate_rc1: 'MacroMigrate — Check: Invisible migration vs implementation',
+  portfolioos_rc1: 'PortfolioOS — Check: Does the fund-administrator gap exist?'
+};
+function collectAll(){
+  var out = { artifact:'Innovation_OS Founder Explorer — FPA-11', exportedAt:new Date().toISOString(), reflections:{}, implications:{} };
+  OPPS.forEach(function(opp){
+    var raw = sGet(NS+'reflection_'+opp);
+    if(raw){ try { out.reflections[OPP_NAMES[opp]] = JSON.parse(raw); } catch(e){} }
+  });
+  Object.keys(RC_LABELS).forEach(function(k){
+    var v = sGet(NS+'imp_'+k);
+    if(v) out.implications[RC_LABELS[k]] = v;
+  });
+  return out;
+}
+function exportReflections(fmt){
+  var data = collectAll();
+  var content, mime, fname;
+  if (fmt === 'json'){
+    content = JSON.stringify(data, null, 2);
+    mime = 'application/json'; fname = 'FPA-11_founder_reflections.json';
+  } else {
+    var lines = [];
+    lines.push('INNOVATION_OS FOUNDER EXPLORER — FPA-11');
+    lines.push('Founder reflections export · ' + new Date().toLocaleString());
+    lines.push('========================================');
+    var any = false;
+    OPPS.forEach(function(opp){
+      var r = data.reflections[OPP_NAMES[opp]];
+      if(!r) return;
+      any = true;
+      lines.push('');
+      lines.push('--- ' + OPP_NAMES[opp] + ' ---');
+      if(r.name) lines.push('Founder: ' + r.name);
+      lines.push('Q1 Support allocating founder attention (if validation positive): ' + (r.q1 || '—'));
+      lines.push('Q2 Excited to help build: ' + (r.q2 || '—'));
+      lines.push('Q3 What scares you most: ' + (r.q3 || '—'));
+      lines.push('Q4 What should be validated first: ' + (r.q4 || '—'));
+      lines.push('Q5 Shortlist for validation: ' + (r.q5 || '—'));
+      if(r.savedAt) lines.push('Saved: ' + r.savedAt);
+    });
+    var impKeys = Object.keys(data.implications);
+    if (impKeys.length){
+      lines.push('');
+      lines.push('--- REALITY CHECK IMPLICATIONS ---');
+      impKeys.forEach(function(k){ lines.push(k + ': ' + data.implications[k]); });
+    }
+    if (!any && !impKeys.length){
+      lines.push('');
+      lines.push('No reflections saved yet. Explore an opportunity and answer Section 7 first.');
+    }
+    content = lines.join('\n');
+    mime = 'text/plain'; fname = 'FPA-11_founder_reflections.txt';
+  }
+  var blob = new Blob([content], { type: mime + ';charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = fname;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+
+/* ============ init ============ */
+refreshPills();
+restoreImplications();
+OPPS.forEach(restoreReflection);
+</script>
+</body>
+</html>
